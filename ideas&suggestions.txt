@@ -18,4 +18,4 @@ c) overlap main quiz window when the final results are shown to make it look nea
 8) Add more options in the game.
 a) number of questions.
 
-9) Add a Timer in the game. 
+9) Add a Timer in the game for each question. 
