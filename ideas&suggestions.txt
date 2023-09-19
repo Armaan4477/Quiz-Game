@@ -1,0 +1,21 @@
+1) when Back button is used the previous selected option by the user should stay.
+
+2) make the Front end more visually appealing:
+a) more UI designs.
+b) make the window sizes more accurate to fit everything in the frame properly.
+c) overlap main quiz window when the final results are shown to make it look neater.
+
+3) Integrate sql and remove array system to make the project more complex and backend more appealing.
+
+4) Add more questions after implmentation of sql.
+
+5) Add a startup screen if possible.
+
+6) Add a exit button in the game.
+
+7) Add a credits dialog with our names.
+
+8) Add more options in the game.
+a) number of questions.
+
+9) Add a Timer in the game. 
