@@ -262,11 +262,22 @@ public class QuizGameGUI extends JFrame {
         questionLabel.setText(currentQuestion.getQuestion());
         String[] answerChoices = currentQuestion.getAnswerChoices();
         optionGroup.clearSelection(); // Clear the selection for the entire button group
-
+    
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
         }
+    
+        // Set the previously selected answer if it exists
+        if (userAnswers[index] != null) {
+            for (int i = 0; i < 4; i++) {
+                if (options[i].getText().equals(userAnswers[index])) {
+                    options[i].setSelected(true);
+                    break;
+                }
+            }
+        }
     }
+    
 
     private void checkAnswer() {
         Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
@@ -287,20 +298,15 @@ public class QuizGameGUI extends JFrame {
         // Display the summary screen
         StringBuilder summary = new StringBuilder();
         summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
-
+    
         // Iterate through selected questions and display information
         for (int i = 0; i < selectedQuestions.size(); i++) {
-            Question question = selectedQuestions.get(i);
-            summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
-            summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
-            summary.append("Your Answer: ").append(userAnswers[i]).append("\n"); // Use stored user's answer
-            boolean answeredCorrectly = false;
-
-            // Check if the user answered correctly
-            if (userAnswers[i] != null && userAnswers[i].equals(question.getCorrectAnswer())) {
-                answeredCorrectly = true;
-            }
-
+                Question question = selectedQuestions.get(i);
+                summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
+                summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
+                summary.append("Your Answer: ").append(userAnswers[i]).append("\n"); // Use stored user's answer
+                boolean answeredCorrectly = false;
+    
             // Indicate if the user answered correctly or not
             if (answeredCorrectly) {
                 summary.append("Result: Correct\n\n");
@@ -308,24 +314,39 @@ public class QuizGameGUI extends JFrame {
                 summary.append("Result: Incorrect\n\n");
             }
         }
-
+    
         // Set the summary text to the JTextArea
         summaryTextArea.setText(summary.toString());
-
+    
         // Remove the Next button and adjust the window size
         nextButton.setVisible(false);
-        setSize(600, 400);
-
-        // Create a new panel for the summary
+        backButton.setVisible(false);  // Hide the "Back" button as well
+    
+        // Add an "Exit" button
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0); // Exit the entire program
+            }
+        });
+    
+        // Create a new panel for the summary and exit button
         JPanel summaryPanel = new JPanel();
         summaryPanel.setLayout(new BorderLayout());
         summaryPanel.add(new JScrollPane(summaryTextArea), BorderLayout.CENTER);
-
-        // Create a new frame for the summary
+    
+        // Create a new panel for the exit button
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(exitButton);
+    
+        // Add the panels to the summary frame
         JFrame summaryFrame = new JFrame("Quiz Summary");
         summaryFrame.setSize(800, 600);
         summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        summaryFrame.add(summaryPanel);
+        summaryFrame.setLayout(new BorderLayout());
+        summaryFrame.add(summaryPanel, BorderLayout.CENTER);
+        summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
         summaryFrame.setVisible(true);
     }
 
