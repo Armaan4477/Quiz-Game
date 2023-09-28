@@ -23,7 +23,70 @@ public class QuizGameGUI extends JFrame {
     private List<Question> selectedQuestions;
     private String[] userAnswers;
 
+    private JFrame startupFrame;
+    private JComboBox<Integer> questionCountComboBox;
+
     public QuizGameGUI() {
+        // Create the startup frame
+        createStartupFrame();
+
+        // Initialize the JTextArea for the summary
+        summaryTextArea = new JTextArea(20, 80);
+        summaryTextArea.setEditable(false);
+
+        // Initialize questions and userAnswers
+        initializeQuestions();
+
+        // Set up the main quiz frame
+        setUpQuizFrame();
+
+        // Show the startup frame
+        startupFrame.setVisible(true);
+    }
+
+    private void createStartupFrame() {
+        // Create the startup frame
+        startupFrame = new JFrame("Quiz Startup");
+        startupFrame.setSize(300, 150);
+        startupFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        startupFrame.setLocationRelativeTo(null);
+
+        JPanel startupPanel = new JPanel();
+        startupPanel.setLayout(new FlowLayout());
+
+        JLabel label = new JLabel("Select the number of questions:");
+        startupPanel.add(label);
+
+        Integer[] options = {5, 10, 15, 20};
+        questionCountComboBox = new JComboBox<>(options);
+        startupPanel.add(questionCountComboBox);
+
+        JButton startButton = new JButton("Start Quiz");
+        startupPanel.add(startButton);
+
+        startupFrame.add(startupPanel);
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Get the selected number of questions
+                int selectedQuestionCount = (int) questionCountComboBox.getSelectedItem();
+
+                // Select random questions based on the user's choice
+                selectRandomQuestions(selectedQuestionCount);
+
+                // Load the first question
+                loadQuestion(currentQuestionIndex);
+
+                // Hide the startup frame and show the quiz frame
+                startupFrame.setVisible(false);
+                setVisible(true);
+            }
+        });
+    }
+
+    private void setUpQuizFrame() {
+        // Set up the main quiz frame
         setTitle("Quiz Game");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,15 +123,6 @@ public class QuizGameGUI extends JFrame {
 
         add(panel);
 
-        // Initialize the JTextArea for the summary
-        summaryTextArea = new JTextArea(20, 80);
-        summaryTextArea.setEditable(false);
-
-        initializeQuestions();
-        selectRandomQuestions(10);
-        loadQuestion(currentQuestionIndex);
-        userAnswers = new String[selectedQuestions.size()];
-
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,7 +150,6 @@ public class QuizGameGUI extends JFrame {
     private void initializeQuestions() {
         allQuestions = new ArrayList<>();
 
-        // Add your questions here using the Question class constructor
         allQuestions.add(new Question("What does JVM stand for?", "Java Virtual Machine", "Just Very Much", "Jungle Virtual Mouse", "Java Virtual Method", "Java Virtual Machine"));
         allQuestions.add(new Question("What is a variable in Java?", "A reserved keyword", "A data type", "A storage location", "An operator", "A storage location"));
         allQuestions.add(new Question("Which data type is used for whole numbers in Java?", "float", "double", "int", "String", "int"));
@@ -152,6 +205,8 @@ public class QuizGameGUI extends JFrame {
         allQuestions.add(new Question("What is the purpose of the 'try' and 'catch' blocks in exception handling?", "To handle exceptions", "To throw exceptions", "To declare variables", "To define methods", "To handle exceptions"));
         allQuestions.add(new Question("What is the term for the process of converting an object into a stream of bytes for storage or transmission?", "Serialization", "Deserialization", "Encoding", "Decoding", "Serialization"));
         allQuestions.add(new Question("In Java, which keyword is used to create an interface?", "interface", "create", "new", "implements", "interface"));
+  
+       
     }
 
     private void selectRandomQuestions(int count) {
@@ -162,6 +217,9 @@ public class QuizGameGUI extends JFrame {
             Collections.shuffle(shuffledQuestions, new Random());
             selectedQuestions = shuffledQuestions.subList(0, count);
         }
+
+        // Initialize userAnswers based on the selected question count
+        userAnswers = new String[selectedQuestions.size()];
     }
 
     private void loadQuestion(int index) {
@@ -240,7 +298,7 @@ public class QuizGameGUI extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new QuizGameGUI().setVisible(true);
+                new QuizGameGUI();
             }
         });
     }
