@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +16,8 @@ public class QuizGameGUI extends JFrame {
     private ButtonGroup optionGroup;
     private JButton nextButton;
     private JButton backButton;
+    private JButton pauseButton;
+    private boolean paused = false;
     private int currentQuestionIndex = 0;
     private int score = 0;
 
@@ -25,6 +29,8 @@ public class QuizGameGUI extends JFrame {
 
     private JFrame startupFrame;
     private JComboBox<Integer> questionCountComboBox;
+
+    private JPopupMenu pauseMenu;
 
     public QuizGameGUI() {
         // Create the startup frame
@@ -119,6 +125,10 @@ public class QuizGameGUI extends JFrame {
         nextButton = new JButton("Next");
         buttonPanel.add(nextButton); // Add the "Next" button to the button panel
 
+        // Add a pause button
+        pauseButton = new JButton("Pause");
+        buttonPanel.add(pauseButton);
+
         panel.add(buttonPanel, BorderLayout.SOUTH); // Add the button panel to the main panel
 
         add(panel);
@@ -143,6 +153,32 @@ public class QuizGameGUI extends JFrame {
                     currentQuestionIndex--;
                     loadQuestion(currentQuestionIndex);
                 }
+            }
+        });
+
+        // Add action listener for the pause button
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showPauseMenu();
+            }
+        });
+
+        // Add a key listener for pausing with the spacebar
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyChar() == KeyEvent.VK_SPACE) {
+                    showPauseMenu();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
             }
         });
     }
@@ -206,7 +242,6 @@ public class QuizGameGUI extends JFrame {
         allQuestions.add(new Question("What is the term for the process of converting an object into a stream of bytes for storage or transmission?", "Serialization", "Deserialization", "Encoding", "Decoding", "Serialization"));
         allQuestions.add(new Question("In Java, which keyword is used to create an interface?", "interface", "create", "new", "implements", "interface"));
   
-       
     }
 
     private void selectRandomQuestions(int count) {
@@ -292,6 +327,80 @@ public class QuizGameGUI extends JFrame {
         summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         summaryFrame.add(summaryPanel);
         summaryFrame.setVisible(true);
+    }
+
+    private void showPauseMenu() {
+        if (!paused) {
+            paused = true;
+            createPauseMenu();
+            pauseMenu.show(pauseButton, 0, pauseButton.getHeight());
+            nextButton.setEnabled(false);
+            backButton.setEnabled(false);
+        } else {
+            paused = false;
+            pauseMenu.setVisible(false);
+            nextButton.setEnabled(true);
+            backButton.setEnabled(true);
+        }
+    }
+
+    private void createPauseMenu() {
+        if (pauseMenu == null) {
+            pauseMenu = new JPopupMenu();
+
+            JMenuItem resumeItem = new JMenuItem("Resume");
+            resumeItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    paused = false;
+                    pauseMenu.setVisible(false);
+                    nextButton.setEnabled(true);
+                    backButton.setEnabled(true);
+                }
+            });
+
+            JMenuItem newGameItem = new JMenuItem("New Game");
+            newGameItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    paused = false;
+                    pauseMenu.setVisible(false);
+                    nextButton.setEnabled(true);
+                    backButton.setEnabled(true);
+                    restartGame();
+                }
+            });
+
+            JMenuItem creditsItem = new JMenuItem("Credits");
+            creditsItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showCredits();
+                }
+            });
+
+            pauseMenu.add(resumeItem);
+            pauseMenu.add(newGameItem);
+            pauseMenu.add(creditsItem);
+        }
+    }
+
+    private void restartGame() {
+        // Reset the game state (e.g., score, currentQuestionIndex)
+        score = 0;
+        currentQuestionIndex = 0;
+
+        // Select new random questions
+        selectRandomQuestions(selectedQuestions.size());
+
+        // Load the first question
+        loadQuestion(currentQuestionIndex);
+    }
+
+    // Add a new method to show credits
+    private void showCredits() {
+        // Add logic to show credits (e.g., display a JOptionPane)
+        JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n \n");
     }
 
     public static void main(String[] args) {
