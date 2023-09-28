@@ -347,7 +347,7 @@ public class QuizGameGUI extends JFrame {
     private void createPauseMenu() {
         if (pauseMenu == null) {
             pauseMenu = new JPopupMenu();
-
+    
             JMenuItem resumeItem = new JMenuItem("Resume");
             resumeItem.addActionListener(new ActionListener() {
                 @Override
@@ -358,7 +358,7 @@ public class QuizGameGUI extends JFrame {
                     backButton.setEnabled(true);
                 }
             });
-
+    
             JMenuItem newGameItem = new JMenuItem("New Game");
             newGameItem.addActionListener(new ActionListener() {
                 @Override
@@ -370,7 +370,7 @@ public class QuizGameGUI extends JFrame {
                     restartGame();
                 }
             });
-
+    
             JMenuItem creditsItem = new JMenuItem("Credits");
             creditsItem.addActionListener(new ActionListener() {
                 @Override
@@ -378,12 +378,22 @@ public class QuizGameGUI extends JFrame {
                     showCredits();
                 }
             });
-
+    
+            JMenuItem exitItem = new JMenuItem("Exit");
+            exitItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0); // Exit the entire program
+                }
+            });
+    
             pauseMenu.add(resumeItem);
             pauseMenu.add(newGameItem);
             pauseMenu.add(creditsItem);
+            pauseMenu.add(exitItem); // Add the "Exit" option
         }
     }
+    
 
     private void restartGame() {
         // Reset the game state (e.g., score, currentQuestionIndex)

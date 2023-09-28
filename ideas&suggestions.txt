@@ -6,15 +6,12 @@
   c) overlap main quiz window when the final results are shown to make it look neater.
   d) Add icons in GUI.
 
-3) Integrate sql and remove array system to make the project more complex and backend more appealing.
+3) Add a database to store the questions and answers:  
+  a) Integrate sql and remove array system to make the project more complex and backend more appealing.
+  b) Add more questions after implmentation of sql.
 
-4) Add more questions after implmentation of sql.
+4) Add a Timer in the game for each question.
 
-5) Add a exit button in the game.
-
-6) Add a credits dialog with our names.
-
-7) Add more options in the game.
-a) number of questions.
-
-8) Add a Timer in the game for each question. 
+5) Add more options in the game:
+a) (Think of ideas)
+  
