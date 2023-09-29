@@ -77,18 +77,19 @@ public class QuizGameGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Get the selected number of questions
                 int selectedQuestionCount = (int) questionCountComboBox.getSelectedItem();
-
+        
                 // Select random questions based on the user's choice
                 selectRandomQuestions(selectedQuestionCount);
-
+        
                 // Load the first question
                 loadQuestion(currentQuestionIndex);
-
+        
                 // Hide the startup frame and show the quiz frame
                 startupFrame.setVisible(false);
                 setVisible(true);
             }
         });
+        
     }
 
     private void setUpQuizFrame() {
@@ -420,13 +421,14 @@ public class QuizGameGUI extends JFrame {
         // Reset the game state (e.g., score, currentQuestionIndex)
         score = 0;
         currentQuestionIndex = 0;
-
-        // Select new random questions
-        selectRandomQuestions(selectedQuestions.size());
-
-        // Load the first question
-        loadQuestion(currentQuestionIndex);
+    
+        // Show the startup frame to allow the user to choose new options
+        startupFrame.setVisible(true);
+    
+        // Hide the current quiz frame
+        setVisible(false);
     }
+    
 
     // Add a new method to show credits
     private void showCredits() {
