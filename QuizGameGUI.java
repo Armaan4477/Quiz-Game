@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.TimerTask;
+import javax.swing.Timer;
+
 
 public class QuizGameGUI extends JFrame {
 
@@ -32,6 +35,11 @@ public class QuizGameGUI extends JFrame {
 
     private JPopupMenu pauseMenu;
 
+    private Timer questionTimer;
+    private TimerTask timerTask;
+    private int timerSeconds = 2; // Set the timer duration in seconds
+
+
     public QuizGameGUI() {
         // Create the startup frame
         createStartupFrame();
@@ -48,6 +56,18 @@ public class QuizGameGUI extends JFrame {
 
         // Show the startup frame
         startupFrame.setVisible(true);
+
+        questionTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timerSeconds--;
+                if (timerSeconds <= 0) {
+                    questionTimer.stop();
+                    handleTimeout();
+                }
+            }
+        });
+        
     }
 
     private void createStartupFrame() {
@@ -150,12 +170,13 @@ public class QuizGameGUI extends JFrame {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentQuestionIndex > 0) {
+                if (currentQuestionIndex > 0 && timerSeconds > 0) {
                     currentQuestionIndex--;
                     loadQuestion(currentQuestionIndex);
                 }
             }
         });
+        
 
         // Add action listener for the pause button
         pauseButton.addActionListener(new ActionListener() {
@@ -259,6 +280,10 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void loadQuestion(int index) {
+        // Reset timer and start it for the new question
+        timerSeconds = 15; // Reset the timer duration for each question
+        questionTimer.stop(); // Stop the timer before starting it again
+        questionTimer.start(); // Start the timer
         Question currentQuestion = selectedQuestions.get(index);
         questionLabel.setText(currentQuestion.getQuestion());
         String[] answerChoices = currentQuestion.getAnswerChoices();
@@ -279,8 +304,11 @@ public class QuizGameGUI extends JFrame {
         }
     }
     
+    
 
     private void checkAnswer() {
+        // Stop the timer when the user selects an answer
+        questionTimer.stop();
         Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
         String selectedAnswer = null;
         for (int i = 0; i < 4; i++) {
@@ -435,6 +463,19 @@ public class QuizGameGUI extends JFrame {
         // Add logic to show credits (e.g., display a JOptionPane)
         JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n \n");
     }
+
+    private void handleTimeout() {
+        // Handle timeout (e.g., mark the question as unanswered)
+        userAnswers[currentQuestionIndex] = "TIMEOUT";
+        // Move to the next question or show the result
+        currentQuestionIndex++;
+        if (currentQuestionIndex < selectedQuestions.size()) {
+            loadQuestion(currentQuestionIndex);
+        } else {
+            showResult();
+        }
+    }
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
