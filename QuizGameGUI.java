@@ -38,6 +38,8 @@ public class QuizGameGUI extends JFrame {
 
     private int timerSeconds = 15; // Set the timer duration in seconds
 
+    private boolean timeUp = false;
+
     public QuizGameGUI() {
         // Create the startup frame
         createStartupFrame();
@@ -300,17 +302,24 @@ public class QuizGameGUI extends JFrame {
         // Reset timer and start for the new question
         timerSeconds = 15;
         questionTimer.restart();
-
+    
+        // Reset timeUp
+        timeUp = false;
+    
         Question currentQuestion = selectedQuestions.get(index);
         questionLabel.setText(currentQuestion.getQuestion());
-
+    
         String[] answerChoices = currentQuestion.getAnswerChoices();
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
             options[i].setEnabled(true);
             options[i].setSelected(false);
         }
+    
+        // Enable or disable the back button based on timeUp
+        backButton.setEnabled(!timeUp);
     }
+    
 
     private void checkAnswer() {
         for (int i = 0; i < 4; i++) {
@@ -441,6 +450,12 @@ public class QuizGameGUI extends JFrame {
         } else {
             showResult();
         }
+    
+        // Set timeUp to true
+        timeUp = true;
+    
+        // Disable the back button
+        backButton.setEnabled(false);
     }
 
     public static void main(String[] args) {
