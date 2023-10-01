@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 
 public class QuizGameGUI extends JFrame {
 
@@ -40,6 +42,8 @@ public class QuizGameGUI extends JFrame {
 
     private boolean timeUp = false;
 
+    private Set<Integer> timedOutQuestions;
+
     public QuizGameGUI() {
         // Create the startup frame
         createStartupFrame();
@@ -56,6 +60,8 @@ public class QuizGameGUI extends JFrame {
 
         // Show the startup frame
         startupFrame.setVisible(true);
+
+        timedOutQuestions = new HashSet<>();
 
         questionTimer = new Timer(1000, new ActionListener() {
             @Override
@@ -302,22 +308,22 @@ public class QuizGameGUI extends JFrame {
         // Reset timer and start for the new question
         timerSeconds = 15;
         questionTimer.restart();
-    
+
         // Reset timeUp
         timeUp = false;
-    
+
         Question currentQuestion = selectedQuestions.get(index);
         questionLabel.setText(currentQuestion.getQuestion());
-    
+
         String[] answerChoices = currentQuestion.getAnswerChoices();
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
             options[i].setEnabled(true);
             options[i].setSelected(false);
         }
-    
-        // Enable or disable the back button based on timeUp
-        backButton.setEnabled(!timeUp);
+
+        // Enable or disable the back button based on timeUp and whether the question has timed out
+        backButton.setEnabled(!timeUp && !timedOutQuestions.contains(index));
     }
     
 
@@ -444,16 +450,20 @@ public class QuizGameGUI extends JFrame {
     private void handleTimeout() {
         // If the timer runs out, treat it as if the user didn't answer
         JOptionPane.showMessageDialog(this, "Time's up! Moving to the next question.", "Timeout", JOptionPane.INFORMATION_MESSAGE);
+
+        // Mark the current question as timed out
+        timedOutQuestions.add(currentQuestionIndex);
+
         currentQuestionIndex++;
         if (currentQuestionIndex < selectedQuestions.size()) {
             loadQuestion(currentQuestionIndex);
         } else {
             showResult();
         }
-    
+
         // Set timeUp to true
         timeUp = true;
-    
+
         // Disable the back button
         backButton.setEnabled(false);
     }
