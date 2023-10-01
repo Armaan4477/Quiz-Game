@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.TimerTask;
-import javax.swing.Timer;
-
 
 public class QuizGameGUI extends JFrame {
 
@@ -20,6 +17,8 @@ public class QuizGameGUI extends JFrame {
     private JButton nextButton;
     private JButton backButton;
     private JButton pauseButton;
+    private JButton fiftyFiftyButton;
+    private JButton askFriendButton;
     private boolean paused = false;
     private int currentQuestionIndex = 0;
     private int score = 0;
@@ -36,9 +35,8 @@ public class QuizGameGUI extends JFrame {
     private JPopupMenu pauseMenu;
 
     private Timer questionTimer;
-    private TimerTask timerTask;
-    private int timerSeconds = 2; // Set the timer duration in seconds
 
+    private int timerSeconds = 15; // Set the timer duration in seconds
 
     public QuizGameGUI() {
         // Create the startup frame
@@ -67,7 +65,6 @@ public class QuizGameGUI extends JFrame {
                 }
             }
         });
-        
     }
 
     private void createStartupFrame() {
@@ -97,19 +94,18 @@ public class QuizGameGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // Get the selected number of questions
                 int selectedQuestionCount = (int) questionCountComboBox.getSelectedItem();
-        
+
                 // Select random questions based on the user's choice
                 selectRandomQuestions(selectedQuestionCount);
-        
+
                 // Load the first question
                 loadQuestion(currentQuestionIndex);
-        
+
                 // Hide the startup frame and show the quiz frame
                 startupFrame.setVisible(false);
                 setVisible(true);
             }
         });
-        
     }
 
     private void setUpQuizFrame() {
@@ -150,6 +146,13 @@ public class QuizGameGUI extends JFrame {
         pauseButton = new JButton("Pause");
         buttonPanel.add(pauseButton);
 
+        // Add lifeline buttons
+        fiftyFiftyButton = new JButton("50-50");
+        buttonPanel.add(fiftyFiftyButton);
+
+        askFriendButton = new JButton("Ask a Friend");
+        buttonPanel.add(askFriendButton);
+
         panel.add(buttonPanel, BorderLayout.SOUTH); // Add the button panel to the main panel
 
         add(panel);
@@ -176,13 +179,28 @@ public class QuizGameGUI extends JFrame {
                 }
             }
         });
-        
 
         // Add action listener for the pause button
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 showPauseMenu();
+            }
+        });
+
+        // Add action listener for the 50-50 lifeline button
+        fiftyFiftyButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                useFiftyFiftyLifeline();
+            }
+        });
+
+        // Add action listener for the Ask a Friend lifeline button
+        askFriendButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                useAskFriendLifeline();
             }
         });
 
@@ -264,6 +282,7 @@ public class QuizGameGUI extends JFrame {
         allQuestions.add(new Question("What is the term for the process of converting an object into a stream of bytes for storage or transmission?", "Serialization", "Deserialization", "Encoding", "Decoding", "Serialization"));
         allQuestions.add(new Question("In Java, which keyword is used to create an interface?", "interface", "create", "new", "implements", "interface"));
   
+    
     }
 
     private void selectRandomQuestions(int count) {
@@ -280,194 +299,144 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void loadQuestion(int index) {
-        // Reset timer and start it for the new question
-        timerSeconds = 15; // Reset the timer duration for each question
-        questionTimer.stop(); // Stop the timer before starting it again
-        questionTimer.start(); // Start the timer
+        // Reset timer and start for the new question
+        timerSeconds = 15;
+        questionTimer.restart();
+
         Question currentQuestion = selectedQuestions.get(index);
         questionLabel.setText(currentQuestion.getQuestion());
+
         String[] answerChoices = currentQuestion.getAnswerChoices();
-        optionGroup.clearSelection(); // Clear the selection for the entire button group
-    
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
-        }
-    
-        // Set the previously selected answer if it exists
-        if (userAnswers[index] != null) {
-            for (int i = 0; i < 4; i++) {
-                if (options[i].getText().equals(userAnswers[index])) {
-                    options[i].setSelected(true);
-                    break;
-                }
-            }
+            options[i].setEnabled(true);
+            options[i].setSelected(false);
         }
     }
-    
-    
 
     private void checkAnswer() {
-        // Stop the timer when the user selects an answer
-        questionTimer.stop();
-        Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
-        String selectedAnswer = null;
         for (int i = 0; i < 4; i++) {
             if (options[i].isSelected()) {
-                selectedAnswer = options[i].getText();
-                userAnswers[currentQuestionIndex] = selectedAnswer; // Store the user's answer
+                userAnswers[currentQuestionIndex] = options[i].getText();
+                if (userAnswers[currentQuestionIndex].equals(selectedQuestions.get(currentQuestionIndex).getCorrectAnswer())) {
+                    score++;
+                }
                 break;
             }
-        }
-        if (selectedAnswer != null && selectedAnswer.equals(currentQuestion.getCorrectAnswer())) {
-            score++;
         }
     }
 
     private void showResult() {
-        // Display the summary screen
-        StringBuilder summary = new StringBuilder();
-        summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
-    
-        // Iterate through selected questions and display information
+        // Stop the timer
+        questionTimer.stop();
+
+        // Display the result
+        StringBuilder result = new StringBuilder("Quiz Completed!\n\n");
+        result.append("Your Score: ").append(score).append("/").append(selectedQuestions.size()).append("\n\n");
         for (int i = 0; i < selectedQuestions.size(); i++) {
-                Question question = selectedQuestions.get(i);
-                summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
-                summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
-                summary.append("Your Answer: ").append(userAnswers[i]).append("\n"); // Use stored user's answer
-                boolean answeredCorrectly = false;
-    
-            // Indicate if the user answered correctly or not
-            if (answeredCorrectly) {
-                summary.append("Result: Correct\n\n");
-            } else {
-                summary.append("Result: Incorrect\n\n");
-            }
+            result.append("Q").append(i + 1).append(": ").append(selectedQuestions.get(i).getQuestion()).append("\n");
+            result.append("Your Answer: ").append(userAnswers[i]).append("\n");
+            result.append("Correct Answer: ").append(selectedQuestions.get(i).getCorrectAnswer()).append("\n\n");
         }
-    
-        // Set the summary text to the JTextArea
-        summaryTextArea.setText(summary.toString());
-    
-        // Remove the Next button and adjust the window size
-        nextButton.setVisible(false);
-        backButton.setVisible(false);  // Hide the "Back" button as well
-    
-        // Add an "Exit" button
-        JButton exitButton = new JButton("Exit");
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0); // Exit the entire program
-            }
-        });
-    
-        // Create a new panel for the summary and exit button
-        JPanel summaryPanel = new JPanel();
-        summaryPanel.setLayout(new BorderLayout());
-        summaryPanel.add(new JScrollPane(summaryTextArea), BorderLayout.CENTER);
-    
-        // Create a new panel for the exit button
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(exitButton);
-    
-        // Add the panels to the summary frame
-        JFrame summaryFrame = new JFrame("Quiz Summary");
-        summaryFrame.setSize(800, 600);
-        summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        summaryFrame.setLayout(new BorderLayout());
-        summaryFrame.add(summaryPanel, BorderLayout.CENTER);
-        summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
-        summaryFrame.setVisible(true);
+
+        summaryTextArea.setText(result.toString());
+        JOptionPane.showMessageDialog(this, new JScrollPane(summaryTextArea), "Quiz Result", JOptionPane.INFORMATION_MESSAGE);
+        System.exit(0);
     }
 
     private void showPauseMenu() {
-        if (!paused) {
-            paused = true;
-            createPauseMenu();
-            pauseMenu.show(pauseButton, 0, pauseButton.getHeight());
-            nextButton.setEnabled(false);
-            backButton.setEnabled(false);
-        } else {
+        // If the game is paused, resume it
+        if (paused) {
             paused = false;
+            questionTimer.start();
             pauseMenu.setVisible(false);
-            nextButton.setEnabled(true);
-            backButton.setEnabled(true);
+        } else {
+            // If the game is running, pause it
+            paused = true;
+
+            // Pause the timer
+            questionTimer.stop();
+
+            // Show the pause menu
+            int x = getLocation().x + getWidth() / 2 - 75;
+            int y = getLocation().y + getHeight() / 2 - 50;
+            pauseMenu.show(this, x, y);
         }
     }
 
-    private void createPauseMenu() {
-        if (pauseMenu == null) {
-            pauseMenu = new JPopupMenu();
-    
-            JMenuItem resumeItem = new JMenuItem("Resume");
-            resumeItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    paused = false;
-                    pauseMenu.setVisible(false);
-                    nextButton.setEnabled(true);
-                    backButton.setEnabled(true);
+    private void useFiftyFiftyLifeline() {
+        // Implement logic to remove two wrong options
+        Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
+        String[] answerChoices = currentQuestion.getAnswerChoices();
+        int correctIndex = findCorrectAnswerIndex(answerChoices);
+
+        // Generate two random indices for wrong answers
+        int wrongIndex1 = generateRandomWrongIndex(answerChoices.length, correctIndex);
+        int wrongIndex2 = generateRandomWrongIndex(answerChoices.length, correctIndex, wrongIndex1);
+
+        // Disable the two wrong options
+        options[wrongIndex1].setEnabled(false);
+        options[wrongIndex2].setEnabled(false);
+
+        // Disable the 50-50 lifeline button after using it
+        fiftyFiftyButton.setEnabled(false);
+    }
+
+    private void useAskFriendLifeline() {
+        // Implement logic for Ask a Friend lifeline
+        Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
+
+        // Generate a random number to simulate friend's response
+        int responsePercentage = new Random().nextInt(101);
+
+        // Friend has an 80% chance of giving the correct answer
+        if (responsePercentage <= 80) {
+            // Select the correct answer
+            String correctAnswer = currentQuestion.getCorrectAnswer();
+            for (int i = 0; i < options.length; i++) {
+                if (options[i].getText().equals(correctAnswer)) {
+                    options[i].setSelected(true);
+                    break;
                 }
-            });
-    
-            JMenuItem newGameItem = new JMenuItem("New Game");
-            newGameItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    paused = false;
-                    pauseMenu.setVisible(false);
-                    nextButton.setEnabled(true);
-                    backButton.setEnabled(true);
-                    restartGame();
-                }
-            });
-    
-            JMenuItem creditsItem = new JMenuItem("Credits");
-            creditsItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    showCredits();
-                }
-            });
-    
-            JMenuItem exitItem = new JMenuItem("Exit");
-            exitItem.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.exit(0); // Exit the entire program
-                }
-            });
-    
-            pauseMenu.add(resumeItem);
-            pauseMenu.add(newGameItem);
-            pauseMenu.add(creditsItem);
-            pauseMenu.add(exitItem); // Add the "Exit" option
+            }
+        } else {
+            // Friend gives a random wrong answer
+            int correctIndex = findCorrectAnswerIndex(currentQuestion.getAnswerChoices());
+            int wrongIndex = generateRandomWrongIndex(currentQuestion.getAnswerChoices().length, correctIndex);
+            options[wrongIndex].setSelected(true);
         }
-    }
-    
 
-    private void restartGame() {
-        // Reset the game state (e.g., score, currentQuestionIndex)
-        score = 0;
-        currentQuestionIndex = 0;
-    
-        // Show the startup frame to allow the user to choose new options
-        startupFrame.setVisible(true);
-    
-        // Hide the current quiz frame
-        setVisible(false);
+        // Disable the Ask a Friend lifeline button after using it
+        askFriendButton.setEnabled(false);
     }
-    
 
-    // Add a new method to show credits
-    private void showCredits() {
-        // Add logic to show credits (e.g., display a JOptionPane)
-        JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n \n");
+    private int findCorrectAnswerIndex(String[] answerChoices) {
+        for (int i = 0; i < answerChoices.length; i++) {
+            if (answerChoices[i].equals(selectedQuestions.get(currentQuestionIndex).getCorrectAnswer())) {
+                return i;
+            }
+        }
+        return -1; // Not found (shouldn't happen in a well-formed question)
+    }
+
+    private int generateRandomWrongIndex(int totalOptions, int... excludeIndices) {
+        List<Integer> availableIndices = new ArrayList<>();
+        for (int i = 0; i < totalOptions; i++) {
+            availableIndices.add(i);
+        }
+
+        // Remove excluded indices
+        for (int excludeIndex : excludeIndices) {
+            availableIndices.remove(Integer.valueOf(excludeIndex));
+        }
+
+        // Randomly select an index from the remaining options
+        return availableIndices.get(new Random().nextInt(availableIndices.size()));
     }
 
     private void handleTimeout() {
-        // Handle timeout (e.g., mark the question as unanswered)
-        userAnswers[currentQuestionIndex] = "TIMEOUT";
-        // Move to the next question or show the result
+        // If the timer runs out, treat it as if the user didn't answer
+        JOptionPane.showMessageDialog(this, "Time's up! Moving to the next question.", "Timeout", JOptionPane.INFORMATION_MESSAGE);
         currentQuestionIndex++;
         if (currentQuestionIndex < selectedQuestions.size()) {
             loadQuestion(currentQuestionIndex);
@@ -475,7 +444,6 @@ public class QuizGameGUI extends JFrame {
             showResult();
         }
     }
-    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -486,6 +454,7 @@ public class QuizGameGUI extends JFrame {
         });
     }
 }
+
 
 class Question {
     private String question;
