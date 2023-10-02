@@ -475,18 +475,22 @@ public class QuizGameGUI extends JFrame {
         Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
         String[] answerChoices = currentQuestion.getAnswerChoices();
         int correctIndex = findCorrectAnswerIndex(answerChoices);
-
+    
         // Generate two random indices for wrong answers
         int wrongIndex1 = generateRandomWrongIndex(answerChoices.length, correctIndex);
         int wrongIndex2 = generateRandomWrongIndex(answerChoices.length, correctIndex, wrongIndex1);
-
+    
         // Disable the two wrong options
-        options[wrongIndex1].setEnabled(false);
-        options[wrongIndex2].setEnabled(false);
-
+        for (int i = 0; i < 4; i++) {
+            if (i != correctIndex && i != wrongIndex1 && i != wrongIndex2) {
+                options[i].setEnabled(false);
+            }
+        }
+    
         // Disable the 50-50 lifeline button after using it
         fiftyFiftyButton.setEnabled(false);
     }
+    
 
     private void useAskFriendLifeline() {
         // Implement logic for Ask a Friend lifeline
