@@ -243,7 +243,6 @@ public class QuizGameGUI extends JFrame {
 
     }
 
-
     private void initializeQuestions() {
         allQuestions = new ArrayList<>();
 
@@ -335,9 +334,6 @@ public class QuizGameGUI extends JFrame {
             options[i].setSelected(false);
         }
     
-        // Enable or disable the back button based on timeUp and whether the question has timed out
-        //backButton.setEnabled(!timeUp && !timedOutQuestions.contains(index) && currentQuestionIndex > 0);
-    
         if (userAnswers[index] != null) {
             for (int i = 0; i < 4; i++) {
                 if (options[i].getText().equals(userAnswers[index])) {
@@ -348,8 +344,6 @@ public class QuizGameGUI extends JFrame {
         }
     }
     
-    
-
     private void checkAnswer() {
         for (int i = 0; i < 4; i++) {
             if (options[i].isSelected()) {
@@ -515,8 +509,6 @@ public class QuizGameGUI extends JFrame {
         JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n Nishal Poojary B-17 \n \n");
     }
 
-    
-
     private void useFiftyFiftyLifeline() {
         // Implement logic to remove two wrong options
         Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
@@ -618,18 +610,12 @@ public class QuizGameGUI extends JFrame {
         // If the user clicks Cancel, do nothing (stay on the current question)
     }
     
-    
-    
     // Add a new method to disable radio buttons for the timed out question
     private void disableRadioButtonsForTimedOutQuestion(int questionIndex) {
-        // Disable radio buttons only for the timed out question
         for (int i = 0; i < options.length; i++) {
             options[i].setEnabled(false);
         }
     }
-    
-
-    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
