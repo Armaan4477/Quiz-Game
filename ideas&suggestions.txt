@@ -1,20 +1,16 @@
 1) make the Front end more visually appealing:
   a) more UI designs.
-  b) make the window sizes more accurate to fit everything in the frame properly.
-  c) overlap main quiz window when the final results are shown to make it look neater.
-  d) Add icons in GUI.
+  b) Add icons in GUI.
 
 2) Add a database to store the questions and answers:  
   a) Integrate sql and remove array system to make the project more complex and backend more appealing.
   b) Add more questions after implmentation of sql.
 
-3) Add a Timer in the game for each question.
+3) Add a Timer in the game for each question.(half done)
+  a) Add a timer for each question.(done)
+  b) Add a total time for the game.
 
-4) Add 2 lifelines in the game:
-  a) 50-50
-  b) Ask the audience
+4) A website consisting of a leaderboard to show the the timing and total time of each player.(if possible)
 
-5) A website consisting of a leaderboard to show the the timing and total time of each player.
-
-6) Add more options in the game:
+5) Add more options in the game:
 a) (Think of ideas)
