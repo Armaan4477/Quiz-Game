@@ -19,31 +19,23 @@ public class QuizGameGUI extends JFrame {
     private JButton nextButton;
     private JButton backButton;
     private JButton pauseButton;
-
     private JButton fiftyFiftyButton;
     private JButton askFriendButton;
     private boolean paused = false;
     private int currentQuestionIndex = 0;
     private int score = 0;
-
     private JTextArea summaryTextArea;
-
     private List<Question> allQuestions;
     private List<Question> selectedQuestions;
     private String[] userAnswers;
-
     private JFrame startupFrame;
     private JComboBox<Integer> questionCountComboBox;
-
     private JPopupMenu pauseMenu;
-
     private Timer questionTimer;
-
     private int timerSeconds = 15; // Set the timer duration in seconds
-
     private boolean timeUp = false;
-
     private Set<Integer> timedOutQuestions;
+
 
     public QuizGameGUI() {
         // Create the startup frame
@@ -119,7 +111,7 @@ public class QuizGameGUI extends JFrame {
 
     private void setUpQuizFrame() {
         setTitle("Quiz Game");
-        setSize(400, 300);
+        setSize(1100, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -156,7 +148,7 @@ public class QuizGameGUI extends JFrame {
         fiftyFiftyButton = new JButton("50-50");
         buttonPanel.add(fiftyFiftyButton);
 
-        askFriendButton = new JButton("Ask a Friend");
+        askFriendButton = new JButton("Ask the Computer");
         buttonPanel.add(askFriendButton);
 
         panel.add(buttonPanel, BorderLayout.SOUTH);
@@ -224,7 +216,7 @@ public class QuizGameGUI extends JFrame {
             }
         });
 
-        
+
     }
 
 
