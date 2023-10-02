@@ -19,6 +19,7 @@ public class QuizGameGUI extends JFrame {
     private JButton nextButton;
     private JButton backButton;
     private JButton pauseButton;
+
     private JButton fiftyFiftyButton;
     private JButton askFriendButton;
     private boolean paused = false;
@@ -117,7 +118,6 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void setUpQuizFrame() {
-        // Set up the main quiz frame
         setTitle("Quiz Game");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -141,27 +141,25 @@ public class QuizGameGUI extends JFrame {
         }
         panel.add(optionsPanel, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(); // Create a new panel for the buttons
-        buttonPanel.setLayout(new FlowLayout()); // Use FlowLayout for button arrangement
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout());
 
         backButton = new JButton("Back");
-        buttonPanel.add(backButton); // Add the "Back" button to the button panel
+        buttonPanel.add(backButton);
 
         nextButton = new JButton("Next");
-        buttonPanel.add(nextButton); // Add the "Next" button to the button panel
+        buttonPanel.add(nextButton);
 
-        // Add a pause button
         pauseButton = new JButton("Pause");
         buttonPanel.add(pauseButton);
 
-        // Add lifeline buttons
         fiftyFiftyButton = new JButton("50-50");
         buttonPanel.add(fiftyFiftyButton);
 
         askFriendButton = new JButton("Ask a Friend");
         buttonPanel.add(askFriendButton);
 
-        panel.add(buttonPanel, BorderLayout.SOUTH); // Add the button panel to the main panel
+        panel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(panel);
 
@@ -188,7 +186,6 @@ public class QuizGameGUI extends JFrame {
             }
         });
 
-        // Add action listener for the pause button
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -196,7 +193,6 @@ public class QuizGameGUI extends JFrame {
             }
         });
 
-        // Add action listener for the 50-50 lifeline button
         fiftyFiftyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -204,7 +200,6 @@ public class QuizGameGUI extends JFrame {
             }
         });
 
-        // Add action listener for the Ask a Friend lifeline button
         askFriendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -212,7 +207,6 @@ public class QuizGameGUI extends JFrame {
             }
         });
 
-        // Add a key listener for pausing with the spacebar
         addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) {
@@ -229,7 +223,10 @@ public class QuizGameGUI extends JFrame {
             public void keyReleased(KeyEvent e) {
             }
         });
+
+        
     }
+
 
     private void initializeQuestions() {
         allQuestions = new ArrayList<>();
@@ -358,24 +355,89 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void showPauseMenu() {
-        // If the game is paused, resume it
-        if (paused) {
-            paused = false;
-            questionTimer.start();
-            pauseMenu.setVisible(false);
-        } else {
-            // If the game is running, pause it
+        if (!paused) {
             paused = true;
-
-            // Pause the timer
-            questionTimer.stop();
-
-            // Show the pause menu
-            int x = getLocation().x + getWidth() / 2 - 75;
-            int y = getLocation().y + getHeight() / 2 - 50;
-            pauseMenu.show(this, x, y);
+            createPauseMenu();
+            pauseMenu.show(pauseButton, 0, pauseButton.getHeight());
+            nextButton.setEnabled(false);
+            backButton.setEnabled(false);
+        } else {
+            paused = false;
+            pauseMenu.setVisible(false);
+            nextButton.setEnabled(true);
+            backButton.setEnabled(true);
         }
     }
+
+    private void createPauseMenu() {
+        if (pauseMenu == null) {
+            pauseMenu = new JPopupMenu();
+
+            JMenuItem resumeItem = new JMenuItem("Resume");
+            resumeItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    paused = false;
+                    pauseMenu.setVisible(false);
+                    nextButton.setEnabled(true);
+                    backButton.setEnabled(true);
+                }
+            });
+
+            JMenuItem newGameItem = new JMenuItem("New Game");
+            newGameItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    paused = false;
+                    pauseMenu.setVisible(false);
+                    nextButton.setEnabled(true);
+                    backButton.setEnabled(true);
+                    restartGame();
+                }
+            });
+
+            JMenuItem creditsItem = new JMenuItem("Credits");
+            creditsItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    showCredits();
+                }
+            });
+
+            JMenuItem exitItem = new JMenuItem("Exit");
+            exitItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+
+            pauseMenu.add(resumeItem);
+            pauseMenu.add(newGameItem);
+            pauseMenu.add(creditsItem);
+            pauseMenu.add(exitItem);
+        }
+    }
+    private void restartGame() {
+        // Reset the game state (e.g., score, currentQuestionIndex)
+        score = 0;
+        currentQuestionIndex = 0;
+    
+        // Show the startup frame to allow the user to choose new options
+        startupFrame.setVisible(true);
+    
+        // Hide the current quiz frame
+        setVisible(false);
+    }
+    
+
+    // Add a new method to show credits
+    private void showCredits() {
+        // Add logic to show credits (e.g., display a JOptionPane)
+        JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n \n");
+    }
+
+    
 
     private void useFiftyFiftyLifeline() {
         // Implement logic to remove two wrong options
