@@ -492,6 +492,10 @@ public class QuizGameGUI extends JFrame {
         }
     }
     private void restartGame() {
+
+        questionTimer.stop();
+        questionTimer.restart();
+
         // Reset the game state (e.g., score, currentQuestionIndex)
         score = 0;
         currentQuestionIndex = 0;
@@ -522,24 +526,48 @@ public class QuizGameGUI extends JFrame {
         String[] answerChoices = currentQuestion.getAnswerChoices();
         int correctIndex = findCorrectAnswerIndex(answerChoices);
     
-        // Generate two random indices for wrong answers
-        int wrongIndex1, wrongIndex2;
+        // Generate two distinct random indices for wrong answers
+        List<Integer> wrongIndices = generateRandomWrongIndices(answerChoices.length, correctIndex);
     
-        do {
-            wrongIndex1 = generateRandomWrongIndex(answerChoices.length, correctIndex);
-            wrongIndex2 = generateRandomWrongIndex(answerChoices.length, correctIndex);
-        } while (wrongIndex1 == wrongIndex2);
+        System.out.println("Correct Index: " + correctIndex);
+        System.out.println("Generated Wrong Indices: " + wrongIndices);
     
         // Disable the two wrong options
         for (int i = 0; i < 4; i++) {
-            if (i != correctIndex && i != wrongIndex1 && i != wrongIndex2) {
+            if (!wrongIndices.contains(i) && i != correctIndex) {
                 options[i].setEnabled(false);
             }
         }
     
         // Disable the 50-50 lifeline button after using it
-          fiftyFiftyButton.setEnabled(false);
+        fiftyFiftyButton.setEnabled(false);
     }
+    
+    
+    private List<Integer> generateRandomWrongIndices(int totalOptions, int correctIndex) {
+        List<Integer> allIndices = new ArrayList<>();
+        for (int i = 0; i < totalOptions; i++) {
+            allIndices.add(i);
+        }
+    
+        // Remove correct index
+        allIndices.remove(Integer.valueOf(correctIndex));
+    
+        // Shuffle and pick two distinct wrong indices
+        Collections.shuffle(allIndices);
+    
+        List<Integer> distinctWrongIndices = new ArrayList<>();
+        distinctWrongIndices.add(allIndices.get(0));
+        
+        // Make sure the second index is different from the first
+        do {
+            distinctWrongIndices.add(allIndices.get(1));
+        } while (distinctWrongIndices.get(0).equals(distinctWrongIndices.get(1)));
+    
+        return distinctWrongIndices;
+    }
+    
+    
     
 
     private void useAskFriendLifeline() {
