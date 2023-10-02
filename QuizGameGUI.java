@@ -592,28 +592,33 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void handleTimeout() {
-        // If the timer runs out, treat it as if the user didn't answer
-        JOptionPane.showMessageDialog(this, "Time's up! Moving to the next question.", "Timeout", JOptionPane.INFORMATION_MESSAGE);
+        // If the timer runs out, show a message to the user
+        int choice = JOptionPane.showOptionDialog(
+                this,
+                "Time's up! Click OK to move to the next question.",
+                "Timeout",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                null,
+                null);
     
-        // Mark the current question as timed out
-        timedOutQuestions.add(currentQuestionIndex);
+                // Update and disable radio buttons (whether the user clicks OK or Cancel)
+                disableRadioButtonsForTimedOutQuestion(currentQuestionIndex);
     
-        // Disable radio buttons for the timed out question
-        disableRadioButtonsForTimedOutQuestion(currentQuestionIndex);
-    
-        currentQuestionIndex++;
-        if (currentQuestionIndex < selectedQuestions.size()) {
-            loadQuestion(currentQuestionIndex);
-        } else {
-            showResult();
+        // If the user clicks OK, move to the next question
+        if (choice == JOptionPane.OK_OPTION) {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < selectedQuestions.size()) {
+                loadQuestion(currentQuestionIndex);
+            } else {
+                showResult();
+            }
         }
-    
-        // Set timeUp to true
-        timeUp = true;
-    
-        // Disable the back button
-        // backButton.setEnabled(false);
+        // If the user clicks Cancel, do nothing (stay on the current question)
     }
+    
+    
     
     // Add a new method to disable radio buttons for the timed out question
     private void disableRadioButtonsForTimedOutQuestion(int questionIndex) {
