@@ -351,17 +351,21 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void showResult() {
+         questionTimer.stop();
+       
         // Display the summary screen
         StringBuilder summary = new StringBuilder();
         summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
     
         // Iterate through selected questions and display information
         for (int i = 0; i < selectedQuestions.size(); i++) {
-                Question question = selectedQuestions.get(i);
-                summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
-                summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
-                summary.append("Your Answer: ").append(userAnswers[i]).append("\n"); // Use stored user's answer
-                boolean answeredCorrectly = false;
+            Question question = selectedQuestions.get(i);
+            summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
+            summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
+            summary.append("Your Answer: ").append(userAnswers[i]).append("\n");
+    
+            // Check if the user's answer is correct
+            boolean answeredCorrectly = userAnswers[i] != null && userAnswers[i].equals(question.getCorrectAnswer());
     
             // Indicate if the user answered correctly or not
             if (answeredCorrectly) {
@@ -405,6 +409,7 @@ public class QuizGameGUI extends JFrame {
         summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
         summaryFrame.setVisible(true);
     }
+    
 
     private void showPauseMenu() {
         if (!paused) {
