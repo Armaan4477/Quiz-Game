@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -32,10 +33,11 @@ public class QuizGameGUI extends JFrame {
     private JComboBox<Integer> questionCountComboBox;
     private JPopupMenu pauseMenu;
     private Timer questionTimer;
-    private int timerSeconds = 20; // Set the timer duration in seconds
+    private int timerSeconds = 5; // Set the timer duration in seconds
     private boolean timeUp = false;
     private Set<Integer> timedOutQuestions;
     private StringBuilder summary;
+    private int[] timeRemaining;
 
 
     public QuizGameGUI() {
@@ -57,16 +59,20 @@ public class QuizGameGUI extends JFrame {
 
         timedOutQuestions = new HashSet<>();
 
+        timeRemaining = new int[allQuestions.size()];
+         Arrays.fill(timeRemaining, timerSeconds);
+
         questionTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                timerSeconds--;
-                if (timerSeconds <= 0) {
+                // Decrement the time remaining for the current question
+                timeRemaining[currentQuestionIndex]--;
+                if (timeRemaining[currentQuestionIndex] <= 0) {
                     questionTimer.stop();
                     handleTimeout();
                 }
             }
-        });
+        });      
     }
 
     private void createStartupFrame() {
@@ -175,12 +181,26 @@ public class QuizGameGUI extends JFrame {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (currentQuestionIndex > 0 && timerSeconds > 0) {
+                // If the timer has expired, mark the current question as timed out
+                if (timerSeconds <= 0 && !timedOutQuestions.contains(currentQuestionIndex)) {
+                    timedOutQuestions.add(currentQuestionIndex);
+                }
+        
+                if (currentQuestionIndex > 0) {
                     currentQuestionIndex--;
                     loadQuestion(currentQuestionIndex);
                 }
+        
+                // Enable the back button for all questions before the current one
+                for (int i = 0; i < currentQuestionIndex; i++) {
+                    if (!timedOutQuestions.contains(i)) {
+                        backButton.setEnabled(true);
+                        break;
+                    }
+                }
             }
         });
+        
 
         pauseButton.addActionListener(new ActionListener() {
             @Override
@@ -299,25 +319,25 @@ public class QuizGameGUI extends JFrame {
 
     private void loadQuestion(int index) {
         // Reset timer and start for the new question
-        timerSeconds = 20;
+        timerSeconds = timeRemaining[index]; // Set timer to the time remaining for the question
         questionTimer.restart();
-
+    
         // Reset timeUp
         timeUp = false;
-
+    
         Question currentQuestion = selectedQuestions.get(index);
         questionLabel.setText(currentQuestion.getQuestion());
-
+    
         String[] answerChoices = currentQuestion.getAnswerChoices();
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
-            options[i].setEnabled(true);
+            options[i].setEnabled(timeRemaining[index] > 0); // Enable or disable based on time remaining
             options[i].setSelected(false);
         }
-
+    
         // Enable or disable the back button based on timeUp and whether the question has timed out
-       // backButton.setEnabled(!timeUp && !timedOutQuestions.contains(index));
-
+        //backButton.setEnabled(!timeUp && !timedOutQuestions.contains(index) && currentQuestionIndex > 0);
+    
         if (userAnswers[index] != null) {
             for (int i = 0; i < 4; i++) {
                 if (options[i].getText().equals(userAnswers[index])) {
@@ -327,6 +347,7 @@ public class QuizGameGUI extends JFrame {
             }
         }
     }
+    
     
 
     private void checkAnswer() {
@@ -573,23 +594,37 @@ public class QuizGameGUI extends JFrame {
     private void handleTimeout() {
         // If the timer runs out, treat it as if the user didn't answer
         JOptionPane.showMessageDialog(this, "Time's up! Moving to the next question.", "Timeout", JOptionPane.INFORMATION_MESSAGE);
-
+    
         // Mark the current question as timed out
         timedOutQuestions.add(currentQuestionIndex);
-
+    
+        // Disable radio buttons for the timed out question
+        disableRadioButtonsForTimedOutQuestion(currentQuestionIndex);
+    
         currentQuestionIndex++;
         if (currentQuestionIndex < selectedQuestions.size()) {
             loadQuestion(currentQuestionIndex);
         } else {
             showResult();
         }
-
+    
         // Set timeUp to true
         timeUp = true;
-
+    
         // Disable the back button
-       // backButton.setEnabled(false);
+        // backButton.setEnabled(false);
     }
+    
+    // Add a new method to disable radio buttons for the timed out question
+    private void disableRadioButtonsForTimedOutQuestion(int questionIndex) {
+        // Disable radio buttons only for the timed out question
+        for (int i = 0; i < options.length; i++) {
+            options[i].setEnabled(false);
+        }
+    }
+    
+
+    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
