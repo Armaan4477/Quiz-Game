@@ -316,7 +316,7 @@ public class QuizGameGUI extends JFrame {
         }
 
         // Enable or disable the back button based on timeUp and whether the question has timed out
-        backButton.setEnabled(!timeUp && !timedOutQuestions.contains(index));
+       // backButton.setEnabled(!timeUp && !timedOutQuestions.contains(index));
 
         if (userAnswers[index] != null) {
             for (int i = 0; i < 4; i++) {
@@ -588,7 +588,7 @@ public class QuizGameGUI extends JFrame {
         timeUp = true;
 
         // Disable the back button
-        backButton.setEnabled(false);
+       // backButton.setEnabled(false);
     }
 
     public static void main(String[] args) {
