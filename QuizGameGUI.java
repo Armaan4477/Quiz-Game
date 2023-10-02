@@ -425,8 +425,8 @@ public class QuizGameGUI extends JFrame {
 
     // Add a new method to show credits
     private void showCredits() {
-        // Add logic to show credits (e.g., display a JOptionPane)
-        JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n \n");
+        // Add logic to show credits 
+        JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n Nishal Poojary B-17 \n \n");
     }
 
     
