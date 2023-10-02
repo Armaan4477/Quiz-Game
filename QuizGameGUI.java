@@ -351,30 +351,18 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void showResult() {
-        // Stop the timer
-        questionTimer.stop();
-
-        // Display the result
-        StringBuilder result = new StringBuilder("Quiz Completed!\n\n");
-        result.append("Your Score: ").append(score).append("/").append(selectedQuestions.size()).append("\n\n");
+        // Display the summary screen
+        StringBuilder summary = new StringBuilder();
+        summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
+    
+        // Iterate through selected questions and display information
         for (int i = 0; i < selectedQuestions.size(); i++) {
-            result.append("Q").append(i + 1).append(": ").append(selectedQuestions.get(i).getQuestion()).append("\n");
-            result.append("Your Answer: ").append(userAnswers[i]).append("\n");
-            result.append("Correct Answer: ").append(selectedQuestions.get(i).getCorrectAnswer()).append("\n\n");
-        }
-
-        summaryTextArea.setText(result.toString());
-        JOptionPane.showMessageDialog(this, new JScrollPane(summaryTextArea), "Quiz Result", JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0);
-
-         // Iterate through selected questions and display information
-         for (int i = 0; i < selectedQuestions.size(); i++) {
-            Question question = selectedQuestions.get(i);
-            summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
-            summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
-            summary.append("Your Answer: ").append(userAnswers[i]).append("\n"); // Use stored user's answer
-            boolean answeredCorrectly = userAnswers[i] != null && userAnswers[i].equals(question.getCorrectAnswer());
-
+                Question question = selectedQuestions.get(i);
+                summary.append("Question ").append(i + 1).append(": ").append(question.getQuestion()).append("\n");
+                summary.append("Correct Answer: ").append(question.getCorrectAnswer()).append("\n");
+                summary.append("Your Answer: ").append(userAnswers[i]).append("\n"); // Use stored user's answer
+                boolean answeredCorrectly = false;
+    
             // Indicate if the user answered correctly or not
             if (answeredCorrectly) {
                 summary.append("Result: Correct\n\n");
@@ -382,7 +370,40 @@ public class QuizGameGUI extends JFrame {
                 summary.append("Result: Incorrect\n\n");
             }
         }
-
+    
+        // Set the summary text to the JTextArea
+        summaryTextArea.setText(summary.toString());
+    
+        // Remove the Next button and adjust the window size
+        nextButton.setVisible(false);
+        backButton.setVisible(false);  // Hide the "Back" button as well
+    
+        // Add an "Exit" button
+        JButton exitButton = new JButton("Exit");
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0); // Exit the entire program
+            }
+        });
+    
+        // Create a new panel for the summary and exit button
+        JPanel summaryPanel = new JPanel();
+        summaryPanel.setLayout(new BorderLayout());
+        summaryPanel.add(new JScrollPane(summaryTextArea), BorderLayout.CENTER);
+    
+        // Create a new panel for the exit button
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(exitButton);
+    
+        // Add the panels to the summary frame
+        JFrame summaryFrame = new JFrame("Quiz Summary");
+        summaryFrame.setSize(800, 600);
+        summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        summaryFrame.setLayout(new BorderLayout());
+        summaryFrame.add(summaryPanel, BorderLayout.CENTER);
+        summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
+        summaryFrame.setVisible(true);
     }
 
     private void showPauseMenu() {
