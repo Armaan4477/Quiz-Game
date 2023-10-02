@@ -32,7 +32,7 @@ public class QuizGameGUI extends JFrame {
     private JComboBox<Integer> questionCountComboBox;
     private JPopupMenu pauseMenu;
     private Timer questionTimer;
-    private int timerSeconds = 15; // Set the timer duration in seconds
+    private int timerSeconds = 20; // Set the timer duration in seconds
     private boolean timeUp = false;
     private Set<Integer> timedOutQuestions;
     private StringBuilder summary;
@@ -299,7 +299,7 @@ public class QuizGameGUI extends JFrame {
 
     private void loadQuestion(int index) {
         // Reset timer and start for the new question
-        timerSeconds = 15;
+        timerSeconds = 20;
         questionTimer.restart();
 
         // Reset timeUp
