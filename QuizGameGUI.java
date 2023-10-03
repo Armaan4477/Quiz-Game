@@ -433,6 +433,7 @@ public class QuizGameGUI extends JFrame {
     
     private void showPauseMenu() {
         if (!paused) {
+            questionTimer.stop();
             paused = true;
             createPauseMenu();
             pauseMenu.show(pauseButton, 0, pauseButton.getHeight());
@@ -464,6 +465,7 @@ public class QuizGameGUI extends JFrame {
                     backButton.setVisible(true);
                     fiftyFiftyButton.setVisible(true);
                     askFriendButton.setVisible(true);
+                    questionTimer.start();
                 }
             });
 
