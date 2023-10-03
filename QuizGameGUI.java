@@ -366,8 +366,9 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void showResult() {
+
          questionTimer.stop();
-       
+
         // Display the summary screen
         StringBuilder summary = new StringBuilder();
         summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
@@ -427,6 +428,9 @@ public class QuizGameGUI extends JFrame {
         summaryFrame.add(summaryPanel, BorderLayout.CENTER);
         summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
         summaryFrame.setVisible(true);
+
+        // Close the quiz game window
+        dispose();
     }
     
 
