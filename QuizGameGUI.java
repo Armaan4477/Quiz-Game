@@ -397,6 +397,9 @@ public class QuizGameGUI extends JFrame {
         // Remove the Next button and adjust the window size
         nextButton.setVisible(false);
         backButton.setVisible(false);  // Hide the "Back" button as well
+        pauseButton.setVisible(false);
+        fiftyFiftyButton.setVisible(false);
+        askFriendButton.setVisible(false);
     
         // Add an "Exit" button
         JButton exitButton = new JButton("Exit");
@@ -432,13 +435,17 @@ public class QuizGameGUI extends JFrame {
             paused = true;
             createPauseMenu();
             pauseMenu.show(pauseButton, 0, pauseButton.getHeight());
-            nextButton.setEnabled(false);
-            backButton.setEnabled(false);
+            nextButton.setVisible(false);
+            backButton.setVisible(false);
+            fiftyFiftyButton.setVisible(false);
+            askFriendButton.setVisible(false);
+
         } else {
             paused = false;
             pauseMenu.setVisible(false);
             nextButton.setEnabled(true);
             backButton.setEnabled(true);
+            
         }
     }
 
@@ -452,8 +459,10 @@ public class QuizGameGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     paused = false;
                     pauseMenu.setVisible(false);
-                    nextButton.setEnabled(true);
-                    backButton.setEnabled(true);
+                    nextButton.setVisible(true);
+                    backButton.setVisible(true);
+                    fiftyFiftyButton.setVisible(true);
+                    askFriendButton.setVisible(true);
                 }
             });
 
