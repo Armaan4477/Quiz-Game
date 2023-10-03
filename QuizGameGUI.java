@@ -521,51 +521,47 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void useFiftyFiftyLifeline() {
-        // Implement logic to remove two wrong options
         Question currentQuestion = selectedQuestions.get(currentQuestionIndex);
-        String[] answerChoices = currentQuestion.getAnswerChoices();
-        int correctIndex = findCorrectAnswerIndex(answerChoices);
+       String correctAnswer = currentQuestion.getCorrectAnswer();
+
+         // Disable two incorrect options
+            int disabledCount = 0;
+            for (int i = 0; i < options.length; i++) {
+                if (!options[i].getText().equals(correctAnswer)) {
+                    options[i].setEnabled(false);
+                    disabledCount++;
+                    if (disabledCount == 2) {
+                        break;
+                    }
+                }
+            }
     
-        // Generate two distinct random indices for wrong answers
-        List<Integer> wrongIndices = generateRandomWrongIndices(answerChoices.length, correctIndex);
+        // Disable the 50-50 lifeline button after using it
+        //fiftyFiftyButton.setEnabled(false);
+    }
     
-        System.out.println("Correct Index: " + correctIndex);
-        System.out.println("Generated Wrong Indices: " + wrongIndices);
+    private int generateRandomWrongIndex(int totalOptions, int correctIndex) {
+        List<Integer> availableIndices = new ArrayList<>();
     
-        // Disable the two wrong options
-        for (int i = 0; i < 4; i++) {
-            if (!wrongIndices.contains(i) && i != correctIndex) {
-                options[i].setEnabled(false);
+        for (int i = 0; i < totalOptions; i++) {
+            if (i != correctIndex) {
+                availableIndices.add(i);
             }
         }
     
-        // Disable the 50-50 lifeline button after using it
-        fiftyFiftyButton.setEnabled(false);
-    }
-    
-    
-    private List<Integer> generateRandomWrongIndices(int totalOptions, int correctIndex) {
-        List<Integer> allIndices = new ArrayList<>();
-        for (int i = 0; i < totalOptions; i++) {
-            allIndices.add(i);
+        if (availableIndices.isEmpty()) {
+            // All options are correct, return a random index
+            return new Random().nextInt(totalOptions);
         }
     
-        // Remove correct index
-        allIndices.remove(Integer.valueOf(correctIndex));
-    
-        // Shuffle and pick two distinct wrong indices
-        Collections.shuffle(allIndices);
-    
-        List<Integer> distinctWrongIndices = new ArrayList<>();
-        distinctWrongIndices.add(allIndices.get(0));
-        
-        // Make sure the second index is different from the first
-        do {
-            distinctWrongIndices.add(allIndices.get(1));
-        } while (distinctWrongIndices.get(0).equals(distinctWrongIndices.get(1)));
-    
-        return distinctWrongIndices;
+        return availableIndices.get(new Random().nextInt(availableIndices.size()));
     }
+    
+    
+    
+    
+    
+    
     
     
     
@@ -595,7 +591,7 @@ public class QuizGameGUI extends JFrame {
         }
 
         // Disable the Ask a Friend lifeline button after using it
-        askFriendButton.setEnabled(false);
+        //askFriendButton.setEnabled(false);
     }
 
     private int findCorrectAnswerIndex(String[] answerChoices) {
@@ -607,20 +603,6 @@ public class QuizGameGUI extends JFrame {
         return -1; // Not found (shouldn't happen in a well-formed question)
     }
 
-    private int generateRandomWrongIndex(int totalOptions, int... excludeIndices) {
-        List<Integer> availableIndices = new ArrayList<>();
-        for (int i = 0; i < totalOptions; i++) {
-            availableIndices.add(i);
-        }
-
-        // Remove excluded indices
-        for (int excludeIndex : excludeIndices) {
-            availableIndices.remove(Integer.valueOf(excludeIndex));
-        }
-
-        // Randomly select an index from the remaining options
-        return availableIndices.get(new Random().nextInt(availableIndices.size()));
-    }
 
     private void handleTimeout() {
         // If the timer runs out, show a message to the user
