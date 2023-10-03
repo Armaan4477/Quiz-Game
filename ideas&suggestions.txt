@@ -12,12 +12,5 @@ Nishal's work:
     c) Add more as you think of.
 
 
-Armaan's work:
-  1) Add a Timer in the game for each question.(half done)
-    a) Add a timer for each question.(done)
-    b) Add a total time for the game.
-
-
-
 Common work:(try after everything is completed)
   1) A website consisting of a leaderboard to show the the timing and total time of each player.(if possible)
