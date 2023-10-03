@@ -539,32 +539,6 @@ public class QuizGameGUI extends JFrame {
         // Disable the 50-50 lifeline button after using it
         //fiftyFiftyButton.setEnabled(false);
     }
-    
-    private int generateRandomWrongIndex(int totalOptions, int correctIndex) {
-        List<Integer> availableIndices = new ArrayList<>();
-    
-        for (int i = 0; i < totalOptions; i++) {
-            if (i != correctIndex) {
-                availableIndices.add(i);
-            }
-        }
-    
-        if (availableIndices.isEmpty()) {
-            // All options are correct, return a random index
-            return new Random().nextInt(totalOptions);
-        }
-    
-        return availableIndices.get(new Random().nextInt(availableIndices.size()));
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     private void useAskFriendLifeline() {
         // Implement logic for Ask a Friend lifeline
@@ -592,6 +566,22 @@ public class QuizGameGUI extends JFrame {
 
         // Disable the Ask a Friend lifeline button after using it
         //askFriendButton.setEnabled(false);
+    }
+
+    private int generateRandomWrongIndex(int totalOptions, int correctIndex) {
+        int wrongIndex = new Random().nextInt(totalOptions);
+        while (wrongIndex == correctIndex) {
+            wrongIndex = new Random().nextInt(totalOptions);
+        }
+        //keep it in bounds of 0-3
+        if (wrongIndex < 0) {
+            wrongIndex = 0;
+        } else if (wrongIndex > 3) {
+            wrongIndex = 3;
+        }
+       
+        // Return the wrong index
+        return wrongIndex;
     }
 
     private int findCorrectAnswerIndex(String[] answerChoices) {
