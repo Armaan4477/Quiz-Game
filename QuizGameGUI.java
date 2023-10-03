@@ -366,9 +366,7 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void showResult() {
-
          questionTimer.stop();
-
         // Display the summary screen
         StringBuilder summary = new StringBuilder();
         summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
@@ -433,7 +431,6 @@ public class QuizGameGUI extends JFrame {
         dispose();
     }
     
-
     private void showPauseMenu() {
         if (!paused) {
             paused = true;
@@ -504,6 +501,7 @@ public class QuizGameGUI extends JFrame {
             pauseMenu.add(exitItem);
         }
     }
+    
     private void restartGame() {
 
         questionTimer.stop();
@@ -526,10 +524,7 @@ public class QuizGameGUI extends JFrame {
         askFriendButton.setEnabled(true);
     }
     
-
-    // Add a new method to show credits
-    private void showCredits() {
-        // Add logic to show credits 
+    private void showCredits() { 
         JOptionPane.showMessageDialog(this, "Credits: \n Armaan Nakhuda B-02 \n  Sushant Navle B-05 \n Nishal Poojary B-17 \n \n");
     }
 
@@ -550,7 +545,8 @@ public class QuizGameGUI extends JFrame {
             }
     
         // Disable the 50-50 lifeline button after using it
-        //fiftyFiftyButton.setEnabled(false);
+        //Disable for testing by putting // in front of the line
+        fiftyFiftyButton.setEnabled(false);
     }
 
     private void useAskFriendLifeline() {
@@ -578,7 +574,8 @@ public class QuizGameGUI extends JFrame {
         }
 
         // Disable the Ask a Friend lifeline button after using it
-        //askFriendButton.setEnabled(false);
+        //Disable for testing by putting // in front of the line
+        askFriendButton.setEnabled(false);
     }
 
     private int generateRandomWrongIndex(int totalOptions, int correctIndex) {
@@ -603,9 +600,8 @@ public class QuizGameGUI extends JFrame {
                 return i;
             }
         }
-        return -1; // Not found (shouldn't happen in a well-formed question)
+        return -1; // Not found
     }
-
 
     private void handleTimeout() {
         // If the timer runs out, show a message to the user
