@@ -507,7 +507,6 @@ public class QuizGameGUI extends JFrame {
     private void restartGame() {
 
         questionTimer.stop();
-        questionTimer.restart();
 
         // Reset the game state (e.g., score, currentQuestionIndex)
         score = 0;
@@ -522,8 +521,13 @@ public class QuizGameGUI extends JFrame {
         timedOutQuestions.clear();
         Arrays.fill(timeRemaining, timerSeconds);
         Arrays.fill(userAnswers, null);
-        fiftyFiftyButton.setEnabled(true);
-        askFriendButton.setEnabled(true);
+       
+        paused = false;
+        pauseMenu.setVisible(false);
+        nextButton.setVisible(true);
+        backButton.setVisible(true);
+        fiftyFiftyButton.setVisible(true);
+        askFriendButton.setVisible(true);
     }
     
     private void showCredits() { 
