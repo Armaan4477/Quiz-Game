@@ -336,8 +336,8 @@ public class QuizGameGUI extends JFrame {
         timeUp = false;
     
         Question currentQuestion = selectedQuestions.get(index);
-        questionLabel.setText(currentQuestion.getQuestion());
-    
+        questionLabel.setText("Question " + (index + 1) + ": " + currentQuestion.getQuestion()); // Include question number
+
         String[] answerChoices = currentQuestion.getAnswerChoices();
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
