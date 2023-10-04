@@ -95,6 +95,9 @@ public class QuizGameGUI extends JFrame {
         JButton startButton = new JButton("Start Quiz");
         startupPanel.add(startButton);
 
+        JButton instructionsButton = new JButton("Instructions");  // New button for instructions
+        startupPanel.add(instructionsButton);
+
         startupFrame.add(startupPanel);
 
         startButton.addActionListener(new ActionListener() {
@@ -112,6 +115,14 @@ public class QuizGameGUI extends JFrame {
                 // Hide the startup frame and show the quiz frame
                 startupFrame.setVisible(false);
                 setVisible(true);
+            }
+        });
+
+        instructionsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Open a new frame for instructions
+                showInstructionsFrame();
             }
         });
     }
@@ -641,6 +652,46 @@ public class QuizGameGUI extends JFrame {
         for (int i = 0; i < options.length; i++) {
             options[i].setEnabled(false);
         }
+    }
+
+    private void showInstructionsFrame(){
+        JFrame instructionsFrame = new JFrame("Instructions");
+        instructionsFrame.setSize(800, 400);
+        instructionsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        instructionsFrame.setLocationRelativeTo(null);
+
+        JTextArea instructionsTextArea = new JTextArea();
+        instructionsTextArea.setEditable(false);
+        instructionsTextArea.setText("Instructions: \n\n" +
+                "1. Select the number of questions you want to answer from the drop-down menu.\n" +
+                "2. Click the 'Start Quiz' button to begin the quiz.\n" +
+                "3. Click the 'Next' button to move to the next question.\n" +
+                "4. Click the 'Back' button to move to the previous question.\n" +
+                "5. Click the 'Pause' button to pause the quiz and access the pause menu.\n" +
+                "6. Click the '50-50' button to use the 50-50 lifeline.\n" +
+                "7. Click the 'Ask the Computer' button to use the Ask a Friend lifeline.\n" +
+                "8. You have 20 seconds to answer each question.\n" +
+                "9. The timer will start as soon as the question is loaded.\n" +
+                "10. Once the timer is complete the answer buttons will be disabled after which it wont be possible to answer the question/change your answer.\n" +
+                "11. The timer will stop when you click the 'Next' button or when you run out of time.\n" +
+                "12. Click the 'Exit' button to exit the quiz.\n\n" +
+                "Note: You can also use the spacebar to pause the quiz.\n\n" +
+                "Good luck!");
+
+                JButton closeButton = new JButton("Close");
+                closeButton.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        instructionsFrame.dispose(); // Close the instructions frame
+                    }
+                });
+            
+                JPanel buttonPanel = new JPanel();
+                buttonPanel.add(closeButton);
+            
+                instructionsFrame.add(new JScrollPane(instructionsTextArea), BorderLayout.CENTER);
+                instructionsFrame.add(buttonPanel, BorderLayout.SOUTH);
+                instructionsFrame.setVisible(true);
     }
 
     public static void main(String[] args) {
