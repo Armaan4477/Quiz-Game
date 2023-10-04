@@ -581,7 +581,7 @@ public class QuizGameGUI extends JFrame {
 
         // Disable the Ask a Friend lifeline button after using it
         //Disable for testing by putting // in front of the line
-       // askFriendButton.setEnabled(false);
+        askFriendButton.setEnabled(false);
     }
 
     private int generateRandomWrongIndex(int totalOptions, int correctIndex) {
