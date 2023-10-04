@@ -352,11 +352,11 @@ public class QuizGameGUI extends JFrame {
     
         Question currentQuestion = selectedQuestions.get(index);
         questionLabel.setText("Question " + (index + 1) + ": " + currentQuestion.getQuestion()); // Include question number
-
+    
         String[] answerChoices = currentQuestion.getAnswerChoices();
         for (int i = 0; i < 4; i++) {
             options[i].setText(answerChoices[i]);
-            options[i].setEnabled(timeRemaining[index] > 0); // Enable or disable based on time remaining
+            options[i].setEnabled(timeRemaining[index] > 0); // Set enabled or disabled based on time remaining
             options[i].setSelected(false);
         }
     
@@ -369,6 +369,8 @@ public class QuizGameGUI extends JFrame {
             }
         }
     }
+    
+    
     
     private void checkAnswer() {
         for (int i = 0; i < 4; i++) {
