@@ -38,6 +38,7 @@ public class QuizGameGUI extends JFrame {
     private Set<Integer> timedOutQuestions;
     private StringBuilder summary;
     private int[] timeRemaining;
+    private JLabel timerLabel;
 
 
     public QuizGameGUI() {
@@ -62,17 +63,22 @@ public class QuizGameGUI extends JFrame {
         timeRemaining = new int[allQuestions.size()];
          Arrays.fill(timeRemaining, timerSeconds);
 
-        questionTimer = new Timer(1000, new ActionListener() {
+         questionTimer = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Decrement the time remaining for the current question
                 timeRemaining[currentQuestionIndex]--;
+        
+                // Update the timer label
+                timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
+        
                 if (timeRemaining[currentQuestionIndex] <= 0) {
                     questionTimer.stop();
                     handleTimeout();
                 }
             }
-        });      
+        });
+             
     }
 
     private void createStartupFrame() {
@@ -153,6 +159,15 @@ public class QuizGameGUI extends JFrame {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
+
+         timerLabel = new JLabel("Timer: " + timerSeconds + " seconds");
+         timerLabel.setHorizontalAlignment(JLabel.CENTER);
+
+          // Add the timer label to the panel
+          JPanel timerPanel = new JPanel(new BorderLayout());
+          timerPanel.add(timerLabel, BorderLayout.CENTER);
+           add(timerPanel, BorderLayout.SOUTH);
+
 
         backButton = new JButton("Back");
         buttonPanel.add(backButton);
