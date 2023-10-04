@@ -392,7 +392,7 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void showResult() {
-         questionTimer.stop();
+        questionTimer.stop();
         // Display the summary screen
         StringBuilder summary = new StringBuilder();
         summary.append("Quiz Complete!\nYour Score: ").append(score).append(" out of ").append(selectedQuestions.size()).append("\n\n");
@@ -407,13 +407,15 @@ public class QuizGameGUI extends JFrame {
             // Check if the user's answer is correct
             boolean answeredCorrectly = userAnswers[i] != null && userAnswers[i].equals(question.getCorrectAnswer());
     
-
-           // Indicate if the user answered correctly or not
-        if (answeredCorrectly) {
-            summary.append("Result: Correct\n\n");
-        } else {
-            summary.append("Result: Incorrect\n\n");
-        }
+            // Indicate if the user answered correctly or not
+            if (answeredCorrectly) {
+                summary.append("Result: Correct\n");
+            } else {
+                summary.append("Result: Incorrect\n");
+            }
+    
+            // Include the remaining time for each question
+            summary.append("Time Remaining: ").append(timeRemaining[i]).append(" seconds\n\n");
         }
     
         // Set the summary text to the JTextArea
@@ -452,10 +454,11 @@ public class QuizGameGUI extends JFrame {
         summaryFrame.add(summaryPanel, BorderLayout.CENTER);
         summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
         summaryFrame.setVisible(true);
-
+    
         // Close the quiz game window
         dispose();
     }
+    
     
     private void showPauseMenu() {
         if (!paused) {
