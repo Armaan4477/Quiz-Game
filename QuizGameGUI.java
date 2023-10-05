@@ -450,13 +450,15 @@ public class QuizGameGUI extends JFrame {
     
         // Add the panels to the summary frame
         JFrame summaryFrame = new JFrame("Quiz Summary");
-        summaryFrame.setSize(800, 600);
+        summaryFrame.setSize(900, 600);
         summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         summaryFrame.setLayout(new BorderLayout());
         summaryFrame.add(summaryPanel, BorderLayout.CENTER);
         summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
+        summaryFrame.setLocationRelativeTo(null);
         summaryFrame.setVisible(true);
-    
+        summaryTextArea.setCaretPosition(0);
+       
         // Close the quiz game window
         dispose();
     }
