@@ -39,6 +39,7 @@ public class QuizGameGUI extends JFrame {
     private StringBuilder summary;
     private int[] timeRemaining;
     private JLabel timerLabel;
+    private JFrame summaryFrame;
 
 
     public QuizGameGUI() {
@@ -458,16 +459,17 @@ public class QuizGameGUI extends JFrame {
         buttonPanel.add(newgameButton);
     
         // Add the panels to the summary frame
-        JFrame summaryFrame = new JFrame("Quiz Summary");
-        summaryFrame.setSize(900, 600);
-        summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        summaryFrame.setLayout(new BorderLayout());
+        if (summaryFrame == null) {
+            summaryFrame = new JFrame("Quiz Summary");
+         summaryFrame.setSize(900, 600);
+         summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         summaryFrame.setLayout(new BorderLayout());
         summaryFrame.add(summaryPanel, BorderLayout.CENTER);
-        summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
-        summaryFrame.setLocationRelativeTo(null);
-        summaryFrame.setVisible(true);
-        summaryTextArea.setCaretPosition(0);
-       
+         summaryFrame.add(buttonPanel, BorderLayout.SOUTH);
+         summaryFrame.setLocationRelativeTo(null);
+         summaryFrame.setVisible(true);
+         summaryTextArea.setCaretPosition(0);
+        }
         // Close the quiz game window
         dispose();
     }
@@ -738,7 +740,6 @@ public class QuizGameGUI extends JFrame {
     }
 
     private void startNewGame() {
-      
         questionTimer.stop();
 
         // Reset the game state (e.g., score, currentQuestionIndex)
@@ -764,6 +765,11 @@ public class QuizGameGUI extends JFrame {
         //enable fifty-fifty and ask friend buttons
         fiftyFiftyButton.setEnabled(true);
         askFriendButton.setEnabled(true);
+
+       // Hide the summary frame
+    if (summaryFrame != null) {
+        summaryFrame.setVisible(false);
+    }
     }
     
     
