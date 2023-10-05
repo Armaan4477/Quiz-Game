@@ -43,10 +43,10 @@ Correct Answer: a) new
 What is the output of 'System.out.println(5 + 3 * 2)'?
 
 a) 10
-b) 16
+b) 11
 c) 56
 d) 26
-Correct Answer: b) 16
+Correct Answer: b) 11
 Which operator is used for equality comparison in Java?
 
 a) ==
@@ -67,7 +67,7 @@ a) for loop
 b) while loop
 c) if-else loop
 d) do-while loop
-Correct Answer: a) for loop
+Correct Answer: b) while loop
 
 What is the correct syntax for a single-line comment in Java?
 
