@@ -154,7 +154,7 @@ a) inherit
 b) extends
 c) implements
 d) multiextends
-Correct Answer: c) implements
+Correct Answer: b) extends
 What is the output of 'System.out.println("Hello" + "World");' in Java?
 
 a) Hello World
@@ -225,11 +225,11 @@ b) array
 c) create
 d) make
 Correct Answer: a) new
-What is the result of '5 / 2' in Java?
+What is the result of '5 / 2' in Java in integer data type?
 
 a) 2.5
 b) 2
-c) 2.0
+c) 2.4
 d) 2.25
 Correct Answer: b) 2
 What is the purpose of the 'volatile' keyword in Java?
@@ -301,7 +301,7 @@ a) Abstraction
 b) Encapsulation
 c) Inheritance
 d) Polymorphism
-Correct Answer: b) Encapsulation
+Correct Answer: a) Abstraction
 Which loop in Java is used for iterating a block of code repeatedly while a condition is true?
 
 a) for loop
@@ -366,7 +366,7 @@ a) &
 b) &&
 c) |
 d) !
-Correct Answer: a) &
+Correct Answer: a) &&
 What is the purpose of the 'try' and 'catch' blocks in exception handling?
 
 a) To handle exceptions
