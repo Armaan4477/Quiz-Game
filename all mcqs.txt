@@ -67,7 +67,7 @@ a) for loop
 b) while loop
 c) if-else loop
 d) do-while loop
-Correct Answer: a) for loop
+Correct Answer: b) while loop
 
 What is the correct syntax for a single-line comment in Java?
 
