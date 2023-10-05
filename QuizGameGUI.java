@@ -33,6 +33,7 @@ public class QuizGameGUI extends JFrame {
     private JComboBox<Integer> questionCountComboBox;
     private JPopupMenu pauseMenu;
     private Timer questionTimer;
+    private Timer timeoutPopupTimer;
     private int timerSeconds = 20; // Set the timer duration in seconds
     private boolean timeUp = false;
     private Set<Integer> timedOutQuestions;
@@ -71,12 +72,23 @@ public class QuizGameGUI extends JFrame {
         
                 // Update the timer label
                 timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
+                //call timeoutpopupTimer
+                timeoutPopupTimer.start();
+                
+            }
+        });
+
+            timeoutPopupTimer = new Timer(1, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
         
                 if (timeRemaining[currentQuestionIndex] <= 0) {
                     questionTimer.stop();
-                    handleTimeout();
-                }
+                   handleTimeout();
+               }
+               timeoutPopupTimer.stop();
             }
+
         });
              
     }
@@ -201,6 +213,9 @@ public class QuizGameGUI extends JFrame {
                 } else {
                     showResult();
                 }
+
+                //call timeoutpopupTimer
+                //timeoutPopupTimer.start();
             }
         });
 
@@ -224,6 +239,9 @@ public class QuizGameGUI extends JFrame {
                         break;
                     }
                 }
+
+                //call timeoutpopupTimer
+                //timeoutPopupTimer.start();
             }
         });
         
