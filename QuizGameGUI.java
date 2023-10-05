@@ -438,6 +438,14 @@ public class QuizGameGUI extends JFrame {
                 System.exit(0); // Exit the entire program
             }
         });
+        // Add a "New Game" button
+        JButton newgameButton = new JButton("New Game");
+        newgameButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startNewGame(); // Start a new game
+            }
+        });
     
         // Create a new panel for the summary and exit button
         JPanel summaryPanel = new JPanel();
@@ -447,6 +455,7 @@ public class QuizGameGUI extends JFrame {
         // Create a new panel for the exit button
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(exitButton);
+        buttonPanel.add(newgameButton);
     
         // Add the panels to the summary frame
         JFrame summaryFrame = new JFrame("Quiz Summary");
@@ -561,6 +570,9 @@ public class QuizGameGUI extends JFrame {
         backButton.setVisible(true);
         fiftyFiftyButton.setVisible(true);
         askFriendButton.setVisible(true);
+        //enable fifty-fifty and ask friend buttons
+        fiftyFiftyButton.setEnabled(true);
+        askFriendButton.setEnabled(true);
     }
     
     private void showCredits() { 
@@ -724,6 +736,37 @@ public class QuizGameGUI extends JFrame {
             }
         });
     }
+
+    private void startNewGame() {
+      
+        questionTimer.stop();
+
+        // Reset the game state (e.g., score, currentQuestionIndex)
+        score = 0;
+        currentQuestionIndex = 0;
+    
+        // Show the startup frame to allow the user to choose new options
+        startupFrame.setVisible(true);
+    
+        // Hide the current quiz frame
+        setVisible(false);
+
+        timedOutQuestions.clear();
+        Arrays.fill(timeRemaining, timerSeconds);
+        Arrays.fill(userAnswers, null);
+       
+        paused = false;
+        pauseButton.setVisible(true);
+        nextButton.setVisible(true);
+        backButton.setVisible(true);
+        fiftyFiftyButton.setVisible(true);
+        askFriendButton.setVisible(true);
+        //enable fifty-fifty and ask friend buttons
+        fiftyFiftyButton.setEnabled(true);
+        askFriendButton.setEnabled(true);
+    }
+    
+    
 }
 
 
