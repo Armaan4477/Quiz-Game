@@ -485,6 +485,12 @@ public class QuizGameGUI extends JFrame {
             backButton.setVisible(false);
             fiftyFiftyButton.setVisible(false);
             askFriendButton.setVisible(false);
+            //hide question
+            questionLabel.setVisible(false);
+            //hide radio buttons
+            for (int i = 0; i < options.length; i++) {
+                options[i].setVisible(false);
+            }
 
         } else {
             paused = false;
@@ -510,6 +516,12 @@ public class QuizGameGUI extends JFrame {
                     fiftyFiftyButton.setVisible(true);
                     askFriendButton.setVisible(true);
                     questionTimer.start();
+                    //show question
+                    questionLabel.setVisible(true);
+                    //show radio buttons
+                    for (int i = 0; i < options.length; i++) {
+                        options[i].setVisible(true);
+                    }
                 }
             });
 
