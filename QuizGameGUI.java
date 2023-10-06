@@ -33,7 +33,7 @@ public class QuizGameGUI extends JFrame {
     private JComboBox<Integer> questionCountComboBox;
     private JPopupMenu pauseMenu;
     private Timer questionTimer;
-    private int timerSeconds = 20; // Set the timer duration in seconds
+    private int timerSeconds = 5; // Set the timer duration in seconds
     private boolean timeUp = false;
     private Set<Integer> timedOutQuestions;
     private StringBuilder summary;
@@ -445,7 +445,9 @@ public class QuizGameGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 startNewGame(); // Start a new game
+                
             }
+            
         });
     
         // Create a new panel for the summary and exit button
@@ -459,7 +461,6 @@ public class QuizGameGUI extends JFrame {
         buttonPanel.add(newgameButton);
     
         // Add the panels to the summary frame
-        if (summaryFrame == null) {
             summaryFrame = new JFrame("Quiz Summary");
          summaryFrame.setSize(900, 600);
          summaryFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -469,9 +470,11 @@ public class QuizGameGUI extends JFrame {
          summaryFrame.setLocationRelativeTo(null);
          summaryFrame.setVisible(true);
          summaryTextArea.setCaretPosition(0);
-        }
-        // Close the quiz game window
-        dispose();
+          // Close the quiz game window
+          dispose();
+
+        
+        
     }
     
     
@@ -587,6 +590,12 @@ public class QuizGameGUI extends JFrame {
         //enable fifty-fifty and ask friend buttons
         fiftyFiftyButton.setEnabled(true);
         askFriendButton.setEnabled(true);
+        //show the question
+        questionLabel.setVisible(true);
+        //show the radio buttons
+        for (int i = 0; i < options.length; i++) {
+            options[i].setVisible(true);
+        }
     }
     
     private void showCredits() { 
@@ -742,15 +751,6 @@ public class QuizGameGUI extends JFrame {
                 instructionsFrame.setVisible(true);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new QuizGameGUI();
-            }
-        });
-    }
-
     private void startNewGame() {
         questionTimer.stop();
 
@@ -774,16 +774,32 @@ public class QuizGameGUI extends JFrame {
         backButton.setVisible(true);
         fiftyFiftyButton.setVisible(true);
         askFriendButton.setVisible(true);
-        //enable fifty-fifty and ask friend buttons
         fiftyFiftyButton.setEnabled(true);
         askFriendButton.setEnabled(true);
+        //show the question
+        questionLabel.setVisible(true);
+        //show the radio buttons
+        for (int i = 0; i < options.length; i++) {
+            options[i].setVisible(true);
+        }
 
-       // Hide the summary frame
-    if (summaryFrame != null) {
-        summaryFrame.setVisible(false);
-    }
+        //close the summary frame
+                summaryFrame.setVisible(false);
+       
     }
     
+    
+    
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new QuizGameGUI();
+            }
+        });
+    }
+
     
 }
 
@@ -811,3 +827,13 @@ class Question {
         return correctAnswer;
     }
 }
+
+//paused = false;
+ //       pauseButton.setVisible(true);
+   //     nextButton.setVisible(true);
+    //    backButton.setVisible(true);
+      //  fiftyFiftyButton.setVisible(true);
+        //askFriendButton.setVisible(true);
+        //enable fifty-fifty and ask friend buttons
+      //  fiftyFiftyButton.setEnabled(true);
+        //askFriendButton.setEnabled(true);
