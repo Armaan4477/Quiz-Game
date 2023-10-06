@@ -371,8 +371,7 @@ public class QuizGameGUI extends JFrame {
         }
     }
     
-    
-    
+
     private void checkAnswer() {
         for (int i = 0; i < 4; i++) {
             if (options[i].isSelected()) {
@@ -471,10 +470,7 @@ public class QuizGameGUI extends JFrame {
          summaryFrame.setVisible(true);
          summaryTextArea.setCaretPosition(0);
           // Close the quiz game window
-          dispose();
-
-        
-        
+          dispose();  
     }
     
     
@@ -697,6 +693,13 @@ public class QuizGameGUI extends JFrame {
             currentQuestionIndex++;
             if (currentQuestionIndex < selectedQuestions.size()) {
                 loadQuestion(currentQuestionIndex);
+                //load the previously selected answer by the user
+                for (int i = 0; i < 4; i++) {
+                    if (options[i].getText().equals(userAnswers[currentQuestionIndex])) {
+                        options[i].setSelected(true);
+                        break;
+                    }
+                }
             } else {
                 showResult();
             }
@@ -787,9 +790,6 @@ public class QuizGameGUI extends JFrame {
                 summaryFrame.setVisible(false);
        
     }
-    
-    
-    
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -802,7 +802,6 @@ public class QuizGameGUI extends JFrame {
 
     
 }
-
 
 class Question {
     private String question;
@@ -827,13 +826,3 @@ class Question {
         return correctAnswer;
     }
 }
-
-//paused = false;
- //       pauseButton.setVisible(true);
-   //     nextButton.setVisible(true);
-    //    backButton.setVisible(true);
-      //  fiftyFiftyButton.setVisible(true);
-        //askFriendButton.setVisible(true);
-        //enable fifty-fifty and ask friend buttons
-      //  fiftyFiftyButton.setEnabled(true);
-        //askFriendButton.setEnabled(true);
