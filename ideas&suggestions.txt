@@ -14,3 +14,16 @@ Nishal's work:
 
 Common work:(try after everything is completed)
   1) A website consisting of a leaderboard to show the the timing and total time of each player.(if possible)
+  Scoreboard:
+
+Display a live scoreboard during the quiz to show the user's current score.
+Sound Effects:
+
+Add sound effects for correct and incorrect answers or when using lifelines to enhance the user experience.
+Timer Boost Lifeline:
+
+Introduce a lifeline that adds extra time to the countdown timer for the current question.
+
+Customizable Key Shortcuts:
+
+Allow users to customize key shortcuts for common actions (e.g., pause, next, back).
