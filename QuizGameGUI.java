@@ -802,7 +802,7 @@ questionTimer = new Timer(1000, new ActionListener() {
         }
 
         //close the summary frame
-                summaryFrame.setVisible(false);
+        summaryFrame.setVisible(false);
        
     }
 
@@ -894,7 +894,7 @@ questionTimer = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Handle S key press (start game)
                 // You can call the logic to start the game here
-                startGame();
+                startNewGamekey();
             }
         });
         actionMap.put("openInstructions", new AbstractAction() {
@@ -905,6 +905,39 @@ questionTimer = new Timer(1000, new ActionListener() {
             }
     });
 }
+
+private void startNewGamekey() {
+        questionTimer.stop();
+
+        // Reset the game state (e.g., score, currentQuestionIndex)
+        score = 0;
+        currentQuestionIndex = 0;
+    
+        // Show the startup frame to allow the user to choose new options
+        startupFrame.setVisible(true);
+    
+        // Hide the current quiz frame
+        setVisible(false);
+
+        timedOutQuestions.clear();
+        Arrays.fill(timeRemaining, timerSeconds);
+        Arrays.fill(userAnswers, null);
+       
+        paused = false;
+        pauseButton.setVisible(true);
+        nextButton.setVisible(true);
+        backButton.setVisible(true);
+        fiftyFiftyButton.setVisible(true);
+        askFriendButton.setVisible(true);
+        fiftyFiftyButton.setEnabled(true);
+        askFriendButton.setEnabled(true);
+        //show the question
+        questionLabel.setVisible(true);
+        //show the radio buttons
+        for (int i = 0; i < options.length; i++) {
+            options[i].setVisible(true);
+        }
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
