@@ -820,10 +820,9 @@ questionTimer = new Timer(1000, new ActionListener() {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "back");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), "fiftyFifty");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "askFriend");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SHIFT, 0), "pauseWithShift");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "startGame");
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), "openInstructions");
-
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "exit");
 
         // Actions
         actionMap.put("pause", new AbstractAction() {
@@ -904,6 +903,14 @@ questionTimer = new Timer(1000, new ActionListener() {
                 showInstructionsFrame();
             }
     });
+
+        actionMap.put("exit", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle E key press (exit)
+                System.exit(0);
+            }
+        });
 }
 
 private void startNewGamekey() {
