@@ -750,7 +750,16 @@ questionTimer = new Timer(1000, new ActionListener() {
                 "10. Once the timer is complete the answer buttons will be disabled after which it wont be possible to answer the question/change your answer.\n" +
                 "11. The timer will stop when you click the 'Next' button or when you run out of time.\n" +
                 "12. Click the 'Exit' button to exit the quiz.\n\n" +
-                "Note: You can also use the spacebar to pause the quiz.\n\n" +
+                "Note: You can also use the physical keyboard keys to interact with the quiz:\n\n" +
+                "a) 1 to 4 number keys- option 1 to 4 for answers.\n "+
+                "b) P-pause the quiz.\n"+
+                "c) R-resume the quiz.\n"+
+                "d) Enter-next question.\n"+
+                "e) Back Space- previous question.\n"+
+                "f) F-50-50 lifeline.\n"+
+                "g) A-ask the computer lifeline.\n"+
+                "h) E-exit the quiz.\n"+
+                "i) I-Instructions.\n\n"+
                 "Good luck!");
 
                 JButton closeButton = new JButton("Close");
