@@ -62,25 +62,35 @@ public class QuizGameGUI extends JFrame {
         timedOutQuestions = new HashSet<>();
 
         timeRemaining = new int[allQuestions.size()];
-         Arrays.fill(timeRemaining, timerSeconds);
+Arrays.fill(timeRemaining, timerSeconds);
 
-         questionTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Decrement the time remaining for the current question
-                timeRemaining[currentQuestionIndex]--;
-        
-                // Update the timer label
-                timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
-        
-                if (timeRemaining[currentQuestionIndex] <= 0) {
-                    questionTimer.stop();
-                    handleTimeout();
-                }
+questionTimer = new Timer(1000, new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Decrement the time remaining for the current question
+        timeRemaining[currentQuestionIndex]--;
+
+        // Update the timer label
+        if (timeRemaining[currentQuestionIndex] <= 6) {
+            // Blink the timer label red at even seconds
+            if (timeRemaining[currentQuestionIndex] % 2 == 0) {
+                timerLabel.setForeground(Color.RED);
+            } else {
+                timerLabel.setForeground(Color.BLACK);
             }
-        });
-             
+        } else {
+            // Reset the timer label color to black
+            timerLabel.setForeground(Color.BLACK);
+        }
+        timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
+
+        if (timeRemaining[currentQuestionIndex] <= 0) {
+            questionTimer.stop();
+            handleTimeout();
+        }
     }
+});
+    }   
 
     private void createStartupFrame() {
         // Create the startup frame
