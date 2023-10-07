@@ -70,8 +70,9 @@ public class QuizGameGUI extends JFrame {
         timedOutQuestions = new HashSet<>();
 
         timeRemaining = new int[allQuestions.size()];
-Arrays.fill(timeRemaining, timerSeconds);
+         Arrays.fill(timeRemaining, timerSeconds);
 
+<<<<<<< HEAD
   questionTimer = new Timer(1000, new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -85,22 +86,32 @@ Arrays.fill(timeRemaining, timerSeconds);
                 timerLabel.setForeground(Color.RED);
             } else {
                 timerLabel.setForeground(Color.BLACK);
+=======
+         questionTimer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Decrement the time remaining for the current question
+                timeRemaining[currentQuestionIndex]--;
+        
+                // Update the timer label
+                timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
+        
+                if (timeRemaining[currentQuestionIndex] <= 0) {
+                    questionTimer.stop();
+                    handleTimeout();
+                }
+>>>>>>> parent of f4b0f04 (GUI update)
             }
-        } else {
-            // Reset the timer label color to black
-            timerLabel.setForeground(Color.BLACK);
-        }
-        timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
-
-        if (timeRemaining[currentQuestionIndex] <= 0) {
-            questionTimer.stop();
-            handleTimeout();
-        }
+        });
+             
     }
+<<<<<<< HEAD
 });
 
 
     }   
+=======
+>>>>>>> parent of f4b0f04 (GUI update)
 
     private void createStartupFrame() {
         addKeyBindings();
