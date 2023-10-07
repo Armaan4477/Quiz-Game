@@ -62,25 +62,35 @@ public class QuizGameGUI extends JFrame {
         timedOutQuestions = new HashSet<>();
 
         timeRemaining = new int[allQuestions.size()];
-         Arrays.fill(timeRemaining, timerSeconds);
+Arrays.fill(timeRemaining, timerSeconds);
 
-         questionTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Decrement the time remaining for the current question
-                timeRemaining[currentQuestionIndex]--;
-        
-                // Update the timer label
-                timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
-        
-                if (timeRemaining[currentQuestionIndex] <= 0) {
-                    questionTimer.stop();
-                    handleTimeout();
-                }
+questionTimer = new Timer(1000, new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Decrement the time remaining for the current question
+        timeRemaining[currentQuestionIndex]--;
+
+        // Update the timer label
+        if (timeRemaining[currentQuestionIndex] <= 6) {
+            // Blink the timer label red at even seconds
+            if (timeRemaining[currentQuestionIndex] % 2 == 0) {
+                timerLabel.setForeground(Color.RED);
+            } else {
+                timerLabel.setForeground(Color.BLACK);
             }
-        });
-             
+        } else {
+            // Reset the timer label color to black
+            timerLabel.setForeground(Color.BLACK);
+        }
+        timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
+
+        if (timeRemaining[currentQuestionIndex] <= 0) {
+            questionTimer.stop();
+            handleTimeout();
+        }
     }
+});
+    }   
 
     private void createStartupFrame() {
         // Create the startup frame
@@ -276,7 +286,8 @@ public class QuizGameGUI extends JFrame {
         allQuestions.add(new Question("What does JVM stand for?", "Java Virtual Machine", "Just Very Much", "Jungle Virtual Mouse", "Java Virtual Method", "Java Virtual Machine"));
         allQuestions.add(new Question("What is a variable in Java?", "A reserved keyword", "A data type", "A storage location", "An operator", "A storage location"));
         allQuestions.add(new Question("Which data type is used for whole numbers in Java?", "float", "double", "int", "String", "int"));
-          }
+        allQuestions.add(new Question("How do you declare a constant variable in Java?", "Using the 'var' keyword", "Using the 'let' keyword", "Using the 'final' keyword", "Using the 'const' keyword", "Using the 'final' keyword"));
+           }
 
     private void selectRandomQuestions(int count) {
         if (count >= allQuestions.size()) {

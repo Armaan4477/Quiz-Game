@@ -40,9 +40,17 @@ public class QuizGameGUI extends JFrame {
     private int[] timeRemaining;
     private JLabel timerLabel;
     private JFrame summaryFrame;
+    private JMenuItem resumeItem;
+   //define quizgamegui
+    
+    
+
 
 
     public QuizGameGUI() {
+
+        addKeyBindings();
+      
         // Create the startup frame
         createStartupFrame();
 
@@ -64,7 +72,7 @@ public class QuizGameGUI extends JFrame {
         timeRemaining = new int[allQuestions.size()];
 Arrays.fill(timeRemaining, timerSeconds);
 
-questionTimer = new Timer(1000, new ActionListener() {
+  questionTimer = new Timer(1000, new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Decrement the time remaining for the current question
@@ -90,9 +98,12 @@ questionTimer = new Timer(1000, new ActionListener() {
         }
     }
 });
+
+
     }   
 
     private void createStartupFrame() {
+        addKeyBindings();
         // Create the startup frame
         startupFrame = new JFrame("Quiz Startup");
         startupFrame.setSize(300, 150);
@@ -116,6 +127,8 @@ questionTimer = new Timer(1000, new ActionListener() {
         startupPanel.add(instructionsButton);
 
         startupFrame.add(startupPanel);
+
+         
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -142,6 +155,12 @@ questionTimer = new Timer(1000, new ActionListener() {
                 showInstructionsFrame();
             }
         });
+
+        // Ensure that the content pane can receive key events and request focus
+    startupFrame.getContentPane().setFocusable(true);
+    startupFrame.getContentPane().requestFocus();
+        
+
     }
 
     private void setUpQuizFrame() {
@@ -518,19 +537,7 @@ questionTimer = new Timer(1000, new ActionListener() {
             resumeItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    paused = false;
-                    pauseMenu.setVisible(false);
-                    nextButton.setVisible(true);
-                    backButton.setVisible(true);
-                    fiftyFiftyButton.setVisible(true);
-                    askFriendButton.setVisible(true);
-                    questionTimer.start();
-                    //show question
-                    questionLabel.setVisible(true);
-                    //show radio buttons
-                    for (int i = 0; i < options.length; i++) {
-                        options[i].setVisible(true);
-                    }
+                    resumeGame();
                 }
             });
 
@@ -569,6 +576,22 @@ questionTimer = new Timer(1000, new ActionListener() {
         }
     }
     
+    private void resumeGame() {
+        paused = false;
+        pauseMenu.setVisible(false);
+        nextButton.setVisible(true);
+        backButton.setVisible(true);
+        fiftyFiftyButton.setVisible(true);
+        askFriendButton.setVisible(true);
+        questionTimer.start();
+        //show question
+        questionLabel.setVisible(true);
+        //show radio buttons
+        for (int i = 0; i < options.length; i++) {
+            options[i].setVisible(true);
+        }
+    }
+
     private void restartGame() {
 
         questionTimer.stop();
@@ -799,6 +822,129 @@ questionTimer = new Timer(1000, new ActionListener() {
         //close the summary frame
                 summaryFrame.setVisible(false);
        
+                
+
+    }
+
+    private void addKeyBindings() {
+        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        ActionMap actionMap = getRootPane().getActionMap();
+
+        // Key bindings
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), "pause");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, 0), "answer1");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, 0), "answer2");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, 0), "answer3");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_4, 0), "answer4");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "next");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "back");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), "fiftyFifty");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "askFriend");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "exit");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), "newGame");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "resume");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "startGame");
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), "openInstructions");
+
+        // Actions
+        actionMap.put("pause", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pauseButton.doClick();
+            }
+        });
+
+        actionMap.put("answer1", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                options[0].doClick();
+            }
+        });
+
+        actionMap.put("answer2", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                options[1].doClick();
+            }
+        });
+
+        actionMap.put("answer3", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                options[2].doClick();
+            }
+        });
+
+        actionMap.put("answer4", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                options[3].doClick();
+            }
+        });
+
+        actionMap.put("next", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                nextButton.doClick();
+            }
+        });
+
+        actionMap.put("back", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                backButton.doClick();
+            }
+        });
+
+        actionMap.put("fiftyFifty", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                useFiftyFiftyLifeline();
+            }
+        });
+
+        actionMap.put("askFriend", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                useAskFriendLifeline();
+            }
+        });
+
+        actionMap.put("exit", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    
+        actionMap.put("newGame", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startNewGame();
+            }
+        });
+    
+        actionMap.put("resume", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resumeGame();
+            }
+        });
+
+        actionMap.put("startGame", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                startNewGame();
+            }
+        });
+
+        actionMap.put("openInstructions", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle I key press (open instructions)
+                showInstructionsFrame();
+            }
+        });
     }
 
     public static void main(String[] args) {
@@ -806,6 +952,9 @@ questionTimer = new Timer(1000, new ActionListener() {
             @Override
             public void run() {
                 new QuizGameGUI();
+                QuizGameGUI quizGameGUI = new QuizGameGUI();
+                quizGameGUI.addKeyBindings(); // Call the method to add key bindings
+            
             }
         });
     }
