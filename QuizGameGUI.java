@@ -40,17 +40,9 @@ public class QuizGameGUI extends JFrame {
     private int[] timeRemaining;
     private JLabel timerLabel;
     private JFrame summaryFrame;
-    private JMenuItem resumeItem;
-   //define quizgamegui
-    
-    
-
 
 
     public QuizGameGUI() {
-
-        addKeyBindings();
-      
         // Create the startup frame
         createStartupFrame();
 
@@ -70,10 +62,9 @@ public class QuizGameGUI extends JFrame {
         timedOutQuestions = new HashSet<>();
 
         timeRemaining = new int[allQuestions.size()];
-         Arrays.fill(timeRemaining, timerSeconds);
+Arrays.fill(timeRemaining, timerSeconds);
 
-<<<<<<< HEAD
-  questionTimer = new Timer(1000, new ActionListener() {
+questionTimer = new Timer(1000, new ActionListener() {
     @Override
     public void actionPerformed(ActionEvent e) {
         // Decrement the time remaining for the current question
@@ -86,35 +77,22 @@ public class QuizGameGUI extends JFrame {
                 timerLabel.setForeground(Color.RED);
             } else {
                 timerLabel.setForeground(Color.BLACK);
-=======
-         questionTimer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Decrement the time remaining for the current question
-                timeRemaining[currentQuestionIndex]--;
-        
-                // Update the timer label
-                timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
-        
-                if (timeRemaining[currentQuestionIndex] <= 0) {
-                    questionTimer.stop();
-                    handleTimeout();
-                }
->>>>>>> parent of f4b0f04 (GUI update)
             }
-        });
-             
+        } else {
+            // Reset the timer label color to black
+            timerLabel.setForeground(Color.BLACK);
+        }
+        timerLabel.setText("Timer: " + timeRemaining[currentQuestionIndex] + " seconds");
+
+        if (timeRemaining[currentQuestionIndex] <= 0) {
+            questionTimer.stop();
+            handleTimeout();
+        }
     }
-<<<<<<< HEAD
 });
-
-
     }   
-=======
->>>>>>> parent of f4b0f04 (GUI update)
 
     private void createStartupFrame() {
-        addKeyBindings();
         // Create the startup frame
         startupFrame = new JFrame("Quiz Startup");
         startupFrame.setSize(300, 150);
@@ -138,8 +116,6 @@ public class QuizGameGUI extends JFrame {
         startupPanel.add(instructionsButton);
 
         startupFrame.add(startupPanel);
-
-         
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -166,12 +142,6 @@ public class QuizGameGUI extends JFrame {
                 showInstructionsFrame();
             }
         });
-
-        // Ensure that the content pane can receive key events and request focus
-    startupFrame.getContentPane().setFocusable(true);
-    startupFrame.getContentPane().requestFocus();
-        
-
     }
 
     private void setUpQuizFrame() {
@@ -548,7 +518,19 @@ public class QuizGameGUI extends JFrame {
             resumeItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    resumeGame();
+                    paused = false;
+                    pauseMenu.setVisible(false);
+                    nextButton.setVisible(true);
+                    backButton.setVisible(true);
+                    fiftyFiftyButton.setVisible(true);
+                    askFriendButton.setVisible(true);
+                    questionTimer.start();
+                    //show question
+                    questionLabel.setVisible(true);
+                    //show radio buttons
+                    for (int i = 0; i < options.length; i++) {
+                        options[i].setVisible(true);
+                    }
                 }
             });
 
@@ -587,22 +569,6 @@ public class QuizGameGUI extends JFrame {
         }
     }
     
-    private void resumeGame() {
-        paused = false;
-        pauseMenu.setVisible(false);
-        nextButton.setVisible(true);
-        backButton.setVisible(true);
-        fiftyFiftyButton.setVisible(true);
-        askFriendButton.setVisible(true);
-        questionTimer.start();
-        //show question
-        questionLabel.setVisible(true);
-        //show radio buttons
-        for (int i = 0; i < options.length; i++) {
-            options[i].setVisible(true);
-        }
-    }
-
     private void restartGame() {
 
         questionTimer.stop();
@@ -833,129 +799,6 @@ public class QuizGameGUI extends JFrame {
         //close the summary frame
                 summaryFrame.setVisible(false);
        
-                
-
-    }
-
-    private void addKeyBindings() {
-        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        ActionMap actionMap = getRootPane().getActionMap();
-
-        // Key bindings
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_P, 0), "pause");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_1, 0), "answer1");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_2, 0), "answer2");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_3, 0), "answer3");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_4, 0), "answer4");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "next");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "back");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F, 0), "fiftyFifty");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_A, 0), "askFriend");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0), "exit");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_N, 0), "newGame");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "resume");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_S, 0), "startGame");
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_I, 0), "openInstructions");
-
-        // Actions
-        actionMap.put("pause", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                pauseButton.doClick();
-            }
-        });
-
-        actionMap.put("answer1", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                options[0].doClick();
-            }
-        });
-
-        actionMap.put("answer2", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                options[1].doClick();
-            }
-        });
-
-        actionMap.put("answer3", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                options[2].doClick();
-            }
-        });
-
-        actionMap.put("answer4", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                options[3].doClick();
-            }
-        });
-
-        actionMap.put("next", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                nextButton.doClick();
-            }
-        });
-
-        actionMap.put("back", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                backButton.doClick();
-            }
-        });
-
-        actionMap.put("fiftyFifty", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                useFiftyFiftyLifeline();
-            }
-        });
-
-        actionMap.put("askFriend", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                useAskFriendLifeline();
-            }
-        });
-
-        actionMap.put("exit", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-    
-        actionMap.put("newGame", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startNewGame();
-            }
-        });
-    
-        actionMap.put("resume", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                resumeGame();
-            }
-        });
-
-        actionMap.put("startGame", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                startNewGame();
-            }
-        });
-
-        actionMap.put("openInstructions", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Handle I key press (open instructions)
-                showInstructionsFrame();
-            }
-        });
     }
 
     public static void main(String[] args) {
@@ -963,9 +806,6 @@ public class QuizGameGUI extends JFrame {
             @Override
             public void run() {
                 new QuizGameGUI();
-                QuizGameGUI quizGameGUI = new QuizGameGUI();
-                quizGameGUI.addKeyBindings(); // Call the method to add key bindings
-            
             }
         });
     }
