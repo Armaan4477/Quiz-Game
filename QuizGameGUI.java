@@ -1073,7 +1073,7 @@ public class QuizGameGUI extends JFrame {
         // Create a new frame
         JFrame instructionsFrame = new JFrame("Instructions");
         // Set the size of the frame
-        instructionsFrame.setSize(800, 400);
+        instructionsFrame.setSize(800, 550);
         // Set the default close operation
         instructionsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         // Set the location of the frame to the center of the screen
