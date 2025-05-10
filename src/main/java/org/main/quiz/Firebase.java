@@ -18,11 +18,7 @@ public class Firebase {
     static {
         try (InputStream input = Firebase.class.getClassLoader().getResourceAsStream("config.properties")) {
             Properties prop = new Properties();
-            if (input == null) {
-                System.err.println("Unable to find config.properties");
-                DATABASE_URL = "https://example.firebaseio.com/";
-                AUTH_PARAM = "?auth=none";
-            } else {
+            {
                 prop.load(input);
                 DATABASE_URL = prop.getProperty("firebase.database.url");
                 String authKey = prop.getProperty("firebase.auth.key");
@@ -30,8 +26,7 @@ public class Firebase {
             }
         } catch (IOException ex) {
             ex.printStackTrace();
-            DATABASE_URL = "https://example.firebaseio.com/";
-            AUTH_PARAM = "?auth=none";
+            throw new RuntimeException("Failed to load Firebase configuration", ex);    
         }
     }
 
