@@ -127,3 +127,39 @@
 .button {
     -fx-text-fill: blue;
 }
+
+/* New styles for player information */
+.player-info-container {
+    -fx-background-color: #ffffff;
+    -fx-padding: 15px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-min-width: 350px;
+}
+
+.player-display {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3a6073;
+}
+
+.player-result {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3a6073;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* Styles for text fields */
+.text-field {
+    -fx-background-color: #f8f8f8;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+    -fx-padding: 8px;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused {
+    -fx-border-color: #3a7bd5;
+    -fx-background-color: white;
+}

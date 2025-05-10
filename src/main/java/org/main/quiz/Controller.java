@@ -14,11 +14,14 @@ import javafx.util.Duration;
 import javafx.application.Platform;
 
 public class Controller {
+    @FXML private TextField playerNameField;
     @FXML private ComboBox<String> categoryComboBox;
     @FXML private Button startButton;
     @FXML private Button submitButton;
     @FXML private Button newQuizButton;
     
+    @FXML private Label playerDisplayLabel;
+    @FXML private Label playerResultLabel;
     @FXML private Label scoreLabel;
     @FXML private Label timeLabel;
     @FXML private Label questionNumberLabel;
@@ -27,7 +30,7 @@ public class Controller {
     @FXML private Label finalScoreLabel;
     @FXML private Label timeSpentLabel;
     
-    @FXML private VBox welcomeScreen;
+    @FXML private VBox startScreen;  // Renamed from welcomeScreen to startScreen
     @FXML private VBox questionScreen;
     @FXML private VBox resultsScreen;
     @FXML private VBox optionsBox;
@@ -47,6 +50,7 @@ public class Controller {
     private Timeline timer;
     private ObservableList<String> categories = FXCollections.observableArrayList();
     private List<RadioButton> optionButtons;
+    private String playerName;
 
     @FXML
     public void initialize() {
@@ -81,8 +85,8 @@ public class Controller {
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         
-        // Initially show welcome screen
-        if (welcomeScreen != null) welcomeScreen.setVisible(true);
+        // Initially show start screen
+        if (startScreen != null) startScreen.setVisible(true);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
     }
@@ -112,6 +116,15 @@ public class Controller {
     
     @FXML
     private void handleStartQuiz() {
+        // Validate player name
+        if (playerNameField == null || playerNameField.getText().trim().isEmpty()) {
+            showAlert("Missing Information", "Please enter your name before starting the quiz.");
+            return;
+        }
+        
+        // Store player name
+        playerName = playerNameField.getText().trim();
+        
         if (categoryComboBox == null) {
             showAlert("Error", "Category selection not available");
             return;
@@ -141,6 +154,12 @@ public class Controller {
             if (scoreLabel != null) {
                 scoreLabel.setText("Score: 0/" + questions.size());
             }
+            
+            // Update player display name in game screen
+            if (playerDisplayLabel != null) {
+                playerDisplayLabel.setText("Player: " + playerName);
+            }
+            
             updateTimeLabel();
             
             // Start timer
@@ -150,7 +169,7 @@ public class Controller {
             showCurrentQuestion();
             
             // Switch to question screen
-            if (welcomeScreen != null) welcomeScreen.setVisible(false);
+            if (startScreen != null) startScreen.setVisible(false);
             if (questionScreen != null) questionScreen.setVisible(true);
             if (resultsScreen != null) resultsScreen.setVisible(false);
             
@@ -275,7 +294,12 @@ public class Controller {
         // Stop timer
         timer.stop();
         
-        // Update results screen
+        // Update results screen with player name
+        if (playerResultLabel != null) {
+            playerResultLabel.setText("Player: " + playerName);
+        }
+        
+        // Update results score
         if (finalScoreLabel != null) {
             finalScoreLabel.setText("Your score: " + score + "/" + questions.size());
         }
@@ -285,15 +309,20 @@ public class Controller {
         }
         
         // Switch to results screen
-        if (welcomeScreen != null) welcomeScreen.setVisible(false);
+        if (startScreen != null) startScreen.setVisible(false);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(true);
     }
     
     @FXML
     private void handleNewQuiz() {
-        // Reset and go back to welcome screen
-        if (welcomeScreen != null) welcomeScreen.setVisible(true);
+        // Reset player name field for a new quiz
+        if (playerNameField != null) {
+            playerNameField.clear();
+        }
+        
+        // Reset and go back to start screen
+        if (startScreen != null) startScreen.setVisible(true);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
     }

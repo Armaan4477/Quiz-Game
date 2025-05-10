@@ -16,34 +16,46 @@
                     <Font name="System Bold" size="24"/>
                 </font>
             </Label>
-            <HBox spacing="10" alignment="CENTER">
-                <Label text="Select Category:" />
-                <ComboBox fx:id="categoryComboBox" prefWidth="150" />
-                <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
-            </HBox>
-            <HBox spacing="10" alignment="CENTER">
-                <Label fx:id="scoreLabel" text="Score: 0/0" />
-                <Label fx:id="timeLabel" text="Time: 0:00" />
-            </HBox>
         </VBox>
     </top>
     
     <center>
         <StackPane fx:id="contentPane">
-            <!-- Welcome Screen -->
-            <VBox fx:id="welcomeScreen" alignment="CENTER" spacing="20">
+            <!-- Start Screen -->
+            <VBox fx:id="startScreen" alignment="CENTER" spacing="20">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
                 <Label text="Welcome to Quiz Master!" styleClass="welcome-label">
                     <font>
                         <Font size="22"/>
                     </font>
                 </Label>
-                <Text text="Select a category and press Start Quiz to begin." wrappingWidth="400"/>
-                <ImageView fx:id="logoImageView" fitWidth="200" fitHeight="200" preserveRatio="true"/>
+                <Text text="Enter your name, select a category and press Start Quiz to begin." wrappingWidth="400"/>
+                <ImageView fx:id="logoImageView" fitWidth="150" fitHeight="150" preserveRatio="true"/>
+                
+                <VBox spacing="15" alignment="CENTER" styleClass="player-info-container">
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Player Name:" />
+                        <TextField fx:id="playerNameField" prefWidth="200" promptText="Enter your name"/>
+                    </HBox>
+                    
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Select Category:" />
+                        <ComboBox fx:id="categoryComboBox" prefWidth="200" />
+                    </HBox>
+                    
+                    <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
+                </VBox>
             </VBox>
             
             <!-- Question Screen -->
             <VBox fx:id="questionScreen" alignment="CENTER" spacing="20" visible="false">
                 <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                
+                <HBox spacing="20" alignment="CENTER">
+                    <Label fx:id="playerDisplayLabel" text="Player: " styleClass="player-display"/>
+                    <Label fx:id="scoreLabel" text="Score: 0/0" />
+                    <Label fx:id="timeLabel" text="Time: 0:00" />
+                </HBox>
                 
                 <Label fx:id="questionNumberLabel" text="Question 1/10" styleClass="question-number"/>
                 
@@ -71,11 +83,13 @@
             
             <!-- Results Screen -->
             <VBox fx:id="resultsScreen" alignment="CENTER" spacing="20" visible="false">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
                 <Label text="Quiz Results" styleClass="results-title">
                     <font>
                         <Font size="24"/>
                     </font>
                 </Label>
+                <Label fx:id="playerResultLabel" text="Player: " styleClass="player-result"/>
                 <Label fx:id="finalScoreLabel" text="Your score: 0/0" styleClass="final-score"/>
                 <Label fx:id="timeSpentLabel" text="Time spent: 0:00" />
                 <Button fx:id="newQuizButton" text="Start New Quiz" onAction="#handleNewQuiz" styleClass="new-quiz-button"/>
