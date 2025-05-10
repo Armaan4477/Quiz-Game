@@ -149,7 +149,7 @@ public class Firebase {
         String urlString = DATABASE_URL + QUESTIONS_NODE + ".json" + AUTH_PARAM + 
                            "&orderBy=" + encodedOrderBy + "&equalTo=" + encodedCategory;
                            
-        URL url = new URL(urlString);
+        URL url = URI.create(urlString).toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
