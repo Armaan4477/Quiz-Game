@@ -53,6 +53,16 @@ public class Controller {
         // Initialize quiz UI components
         if (option1 != null && option2 != null && option3 != null && option4 != null) {
             optionButtons = Arrays.asList(option1, option2, option3, option4);
+            
+            // Ensure the toggle group is properly set
+            if (optionsGroup == null) {
+                optionsGroup = new ToggleGroup();
+            }
+            
+            // Explicitly assign toggle group to each radio button
+            for (RadioButton button : optionButtons) {
+                button.setToggleGroup(optionsGroup);
+            }
         }
         
         // Setup category combo box
@@ -159,9 +169,9 @@ public class Controller {
             return;
         }
         
-        // Reset UI state
-        if (optionsGroup != null && optionsGroup.getSelectedToggle() != null) {
-            optionsGroup.getSelectedToggle().setSelected(false);
+        // Reset UI state - clear selection without triggering events
+        if (optionsGroup != null) {
+            optionsGroup.selectToggle(null);
         }
         
         if (feedbackLabel != null) {
@@ -183,7 +193,8 @@ public class Controller {
             if (i < options.size()) {
                 button.setText(options.get(i));
                 button.setVisible(true);
-                button.setUserData(i); // Store option index as userData
+                button.setUserData(Integer.valueOf(i)); // Store option index as userData
+                button.setSelected(false); // Ensure it's not selected by default
             } else {
                 button.setVisible(false);
             }
@@ -193,6 +204,7 @@ public class Controller {
     @FXML
     private void handleSubmitAnswer() {
         if (optionsGroup == null || feedbackLabel == null) {
+            showAlert("Error", "Option group not initialized properly");
             return;
         }
         
@@ -203,17 +215,27 @@ public class Controller {
             return;
         }
         
-        int selectedIndex = (int) selectedToggle.getUserData();
+        // Get the selected option index from the userData
+        Object userData = selectedToggle.getUserData();
+        if (userData == null) {
+            showAlert("Error", "Selected option data not found");
+            return;
+        }
+        
+        int selectedIndex = (int) userData;
         Question currentQuestion = questions.get(currentQuestionIndex);
         boolean isCorrect = currentQuestion.isCorrectAnswer(selectedIndex);
         
+        // Update feedback and score
         if (isCorrect) {
             score++;
             feedbackLabel.setText("Correct!");
+            feedbackLabel.getStyleClass().removeAll("incorrect");
             feedbackLabel.getStyleClass().add("correct");
         } else {
             feedbackLabel.setText("Incorrect! The correct answer is: " + 
                                 currentQuestion.getCorrectAnswer());
+            feedbackLabel.getStyleClass().removeAll("correct");
             feedbackLabel.getStyleClass().add("incorrect");
         }
         
@@ -222,21 +244,31 @@ public class Controller {
             scoreLabel.setText("Score: " + score + "/" + questions.size());
         }
         
-        // Move to next question or end quiz after a short delay
-        Platform.runLater(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+        // Disable option selection after answering
+        for (RadioButton button : optionButtons) {
+            button.setDisable(true);
+        }
+        
+        // Enable options again and move to next question after a delay
+        Timer delayTimer = new Timer();
+        delayTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    // Re-enable options for the next question
+                    for (RadioButton button : optionButtons) {
+                        button.setDisable(false);
+                    }
+                    
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < questions.size()) {
+                        showCurrentQuestion();
+                    } else {
+                        endQuiz();
+                    }
+                });
             }
-            
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.size()) {
-                showCurrentQuestion();
-            } else {
-                endQuiz();
-            }
-        });
+        }, 2000); // 2 second delay
     }
     
     private void endQuiz() {
