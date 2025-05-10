@@ -16,22 +16,39 @@ public class Firebase {
     private static final String QUESTIONS_NODE = "questions";
     
     static {
-        try (InputStream input = Firebase.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try {
+            // First try using class loader
+            InputStream input = Firebase.class.getClassLoader().getResourceAsStream("config.properties");
+            
+            // If that doesn't work, try looking in different locations
+            if (input == null) {
+                File configFile = new File("config.properties");
+                if (configFile.exists()) {
+                    input = new FileInputStream(configFile);
+                } else {
+                    System.err.println("Cannot find config.properties in any location");
+                }
+            }
+            
             Properties prop = new Properties();
             if (input == null) {
-                System.err.println("Unable to find config.properties");
-                DATABASE_URL = "https://example.firebaseio.com/";
-                AUTH_PARAM = "?auth=none";
+                System.err.println("Using default Firebase configuration");
+                DATABASE_URL = "https://quiz-game-44.asia-southeast1.firebasedatabase.app/";
+                AUTH_PARAM = "";
             } else {
                 prop.load(input);
                 DATABASE_URL = prop.getProperty("firebase.database.url");
-                String authKey = prop.getProperty("firebase.auth.key");
-                AUTH_PARAM = "?auth=" + authKey;
+                String authKey = prop.getProperty("firebase.auth.key", "none");
+                AUTH_PARAM = authKey.equals("none") ? "" : "?auth=" + authKey;
+                input.close();
             }
+            
+            System.out.println("Firebase initialized with URL: " + DATABASE_URL);
         } catch (IOException ex) {
             ex.printStackTrace();
-            DATABASE_URL = "https://example.firebaseio.com/";
-            AUTH_PARAM = "?auth=none";
+            System.err.println("Error loading configuration, using defaults");
+            DATABASE_URL = "https://quiz-game-44.asia-southeast1.firebasedatabase.app/";
+            AUTH_PARAM = "";
         }
     }
 
@@ -198,5 +215,24 @@ public class Firebase {
         }
 
         return questions;
+    }
+    
+    // Add a simple test method for diagnostics
+    public static boolean testConnection() {
+        try {
+            String urlString = DATABASE_URL + ".json" + AUTH_PARAM;
+            URL url = URI.create(urlString).toURL();
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            
+            int responseCode = connection.getResponseCode();
+            System.out.println("Firebase connection test result: " + responseCode);
+            return responseCode == HttpURLConnection.HTTP_OK;
+        } catch (Exception e) {
+            System.err.println("Firebase connection test failed: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 }

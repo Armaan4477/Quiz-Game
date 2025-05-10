@@ -50,41 +50,67 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        // Initialize quiz UI components
-        if (option1 != null && option2 != null && option3 != null && option4 != null) {
-            optionButtons = Arrays.asList(option1, option2, option3, option4);
+        try {
+            System.out.println("Initializing Controller...");
             
-            // Ensure the toggle group is properly set
-            if (optionsGroup == null) {
-                optionsGroup = new ToggleGroup();
+            // Initialize quiz UI components
+            if (option1 != null && option2 != null && option3 != null && option4 != null) {
+                optionButtons = Arrays.asList(option1, option2, option3, option4);
+                
+                // Ensure the toggle group is properly set
+                if (optionsGroup == null) {
+                    optionsGroup = new ToggleGroup();
+                }
+                
+                // Explicitly assign toggle group to each radio button
+                for (RadioButton button : optionButtons) {
+                    button.setToggleGroup(optionsGroup);
+                }
+            } else {
+                System.err.println("Warning: One or more option buttons are null");
             }
             
-            // Explicitly assign toggle group to each radio button
-            for (RadioButton button : optionButtons) {
-                button.setToggleGroup(optionsGroup);
+            // Setup category combo box
+            if (categoryComboBox != null) {
+                try {
+                    System.out.println("Testing Firebase connection...");
+                    boolean connected = Firebase.testConnection();
+                    System.out.println("Firebase connection test: " + (connected ? "Success" : "Failed"));
+                    
+                    System.out.println("Loading categories...");
+                    loadCategories();
+                    System.out.println("Categories loaded successfully");
+                } catch (Exception e) {
+                    System.err.println("Failed to load categories: " + e.getMessage());
+                    e.printStackTrace();
+                    
+                    // Provide default category for offline testing
+                    categories = FXCollections.observableArrayList("General", "Science", "History");
+                    categoryComboBox.setItems(categories);
+                    categoryComboBox.getSelectionModel().selectFirst();
+                }
+            } else {
+                System.err.println("Warning: Category ComboBox is null");
             }
+            
+            // Setup timer
+            timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                secondsElapsed++;
+                updateTimeLabel();
+            }));
+            timer.setCycleCount(Timeline.INDEFINITE);
+            
+            // Initially show welcome screen
+            if (welcomeScreen != null) welcomeScreen.setVisible(true);
+            if (questionScreen != null) questionScreen.setVisible(false);
+            if (resultsScreen != null) resultsScreen.setVisible(false);
+            
+            System.out.println("Controller initialization complete");
+        } catch (Exception e) {
+            System.err.println("Error during controller initialization: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Initialization Error", "There was a problem initializing the application: " + e.getMessage());
         }
-        
-        // Setup category combo box
-        if (categoryComboBox != null) {
-            try {
-                loadCategories();
-            } catch (IOException e) {
-                showAlert("Error", "Failed to load categories: " + e.getMessage());
-            }
-        }
-        
-        // Setup timer
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            secondsElapsed++;
-            updateTimeLabel();
-        }));
-        timer.setCycleCount(Timeline.INDEFINITE);
-        
-        // Initially show welcome screen
-        if (welcomeScreen != null) welcomeScreen.setVisible(true);
-        if (questionScreen != null) questionScreen.setVisible(false);
-        if (resultsScreen != null) resultsScreen.setVisible(false);
     }
 
     private void loadCategories() throws IOException {
