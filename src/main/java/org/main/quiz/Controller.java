@@ -186,6 +186,10 @@ public class Controller {
                 btn.setDisable(true);
             }
         }
+        
+        // Disable lifeline buttons for this question since time is up
+        if (fiftyFiftyButton != null) fiftyFiftyButton.setDisable(true);
+        if (askComputerButton != null) askComputerButton.setDisable(true);
 
         // Show timeout alert
         Platform.runLater(() -> {
@@ -418,6 +422,14 @@ public class Controller {
         if (currentQuestionTimeRemaining > 0 && !isLocked) {
             questionTimer.playFromStart();
         }
+        
+        // Enable or disable lifeline buttons based on question state and whether they've been used globally
+        if (fiftyFiftyButton != null) {
+            fiftyFiftyButton.setDisable(fiftyFiftyUsed || isLocked || currentQuestionTimeRemaining == 0);
+        }
+        if (askComputerButton != null) {
+            askComputerButton.setDisable(askComputerUsed || isLocked || currentQuestionTimeRemaining == 0);
+        }
     }
     
     // Replace handleSubmitAnswer with handleNextQuestion
@@ -573,6 +585,15 @@ public class Controller {
             return;
         }
         
+        // Check if question is locked or timed out
+        if (questionLocked != null && currentQuestionIndex < questionLocked.length && questionLocked[currentQuestionIndex]) {
+            return; // Don't allow lifeline on locked questions
+        }
+        
+        if (currentQuestionTimeRemaining <= 0) {
+            return; // Don't allow lifeline if time is up
+        }
+        
         // Get current question and correct answer
         Question currentQuestion = questions.get(currentQuestionIndex);
         int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
@@ -613,29 +634,57 @@ public class Controller {
             return;
         }
         
+        // Check if question is locked or timed out
+        if (questionLocked != null && currentQuestionIndex < questionLocked.length && questionLocked[currentQuestionIndex]) {
+            return; // Don't allow lifeline on locked questions
+        }
+        
+        if (currentQuestionTimeRemaining <= 0) {
+            return; // Don't allow lifeline if time is up
+        }
+        
         // Get current question
         Question currentQuestion = questions.get(currentQuestionIndex);
         int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
+        
+        // Get list of visible options - important after 50-50 is used
+        List<Integer> visibleOptionIndices = new ArrayList<>();
+        for (int i = 0; i < optionButtons.size(); i++) {
+            if (optionButtons.get(i).isVisible()) {
+                visibleOptionIndices.add(i);
+            }
+        }
+        
+        // If no visible options (shouldn't happen), return
+        if (visibleOptionIndices.isEmpty()) {
+            return;
+        }
+        
+        // Check if correct option is still visible (it should be after 50-50)
+        boolean correctOptionVisible = visibleOptionIndices.contains(correctOptionIndex);
         
         // Generate random number to simulate computer's accuracy (80% chance to be correct)
         Random random = new Random();
         int responsePercentage = random.nextInt(100);
         
-        if (responsePercentage < 80) {
-            // Computer gives the correct answer
+        if (responsePercentage < 80 && correctOptionVisible) {
+            // Computer gives the correct answer if it's visible
             optionsGroup.selectToggle(optionButtons.get(correctOptionIndex));
         } else {
-            // Computer gives a random wrong answer
-            List<Integer> incorrectIndices = new ArrayList<>();
-            for (int i = 0; i < optionButtons.size(); i++) {
+            // Computer gives a random wrong answer from visible options
+            List<Integer> visibleIncorrectIndices = new ArrayList<>();
+            for (Integer i : visibleOptionIndices) {
                 if (i != correctOptionIndex) {
-                    incorrectIndices.add(i);
+                    visibleIncorrectIndices.add(i);
                 }
             }
             
-            if (!incorrectIndices.isEmpty()) {
-                int randomIncorrectIndex = incorrectIndices.get(random.nextInt(incorrectIndices.size()));
+            if (!visibleIncorrectIndices.isEmpty()) {
+                int randomIncorrectIndex = visibleIncorrectIndices.get(random.nextInt(visibleIncorrectIndices.size()));
                 optionsGroup.selectToggle(optionButtons.get(randomIncorrectIndex));
+            } else if (correctOptionVisible) {
+                // If all visible options are correct (rare case), select the correct one
+                optionsGroup.selectToggle(optionButtons.get(correctOptionIndex));
             }
         }
         
