@@ -1,0 +1,390 @@
+ What does JVM stand for?
+
+a) Just Very Much
+b) Jungle Virtual Mouse
+c) Java Virtual Method
+d) Java Virtual Machine
+Correct Answer: d) Java Virtual Machine
+What is a variable in Java?
+
+a) A reserved keyword
+b) A data type
+c) A storage location
+d) An operator
+Correct Answer: c) A storage location
+Which data type is used for whole numbers in Java?
+
+a) float
+b) double
+c) int
+d) String
+Correct Answer: c) int
+How do you declare a constant variable in Java?
+
+a) Using the 'var' keyword
+b) Using the 'let' keyword
+c) Using the 'final' keyword
+d) Using the 'const' keyword
+Correct Answer: c) Using the 'final' keyword
+What is the main purpose of the 'public static void main(String[] args)' method?
+
+a) To declare variables
+b) To print output
+c) To initialize objects
+d) To start the program
+Correct Answer: d) To start the program
+Which Java keyword is used to create a new instance of a class?
+
+a) new
+b) class
+c) instance
+d) this
+Correct Answer: a) new
+What is the output of 'System.out.println(5 + 3 * 2)'?
+
+a) 10
+b) 11
+c) 56
+d) 26
+Correct Answer: b) 11
+Which operator is used for equality comparison in Java?
+
+a) ==
+b) =
+c) !=
+d) ===
+Correct Answer: a) ==
+What is the keyword used to create a new class in Java?
+
+a) new
+b) class
+c) instance
+d) this
+Correct Answer: b) class
+Which loop is used for iterating over elements of an array or collection in Java?
+
+a) for loop
+b) while loop
+c) if-else loop
+d) do-while loop
+Correct Answer: b) while loop
+
+What is the correct syntax for a single-line comment in Java?
+
+a) // This is a comment
+b) /* This is a comment */
+c) # This is a comment
+d) <!-- This is a comment -->
+Correct Answer: a) // This is a comment
+Which access modifier makes a class or method accessible only within the same package?
+
+a) public
+b) protected
+c) private
+d) default
+Correct Answer: d) default
+What is the purpose of the 'this' keyword in Java?
+
+a) To create a new instance of a class
+b) To call a method of the superclass
+c) To refer to the current instance of a class
+d) To declare a constant
+Correct Answer: c) To refer to the current instance of a class
+Which Java data type is used to store text?
+
+a) int
+b) char
+c) String
+d) float
+Correct Answer: c) String
+What is the result of '10 % 3' in Java?
+
+a) 1
+b) 2
+c) 3
+d) 0
+Correct Answer: a) 1
+Which statement is used to exit a loop prematurely in Java?
+
+a) break
+b) continue
+c) return
+d) exit
+Correct Answer: a) break
+What is the term for a function defined within a class in Java?
+
+a) Procedure
+b) Function
+c) Method
+d) Routine
+Correct Answer: c) Method
+What is the correct syntax to create a new object of a class in Java?
+
+a) new Object();
+b) create Object();
+c) Object.create();
+d) Object.new();
+Correct Answer: a) new Object();
+
+What is the default value of a boolean variable in Java?
+
+a) 0
+b) 1
+c) false
+d) true
+Correct Answer: c) false
+Which Java keyword is used to declare a constant variable?
+
+a) constant
+b) const
+c) final
+d) static
+Correct Answer: c) final
+
+What is the term for a class that cannot be instantiated and may have abstract methods?
+
+a) Interface
+b) Abstract class
+c) Concrete class
+d) Final class
+Correct Answer: b) Abstract class
+Which keyword is used to implement multiple inheritance in Java?
+
+a) inherit
+b) extends
+c) implements
+d) multiextends
+Correct Answer: b) extends
+What is the output of 'System.out.println("Hello" + "World");' in Java?
+
+a) Hello World
+b) Hello\nWorld
+c) Hello + World
+d) HelloWorld
+Correct Answer: d) HelloWorld
+In Java, a switch statement can be used with which data types?
+
+a) int
+b) float
+c) String
+d) All of the above
+Correct Answer: a) int
+What is the purpose of the 'default' case in a switch statement?
+
+a) To specify the default value
+b) To define the default behavior when no case matches
+c) To indicate an error
+d) To break out of the switch statement
+Correct Answer: b) To define the default behavior when no case matches
+Which operator is used for logical AND in Java?
+
+a) &
+b) &&
+c) ||
+d) !
+Correct Answer: b) &&
+What is the term for a class that inherits properties and behaviors from another class in Java?
+
+a) Derived class
+b) Superclass
+c) Parent class
+d) Child class
+Correct Answer: d) Child class
+Which exception is thrown when an array index is out of bounds?
+
+a) IndexOutOfRangeException
+b) ArrayIndexException
+c) OutOfBoundsException
+d) ArrayIndexOutOfBoundsException
+Correct Answer: d) ArrayIndexOutOfBoundsException
+What is the purpose of the 'finally' block in a try-catch-finally statement?
+
+a) To specify the catch block
+b) To handle exceptions
+c) To ensure code is executed regardless of exceptions
+d) To skip the try block
+Correct Answer: c) To ensure code is executed regardless of exceptions
+What is the difference between '==' and '.equals()' when comparing strings in Java?
+
+a) '==' compares object references, '.equals()' compares string contents
+b) '==' compares string contents, '.equals()' compares object references
+c) There is no difference
+d) Both are used to compare object references
+Correct Answer: a) '==' compares object references, '.equals()' compares string contents
+Which Java keyword is used to explicitly call a superclass constructor?
+
+a) superclass
+b) base
+c) super
+d) parent
+Correct Answer: c) super
+In Java, which keyword is used to create an array?
+
+a) new
+b) array
+c) create
+d) make
+Correct Answer: a) new
+What is the result of '5 / 2' in Java in integer data type?
+
+a) 2.5
+b) 2
+c) 2.4
+d) 2.25
+Correct Answer: b) 2
+What is the purpose of the 'volatile' keyword in Java?
+
+a) To make a variable thread-safe
+b) To declare a constant
+c) To define a final variable
+d) To prevent variable modification
+Correct Answer: a) To make a variable thread-safe
+Which Java data type is used to represent a single 16-bit Unicode character?
+
+a) char
+b) byte
+c) int
+d) short
+Correct Answer: a) char
+What is the term for a method that has the same name as the class and is used to initialize objects?
+
+a) Constructor
+b) Initializer
+c) Destructor
+d) Accessor
+Correct Answer: a) Constructor
+What is the Java keyword used to create a subclass that inherits from a superclass?
+
+a) inherits
+b) extends
+c) implements
+d) inheritsfrom
+Correct Answer: b) extends
+What is the Java keyword used to refer to the current instance of a class within that class's methods?
+
+a) this
+b) self
+c) current
+d) instance
+Correct Answer: a) this
+Which access modifier allows a class or method to be accessible only within the same package or by subclasses?
+
+a) private
+b) public
+c) protected
+d) default
+Correct Answer: c) protected
+What is the result of '5 + 5.0' in Java?
+
+a) 10.0
+b) 10
+c) 5.0
+d) 5
+Correct Answer: a) 10.0
+Which Java data type is used to store characters in Unicode format?
+
+a) char
+b) byte
+c) int
+d) string
+Correct Answer: a) char
+What is the purpose of the 'super' keyword in Java?
+
+a) To call a superclass method
+b) To call a static method
+c) To create a new instance of a class
+d) To declare a constant
+Correct Answer: a) To call a superclass method
+In Java, what is the term for hiding a class's implementation details and exposing only necessary functionalities?
+
+a) Abstraction
+b) Encapsulation
+c) Inheritance
+d) Polymorphism
+Correct Answer: a) Abstraction
+Which loop in Java is used for iterating a block of code repeatedly while a condition is true?
+
+a) for loop
+b) while loop
+c) do-while loop
+d) if-else loop
+Correct Answer: b) while loop
+
+What is the purpose of the 'break' statement in a loop?
+
+a) To exit the loop prematurely
+b) To continue to the next iteration of the loop
+c) To skip the loop entirely
+d) To create a nested loop
+Correct Answer: a) To exit the loop prematurely
+What is the term for defining more than one method with the same name in a class, but with different parameters?
+
+a) Method overloading
+b) Method overriding
+c) Method hiding
+d) Method chaining
+Correct Answer: a) Method overloading
+In Java, what keyword is used to declare a method that does not return a value?
+
+a) void
+b) null
+c) return
+d) empty
+Correct Answer: a) void
+What is the output of 'System.out.println(10 > 5 && 5 < 3);' in Java?
+
+a) true
+b) false
+c) compile error
+d) runtime error
+Correct Answer: b) false
+
+Which exception is thrown when an arithmetic operation results in a value that is too large or too small to be represented in the data type?
+
+a) ArithmeticException
+b) OverflowException
+c) NumberFormatException
+d) InvalidValueException
+Correct Answer: a) ArithmeticException
+What is the term for a method that is defined in a subclass and provides a specific implementation for a method declared in its superclass?
+
+a) Overloading
+b) Overriding
+c) Hiding
+d) Polymorphism
+Correct Answer: b) Overriding
+What is the result of '5 / 0' in Java?
+
+a) 5
+b) 0
+c) Infinity
+d) Compile error
+Correct Answer: c) Infinity
+In Java, which operator is used for bitwise AND?
+
+a) &
+b) &&
+c) |
+d) !
+Correct Answer: a) &&
+What is the purpose of the 'try' and 'catch' blocks in exception handling?
+
+a) To handle exceptions
+b) To throw exceptions
+c) To declare variables
+d) To define methods
+Correct Answer: a) To handle exceptions
+What is the term for the process of converting an object into a stream of bytes for storage or transmission?
+
+a) Serialization
+b) Deserialization
+c) Encoding
+d) Decoding
+Correct Answer: a) Serialization
+In Java, which keyword is used to create an interface?
+
+a) interface
+b) create
+c) new
+d) implements
+Correct Answer: a) interface

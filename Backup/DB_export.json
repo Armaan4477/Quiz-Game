@@ -1,0 +1,448 @@
+{
+  "questions": {
+    "question1": {
+      "text": "What does JVM stand for?",
+      "options": [
+        "Java Virtual Machine",
+        "Just Very Much",
+        "Jungle Virtual Mouse",
+        "Java Virtual Method"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question2": {
+      "text": "What is a variable in Java?",
+      "options": [
+        "A reserved keyword",
+        "A data type",
+        "A storage location",
+        "An operator"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question3": {
+      "text": "Which data type is used for whole numbers in Java?",
+      "options": [
+        "float",
+        "double",
+        "int",
+        "String"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question4": {
+      "text": "How do you declare a constant variable in Java?",
+      "options": [
+        "Using the 'var' keyword",
+        "Using the 'let' keyword",
+        "Using the 'final' keyword",
+        "Using the 'const' keyword"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question5": {
+      "text": "What is the main purpose of the 'public static void main(String[] args)' method?",
+      "options": [
+        "To declare variables",
+        "To print output",
+        "To initialize objects",
+        "To start the program"
+      ],
+      "correctOptionIndex": 3,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question6": {
+      "text": "Which Java keyword is used to create a new instance of a class?",
+      "options": [
+        "new",
+        "class",
+        "instance",
+        "this"
+      ],
+      "correctOptionIndex": 0,
+      "category": "OOP",
+      "difficultyLevel": 2
+    },
+    "question7": {
+      "text": "What is the output of 'System.out.println(5 + 3 * 2)'?",
+      "options": [
+        "11",
+        "16",
+        "56",
+        "26"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question8": {
+      "text": "Which operator is used for equality comparison in Java?",
+      "options": [
+        "==",
+        "=",
+        "!=",
+        "==="
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question9": {
+      "text": "What is the keyword used to create a new class in Java?",
+      "options": [
+        "new",
+        "class",
+        "instance",
+        "this"
+      ],
+      "correctOptionIndex": 1,
+      "category": "OOP",
+      "difficultyLevel": 1
+    },
+    "question10": {
+      "text": "Which loop is used for iterating over elements of an array or collection in Java?",
+      "options": [
+        "for loop",
+        "while loop",
+        "if-else loop",
+        "do-while loop"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Control Flow",
+      "difficultyLevel": 2
+    },
+    "question11": {
+      "text": "What is the correct syntax for a single-line comment in Java?",
+      "options": [
+        "// This is a comment",
+        "/* This is a comment */",
+        "# This is a comment",
+        "<!-- This is a comment -->"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question12": {
+      "text": "Which access modifier makes a class or method accessible only within the same package?",
+      "options": [
+        "public",
+        "protected",
+        "private",
+        "default"
+      ],
+      "correctOptionIndex": 3,
+      "category": "OOP",
+      "difficultyLevel": 2
+    },
+    "question13": {
+      "text": "What is the purpose of the 'this' keyword in Java?",
+      "options": [
+        "To create a new instance of a class",
+        "To call a method of the superclass",
+        "To refer to the current instance of a class",
+        "To declare a constant"
+      ],
+      "correctOptionIndex": 2,
+      "category": "OOP",
+      "difficultyLevel": 2
+    },
+    "question14": {
+      "text": "Which Java data type is used to store text?",
+      "options": [
+        "int",
+        "char",
+        "String",
+        "float"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question15": {
+      "text": "What is the result of '10 % 3' in Java?",
+      "options": [
+        "1",
+        "2",
+        "3",
+        "0"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question16": {
+      "text": "Which statement is used to exit a loop prematurely in Java?",
+      "options": [
+        "break",
+        "continue",
+        "return",
+        "exit"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Control Flow",
+      "difficultyLevel": 2
+    },
+    "question17": {
+      "text": "What is the term for a function defined within a class in Java?",
+      "options": [
+        "Procedure",
+        "Function",
+        "Method",
+        "Routine"
+      ],
+      "correctOptionIndex": 2,
+      "category": "OOP",
+      "difficultyLevel": 1
+    },
+    "question18": {
+      "text": "What is the correct syntax to create a new object of a class in Java?",
+      "options": [
+        "new Object();",
+        "create Object();",
+        "Object.create();",
+        "Object.new();"
+      ],
+      "correctOptionIndex": 0,
+      "category": "OOP",
+      "difficultyLevel": 1
+    },
+    "question19": {
+      "text": "What is the default value of a boolean variable in Java?",
+      "options": [
+        "0",
+        "1",
+        "false",
+        "true"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question20": {
+      "text": "Which Java keyword is used to declare a constant variable?",
+      "options": [
+        "constant",
+        "const",
+        "final",
+        "static"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Java Basics",
+      "difficultyLevel": 2
+    },
+    "question21": {
+      "text": "What is the term for a class that cannot be instantiated and may have abstract methods?",
+      "options": [
+        "Interface",
+        "Abstract class",
+        "Concrete class",
+        "Final class"
+      ],
+      "correctOptionIndex": 1,
+      "category": "OOP",
+      "difficultyLevel": 3
+    },
+    "question22": {
+      "text": "Which keyword is used to implement multiple inheritance in Java?",
+      "options": [
+        "inherit",
+        "extends",
+        "implements",
+        "multiextends"
+      ],
+      "correctOptionIndex": 2,
+      "category": "OOP",
+      "difficultyLevel": 3
+    },
+    "question23": {
+      "text": "What is the output of 'System.out.println(\"Hello\" + \"World\");'?",
+      "options": [
+        "Hello World",
+        "Hello\nWorld",
+        "Hello + World",
+        "HelloWorld"
+      ],
+      "correctOptionIndex": 3,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question24": {
+      "text": "In Java, a switch statement can be used with which data types?",
+      "options": [
+        "int",
+        "float",
+        "String",
+        "All of the above"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Control Flow",
+      "difficultyLevel": 2
+    },
+    "question25": {
+      "text": "What is the purpose of the 'default' case in a switch statement?",
+      "options": [
+        "To specify the default value",
+        "To define the default behavior when no case matches",
+        "To indicate an error",
+        "To break out of the switch statement"
+      ],
+      "correctOptionIndex": 1,
+      "category": "Control Flow",
+      "difficultyLevel": 2
+    },
+    "question26": {
+      "text": "Which operator is used for logical AND in Java?",
+      "options": [
+        "&",
+        "&&",
+        "||",
+        "!"
+      ],
+      "correctOptionIndex": 1,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question27": {
+      "text": "What is the term for a class that inherits properties and behaviors from another class in Java?",
+      "options": [
+        "Derived class",
+        "Superclass",
+        "Parent class",
+        "Child class"
+      ],
+      "correctOptionIndex": 3,
+      "category": "OOP",
+      "difficultyLevel": 2
+    },
+    "question28": {
+      "text": "Which exception is thrown when an array index is out of bounds?",
+      "options": [
+        "IndexOutOfRangeException",
+        "ArrayIndexException",
+        "OutOfBoundsException",
+        "ArrayIndexOutOfBoundsException"
+      ],
+      "correctOptionIndex": 3,
+      "category": "Exception Handling",
+      "difficultyLevel": 2
+    },
+    "question29": {
+      "text": "What is the purpose of the 'finally' block in a try-catch-finally statement?",
+      "options": [
+        "To specify the catch block",
+        "To handle exceptions",
+        "To ensure code is executed regardless of exceptions",
+        "To skip the try block"
+      ],
+      "correctOptionIndex": 2,
+      "category": "Exception Handling",
+      "difficultyLevel": 2
+    },
+    "question30": {
+      "text": "What is the difference between '==' and '.equals()' when comparing strings in Java?",
+      "options": [
+        "'==' compares object references, '.equals()' compares string contents",
+        "'==' compares string contents, '.equals()' compares object references",
+        "There is no difference",
+        "Both are used to compare object references"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 2
+    },
+    "question31": {
+      "text": "Which Java keyword is used to explicitly call a superclass constructor?",
+      "options": [
+        "superclass",
+        "base",
+        "super",
+        "parent"
+      ],
+      "correctOptionIndex": 2,
+      "category": "OOP",
+      "difficultyLevel": 2
+    },
+    "question32": {
+      "text": "In Java, which keyword is used to create an array?",
+      "options": [
+        "new",
+        "array",
+        "create",
+        "make"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question33": {
+      "text": "What is the result of '5 / 2' in Java?",
+      "options": [
+        "2.5",
+        "2",
+        "2.0",
+        "2.25"
+      ],
+      "correctOptionIndex": 1,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question34": {
+      "text": "What is the purpose of the 'volatile' keyword in Java?",
+      "options": [
+        "To make a variable thread-safe",
+        "To declare a constant",
+        "To define a final variable",
+        "To prevent variable modification"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Advanced Java",
+      "difficultyLevel": 3
+    },
+    "question35": {
+      "text": "Which Java data type is used to represent a single 16-bit Unicode character?",
+      "options": [
+        "char",
+        "byte",
+        "int",
+        "short"
+      ],
+      "correctOptionIndex": 0,
+      "category": "Java Basics",
+      "difficultyLevel": 1
+    },
+    "question36": {
+      "text": "What is the term for a method that has the same name as the class and is used to initialize objects?",
+      "options": [
+        "Constructor",
+        "Initializer",
+        "Destructor",
+        "Accessor"
+      ],
+      "correctOptionIndex": 0,
+      "category": "OOP",
+      "difficultyLevel": 1
+    },
+    "question37": {
+      "text": "What is the Java keyword used to create a subclass that inherits from a superclass?",
+      "options": [
+        "inherits",
+        "extends",
+        "implements",
+        "inheritsfrom"
+      ],
+      "correctOptionIndex": 1,
+      "category": "OOP",
+      "difficultyLevel": 2
+    }
+  }
+}

@@ -1,5 +1,4 @@
 .DS_Store
 /target
-/Backup
 src/main/resources/config.properties
 QuizGameGUI.java
