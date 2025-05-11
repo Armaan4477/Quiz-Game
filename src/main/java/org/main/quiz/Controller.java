@@ -71,6 +71,7 @@ public class Controller {
     // New field to track user answers
     private String[] userAnswers;    // Array to store user answers for each question
     private boolean[] questionAnswered;  // Track which questions have been answered
+    private boolean[] questionLocked;    // Track which questions are locked due to timeout
 
     // New fields for per-question state
     private int[] questionTimeRemaining; // Time left for each question
@@ -129,6 +130,15 @@ public class Controller {
         if (startScreen != null) startScreen.setVisible(true);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
+
+        // Ensure startScreen is brought to front and visible
+        if (contentPane != null && startScreen != null) {
+            if (!contentPane.getChildren().contains(startScreen)) {
+                contentPane.getChildren().add(startScreen);
+            }
+            startScreen.toFront();
+            startScreen.setVisible(true);
+        }
         
         // Initially disable previous button since we start at first question
         if (previousButton != null) {
@@ -139,13 +149,15 @@ public class Controller {
     // Update the question timer display with visual feedback
     private void updateQuestionTimerDisplay() {
         if (timeLabel == null) return;
-        
-        // Update the time label with the remaining time
-        timeLabel.setText("Time: " + currentQuestionTimeRemaining);
-        
+        // Prevent negative display
+        int displayTime = Math.max(0, currentQuestionTimeRemaining);
+        timeLabel.setText("Time: " + displayTime);
+
         // Visual feedback when time is running low
-        if (currentQuestionTimeRemaining <= 5) {
-            timeLabel.getStyleClass().add("warning");
+        if (displayTime <= 5) {
+            if (!timeLabel.getStyleClass().contains("warning")) {
+                timeLabel.getStyleClass().add("warning");
+            }
         } else {
             timeLabel.getStyleClass().removeAll("warning");
         }
@@ -156,21 +168,35 @@ public class Controller {
         // Stop the timer
         questionTimer.stop();
 
+        // Prevent timer from going negative
+        currentQuestionTimeRemaining = 0;
+        updateQuestionTimerDisplay();
+
         // Save that this question timed out
         if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
             questionTimeRemaining[currentQuestionIndex] = 0;
         }
 
+        // Mark the question as locked
+        if (questionLocked != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionLocked.length) {
+            questionLocked[currentQuestionIndex] = true;
+        }
+
+        // Disable all radio buttons for this question
+        if (optionButtons != null) {
+            for (RadioButton btn : optionButtons) {
+                btn.setDisable(true);
+            }
+        }
+
         // Show timeout alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Time's Up");
-        alert.setHeaderText(null);
-        alert.setContentText("Time's up for this question! You can still answer it, but try to move faster on the next one.");
-        alert.showAndWait();
-        
-        // Keep timer at 0 for this question
-        currentQuestionTimeRemaining = 0;
-        updateQuestionTimerDisplay();
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Time's Up");
+            alert.setHeaderText(null);
+            alert.setContentText("You ran out of time for this question! You cannot change your answer for this question anymore.");
+            alert.showAndWait();
+        });
     }
 
     private void loadCategories() throws IOException {
@@ -235,6 +261,7 @@ public class Controller {
             // Initialize arrays to track user answers and question completion
             userAnswers = new String[questions.size()];
             questionAnswered = new boolean[questions.size()];
+            questionLocked = new boolean[questions.size()]; // Initialize the lock tracking array
 
             // Initialize per-question time and 50-50 removed options
             questionTimeRemaining = new int[questions.size()];
@@ -242,6 +269,7 @@ public class Controller {
             for (int i = 0; i < questions.size(); i++) {
                 questionTimeRemaining[i] = QUESTION_TIME_LIMIT;
                 fiftyFiftyRemovedOptions[i] = null;
+                questionLocked[i] = false; // Initialize all questions as unlocked
             }
             
             // Reset lifeline states
@@ -327,8 +355,22 @@ public class Controller {
         questionNumberLabel.setText("Question " + (currentQuestionIndex + 1) + "/" + questions.size());
         questionTextLabel.setText(question.getText());
         
-        // Reset per-question timer
-        currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+        // Check if this question is locked due to previous timeout
+        boolean isLocked = false;
+        if (questionLocked != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionLocked.length) {
+            isLocked = questionLocked[currentQuestionIndex];
+        }
+        
+        // Restore per-question timer - but only if it's not locked
+        if (!isLocked && questionTimeRemaining != null && currentQuestionIndex >= 0 && 
+            currentQuestionIndex < questionTimeRemaining.length) {
+            currentQuestionTimeRemaining = questionTimeRemaining[currentQuestionIndex];
+        } else if (isLocked) {
+            // If question is locked, ensure timer shows 0
+            currentQuestionTimeRemaining = 0;
+        } else {
+            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+        }
         updateQuestionTimerDisplay();
         
         // Set options
@@ -340,7 +382,13 @@ public class Controller {
                 button.setVisible(true);
                 button.setUserData(Integer.valueOf(i)); // Store option index as userData
                 button.setSelected(false); // Ensure it's not selected by default
-                button.setDisable(false); // Enable all buttons for the new question
+                
+                // Enable/disable based on timer for this question or if it's locked
+                if (currentQuestionTimeRemaining == 0 || isLocked) {
+                    button.setDisable(true);
+                } else {
+                    button.setDisable(false);
+                }
             } else {
                 button.setVisible(false);
             }
@@ -356,40 +404,20 @@ public class Controller {
             }
         }
         
-        // Restore per-question timer
-        if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
-            // If this is the first time visiting this question, reset to full time
-            if (questionTimeRemaining[currentQuestionIndex] == QUESTION_TIME_LIMIT) {
-                currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
-            } else {
-                // Otherwise, resume from saved remaining time
-                currentQuestionTimeRemaining = questionTimeRemaining[currentQuestionIndex];
-            }
-        } else {
-            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
-        }
-        updateQuestionTimerDisplay();
-
-        // Restore 50-50 removed options if any
-        List<Integer> removed = fiftyFiftyRemovedOptions[currentQuestionIndex];
-        if (removed != null) {
-            for (int idx : removed) {
-                if (idx >= 0 && idx < optionButtons.size()) {
-                    optionButtons.get(idx).setVisible(false);
+        // If time is already up for this question or question is locked, disable options and do not start timer
+        if (currentQuestionTimeRemaining == 0 || isLocked) {
+            if (optionButtons != null) {
+                for (RadioButton btn : optionButtons) {
+                    btn.setDisable(true);
                 }
             }
-            // If 50-50 was used on this question, keep button disabled
-            fiftyFiftyButton.setDisable(true);
+            questionTimer.stop();
         } else {
-            // Make sure all options are visible if 50-50 not used
-            for (RadioButton btn : optionButtons) btn.setVisible(true);
-            fiftyFiftyButton.setDisable(fiftyFiftyUsed);
+            // Stop any running timer first
+            questionTimer.stop();
+            // Only start timer if time remains
+            questionTimer.playFromStart();
         }
-
-        // Stop any running timer first
-        questionTimer.stop();
-        // Always reset timer to full duration for new question
-        questionTimer.playFromStart();
     }
     
     // Replace handleSubmitAnswer with handleNextQuestion
@@ -526,8 +554,17 @@ public class Controller {
         
         // Reset and go back to start screen
         if (startScreen != null) startScreen.setVisible(true);
-        if (questionScreen != null) startScreen.setVisible(false);
+        if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
+
+        // Ensure startScreen is brought to front and visible
+        if (contentPane != null && startScreen != null) {
+            if (!contentPane.getChildren().contains(startScreen)) {
+                contentPane.getChildren().add(startScreen);
+            }
+            startScreen.toFront();
+            startScreen.setVisible(true);
+        }
     }
     
     // Add 50-50 lifeline handler
