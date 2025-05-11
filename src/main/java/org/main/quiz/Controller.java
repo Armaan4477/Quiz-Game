@@ -324,6 +324,9 @@ public class Controller {
             return;
         }
         
+        // Important: Always stop the timer before changing questions
+        questionTimer.stop();
+        
         // Enable/disable navigation buttons based on current question index
         if (previousButton != null) {
             previousButton.setDisable(currentQuestionIndex == 0);
@@ -341,12 +344,6 @@ public class Controller {
             feedbackLabel.setText("");
             feedbackLabel.getStyleClass().removeAll("correct", "incorrect");
         }
-        
-        // Save state for previous question before switching (if not first question)
-        if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.size()) {
-            saveCurrentSelection();
-            saveCurrentQuestionState();
-        }
 
         // Get current question
         Question question = questions.get(currentQuestionIndex);
@@ -361,15 +358,18 @@ public class Controller {
             isLocked = questionLocked[currentQuestionIndex];
         }
         
-        // Restore per-question timer - but only if it's not locked
-        if (!isLocked && questionTimeRemaining != null && currentQuestionIndex >= 0 && 
+        // Restore per-question timer - use the saved time remaining for this question
+        if (questionTimeRemaining != null && currentQuestionIndex >= 0 && 
             currentQuestionIndex < questionTimeRemaining.length) {
             currentQuestionTimeRemaining = questionTimeRemaining[currentQuestionIndex];
-        } else if (isLocked) {
+            
             // If question is locked, ensure timer shows 0
-            currentQuestionTimeRemaining = 0;
+            if (isLocked) {
+                currentQuestionTimeRemaining = 0;
+            }
         } else {
-            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+            // Fallback to default time if array not initialized
+            currentQuestionTimeRemaining = isLocked ? 0 : QUESTION_TIME_LIMIT;
         }
         updateQuestionTimerDisplay();
         
@@ -384,11 +384,7 @@ public class Controller {
                 button.setSelected(false); // Ensure it's not selected by default
                 
                 // Enable/disable based on timer for this question or if it's locked
-                if (currentQuestionTimeRemaining == 0 || isLocked) {
-                    button.setDisable(true);
-                } else {
-                    button.setDisable(false);
-                }
+                button.setDisable(currentQuestionTimeRemaining == 0 || isLocked);
             } else {
                 button.setVisible(false);
             }
@@ -404,18 +400,8 @@ public class Controller {
             }
         }
         
-        // If time is already up for this question or question is locked, disable options and do not start timer
-        if (currentQuestionTimeRemaining == 0 || isLocked) {
-            if (optionButtons != null) {
-                for (RadioButton btn : optionButtons) {
-                    btn.setDisable(true);
-                }
-            }
-            questionTimer.stop();
-        } else {
-            // Stop any running timer first
-            questionTimer.stop();
-            // Only start timer if time remains
+        // Start the question timer only if time remains and question isn't locked
+        if (currentQuestionTimeRemaining > 0 && !isLocked) {
             questionTimer.playFromStart();
         }
     }
@@ -423,15 +409,11 @@ public class Controller {
     // Replace handleSubmitAnswer with handleNextQuestion
     @FXML
     private void handleNextQuestion() {
-        saveCurrentSelection();
+        // First save current question state before moving
         saveCurrentQuestionState();
+        
         if (currentQuestionIndex < questions.size() - 1) {
             currentQuestionIndex++;
-            // Reset timer for the new question
-            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
-            if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
-                questionTimeRemaining[currentQuestionIndex] = QUESTION_TIME_LIMIT;
-            }
             showCurrentQuestion();
         }
     }
@@ -480,40 +462,43 @@ public class Controller {
     // Update navigation to previous question
     @FXML
     private void handlePreviousQuestion() {
-        saveCurrentSelection();
+        // First save current question state before moving
         saveCurrentQuestionState();
+        
         if (currentQuestionIndex > 0) {
             currentQuestionIndex--;
-            // Reset timer for the previous question
-            if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
-                currentQuestionTimeRemaining = questionTimeRemaining[currentQuestionIndex];
-            } else {
-                currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
-            }
             showCurrentQuestion();
         }
     }
     
     // Save current selection and state for the current question
     private void saveCurrentSelection() {
-        if (optionsGroup != null) {
+        if (optionsGroup != null && questions != null && currentQuestionIndex >= 0 
+            && currentQuestionIndex < questions.size()) {
+            
             Toggle selectedToggle = optionsGroup.getSelectedToggle();
             if (selectedToggle != null) {
                 Object userData = selectedToggle.getUserData();
                 if (userData != null) {
                     int selectedIndex = (int) userData;
-                    userAnswers[currentQuestionIndex] = questions.get(currentQuestionIndex).getOptions().get(selectedIndex);
+                    if (selectedIndex >= 0 && selectedIndex < questions.get(currentQuestionIndex).getOptions().size()) {
+                        userAnswers[currentQuestionIndex] = questions.get(currentQuestionIndex)
+                                                           .getOptions().get(selectedIndex);
+                    }
                 }
             }
         }
     }
 
     private void saveCurrentQuestionState() {
+        // Save current selection first
+        saveCurrentSelection();
+        
         // Save time remaining for this question
-        if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+        if (questionTimeRemaining != null && currentQuestionIndex >= 0 
+            && currentQuestionIndex < questionTimeRemaining.length) {
             questionTimeRemaining[currentQuestionIndex] = currentQuestionTimeRemaining;
         }
-        // No need to save removed options here, handled in 50-50 handler
     }
     
     private void endQuiz() {

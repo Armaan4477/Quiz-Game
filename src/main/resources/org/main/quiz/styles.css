@@ -112,11 +112,15 @@
     -fx-padding: 5px 10px;
     -fx-border-color: #ddd;
     -fx-border-radius: 4px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-transition: all 0.3s ease;
 }
 
 .question-timer.warning {
     -fx-text-fill: #F44336;
     -fx-border-color: #F44336;
+    -fx-background-color: #ffebee;
+    -fx-effect: dropshadow(three-pass-box, rgba(244,67,54,0.3), 5, 0, 0, 1);
 }
 
 .welcome-label {
@@ -216,6 +220,17 @@
     -fx-font-weight: bold;
     -fx-text-fill: #3a6073;
     -fx-padding: 0 0 10px 0;
+}
+
+/* Time display styles */
+.time-spent {
+    -fx-font-size: 16px;
+    -fx-text-fill: #3a6073;
+    -fx-padding: 5px;
+    -fx-background-color: #f8f8f8;
+    -fx-background-radius: 4px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
 }
 
 /* Styles for text fields */
