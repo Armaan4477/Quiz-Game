@@ -72,6 +72,10 @@ public class Controller {
     private String[] userAnswers;    // Array to store user answers for each question
     private boolean[] questionAnswered;  // Track which questions have been answered
 
+    // New fields for per-question state
+    private int[] questionTimeRemaining; // Time left for each question
+    private List<Integer>[] fiftyFiftyRemovedOptions; // Removed option indices for each question
+
     @FXML
     public void initialize() {
         // Initialize quiz UI components
@@ -108,7 +112,12 @@ public class Controller {
         questionTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             currentQuestionTimeRemaining--;
             updateQuestionTimerDisplay();
-            
+
+            // Save the remaining time for the current question
+            if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+                questionTimeRemaining[currentQuestionIndex] = currentQuestionTimeRemaining;
+            }
+
             // Check for time running out
             if (currentQuestionTimeRemaining <= 0) {
                 handleQuestionTimeout();
@@ -146,7 +155,12 @@ public class Controller {
     private void handleQuestionTimeout() {
         // Stop the timer
         questionTimer.stop();
-        
+
+        // Save that this question timed out
+        if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+            questionTimeRemaining[currentQuestionIndex] = 0;
+        }
+
         // Show timeout alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Time's Up");
@@ -154,8 +168,8 @@ public class Controller {
         alert.setContentText("Time's up for this question! You can still answer it, but try to move faster on the next one.");
         alert.showAndWait();
         
-        // Reset timer when alert is closed
-        currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+        // Keep timer at 0 for this question
+        currentQuestionTimeRemaining = 0;
         updateQuestionTimerDisplay();
     }
 
@@ -221,6 +235,14 @@ public class Controller {
             // Initialize arrays to track user answers and question completion
             userAnswers = new String[questions.size()];
             questionAnswered = new boolean[questions.size()];
+
+            // Initialize per-question time and 50-50 removed options
+            questionTimeRemaining = new int[questions.size()];
+            fiftyFiftyRemovedOptions = new List[questions.size()];
+            for (int i = 0; i < questions.size(); i++) {
+                questionTimeRemaining[i] = QUESTION_TIME_LIMIT;
+                fiftyFiftyRemovedOptions[i] = null;
+            }
             
             // Reset lifeline states
             fiftyFiftyUsed = false;
@@ -292,6 +314,12 @@ public class Controller {
             feedbackLabel.getStyleClass().removeAll("correct", "incorrect");
         }
         
+        // Save state for previous question before switching (if not first question)
+        if (currentQuestionIndex >= 0 && currentQuestionIndex < questions.size()) {
+            saveCurrentSelection();
+            saveCurrentQuestionState();
+        }
+
         // Get current question
         Question question = questions.get(currentQuestionIndex);
         
@@ -328,20 +356,54 @@ public class Controller {
             }
         }
         
+        // Restore per-question timer
+        if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+            // If this is the first time visiting this question, reset to full time
+            if (questionTimeRemaining[currentQuestionIndex] == QUESTION_TIME_LIMIT) {
+                currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+            } else {
+                // Otherwise, resume from saved remaining time
+                currentQuestionTimeRemaining = questionTimeRemaining[currentQuestionIndex];
+            }
+        } else {
+            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+        }
+        updateQuestionTimerDisplay();
+
+        // Restore 50-50 removed options if any
+        List<Integer> removed = fiftyFiftyRemovedOptions[currentQuestionIndex];
+        if (removed != null) {
+            for (int idx : removed) {
+                if (idx >= 0 && idx < optionButtons.size()) {
+                    optionButtons.get(idx).setVisible(false);
+                }
+            }
+            // If 50-50 was used on this question, keep button disabled
+            fiftyFiftyButton.setDisable(true);
+        } else {
+            // Make sure all options are visible if 50-50 not used
+            for (RadioButton btn : optionButtons) btn.setVisible(true);
+            fiftyFiftyButton.setDisable(fiftyFiftyUsed);
+        }
+
         // Stop any running timer first
         questionTimer.stop();
-        // Start fresh timer for this question
+        // Always reset timer to full duration for new question
         questionTimer.playFromStart();
     }
     
     // Replace handleSubmitAnswer with handleNextQuestion
     @FXML
     private void handleNextQuestion() {
-        // Save the current selection
         saveCurrentSelection();
-        
+        saveCurrentQuestionState();
         if (currentQuestionIndex < questions.size() - 1) {
             currentQuestionIndex++;
+            // Reset timer for the new question
+            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+            if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+                questionTimeRemaining[currentQuestionIndex] = QUESTION_TIME_LIMIT;
+            }
             showCurrentQuestion();
         }
     }
@@ -390,17 +452,21 @@ public class Controller {
     // Update navigation to previous question
     @FXML
     private void handlePreviousQuestion() {
+        saveCurrentSelection();
+        saveCurrentQuestionState();
         if (currentQuestionIndex > 0) {
-            // Save current selection before navigating
-            saveCurrentSelection();
-            
-            // Go to previous question
             currentQuestionIndex--;
+            // Reset timer for the previous question
+            if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+                currentQuestionTimeRemaining = questionTimeRemaining[currentQuestionIndex];
+            } else {
+                currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+            }
             showCurrentQuestion();
         }
     }
     
-    // Enhanced helper method to save current selection
+    // Save current selection and state for the current question
     private void saveCurrentSelection() {
         if (optionsGroup != null) {
             Toggle selectedToggle = optionsGroup.getSelectedToggle();
@@ -412,6 +478,14 @@ public class Controller {
                 }
             }
         }
+    }
+
+    private void saveCurrentQuestionState() {
+        // Save time remaining for this question
+        if (questionTimeRemaining != null && currentQuestionIndex >= 0 && currentQuestionIndex < questionTimeRemaining.length) {
+            questionTimeRemaining[currentQuestionIndex] = currentQuestionTimeRemaining;
+        }
+        // No need to save removed options here, handled in 50-50 handler
     }
     
     private void endQuiz() {
@@ -483,13 +557,18 @@ public class Controller {
         
         // Only hide incorrect options but don't disable them permanently
         List<RadioButton> hiddenButtons = new ArrayList<>();
+        List<Integer> removedIndices = new ArrayList<>();
         for (int i = 0; i < Math.min(2, incorrectIndices.size()); i++) {
             int indexToHide = incorrectIndices.get(i);
             optionButtons.get(indexToHide).setVisible(false);
             hiddenButtons.add(optionButtons.get(indexToHide));
+            removedIndices.add(indexToHide);
         }
-        
-        // After 5 seconds, make them visible again
+
+        // Save removed indices for this question
+        fiftyFiftyRemovedOptions[currentQuestionIndex] = removedIndices;
+
+        // After 5 seconds, make them visible again (but keep track of removal for navigation)
         Timer delayTimer = new Timer();
         delayTimer.schedule(new TimerTask() {
             @Override
@@ -498,6 +577,8 @@ public class Controller {
                     for (RadioButton button : hiddenButtons) {
                         button.setVisible(true);
                     }
+                    // Optionally, clear the removed options after timeout
+                    // fiftyFiftyRemovedOptions[currentQuestionIndex] = null;
                 });
             }
         }, 5000); // 5 seconds
