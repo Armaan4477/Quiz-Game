@@ -50,10 +50,6 @@ public class Question {
         return selectedIndex == correctOptionIndex;
     }
     
-    /**
-     * Returns a randomized copy of the options list, and updates the correctOptionIndex accordingly.
-     * @return A Pair containing the randomized options list and the new correct option index
-     */
     public OptionRandomizationResult getRandomizedOptions() {
         List<String> randomizedOptions = new ArrayList<>(options);
         String correctAnswer = options.get(correctOptionIndex);
@@ -63,6 +59,11 @@ public class Question {
         int newCorrectIndex = randomizedOptions.indexOf(correctAnswer);
         
         return new OptionRandomizationResult(randomizedOptions, newCorrectIndex);
+    }
+
+    public boolean isCorrectAnswer(String answer) {
+        String correctAnswer = getCorrectAnswer();
+        return correctAnswer != null && correctAnswer.equals(answer);
     }
 
     public static class OptionRandomizationResult {

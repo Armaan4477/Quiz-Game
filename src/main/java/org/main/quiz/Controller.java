@@ -466,14 +466,8 @@ public class Controller {
             
             Toggle selectedToggle = optionsGroup.getSelectedToggle();
             if (selectedToggle != null) {
-                Object userData = selectedToggle.getUserData();
-                if (userData != null) {
-                    int selectedIndex = (int) userData;
-                    if (selectedIndex >= 0 && selectedIndex < questions.get(currentQuestionIndex).getOptions().size()) {
-                        userAnswers[currentQuestionIndex] = questions.get(currentQuestionIndex)
-                                                           .getOptions().get(selectedIndex);
-                    }
-                }
+                RadioButton selectedButton = (RadioButton) selectedToggle;
+                userAnswers[currentQuestionIndex] = selectedButton.getText();
             }
         }
     }
