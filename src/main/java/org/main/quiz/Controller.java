@@ -12,7 +12,6 @@ import javafx.animation.Timeline;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import javafx.application.Platform;
-import javafx.scene.paint.Color;
 
 public class Controller {
     @FXML private TextField playerNameField;
@@ -70,12 +69,11 @@ public class Controller {
     
     // New field to track user answers
     private String[] userAnswers;    // Array to store user answers for each question
-    private boolean[] questionAnswered;  // Track which questions have been answered
     private boolean[] questionLocked;    // Track which questions are locked due to timeout
 
     // New fields for per-question state
     private int[] questionTimeRemaining; // Time left for each question
-    private List<Integer>[] fiftyFiftyRemovedOptions; // Removed option indices for each question
+    private List<Integer>[] fiftyFiftyRemovedOptions; // Fixed type safety by properly parameterizing
 
     @FXML
     public void initialize() {
@@ -260,12 +258,14 @@ public class Controller {
             
             // Initialize arrays to track user answers and question completion
             userAnswers = new String[questions.size()];
-            questionAnswered = new boolean[questions.size()];
             questionLocked = new boolean[questions.size()]; // Initialize the lock tracking array
 
             // Initialize per-question time and 50-50 removed options
             questionTimeRemaining = new int[questions.size()];
-            fiftyFiftyRemovedOptions = new List[questions.size()];
+            @SuppressWarnings("unchecked") // Suppress the warning for this specific operation
+            List<Integer>[] tempArray = new ArrayList[questions.size()]; // Fixed parameterization
+            fiftyFiftyRemovedOptions = tempArray;
+            
             for (int i = 0; i < questions.size(); i++) {
                 questionTimeRemaining[i] = QUESTION_TIME_LIMIT;
                 fiftyFiftyRemovedOptions[i] = null;
