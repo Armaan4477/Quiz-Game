@@ -56,6 +56,9 @@ public class Controller {
     @FXML private RadioButton option3;
     @FXML private RadioButton option4;
 
+    @FXML private VBox questionDetailsContainer;
+    @FXML private ScrollPane questionDetailsScrollPane;
+
     private List<Question> questions;
     private int currentQuestionIndex = 0;
     private int score = 0;
@@ -504,9 +507,58 @@ public class Controller {
             timeSpentLabel.setText("Time spent: " + formatTime(secondsElapsed));
         }
         
+        // Populate question details
+        populateQuestionDetails();
+        
         if (startScreen != null) startScreen.setVisible(false);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(true);
+    }
+    
+
+    private void populateQuestionDetails() {
+        if (questionDetailsContainer == null || questions == null || userAnswers == null) {
+            return;
+        }
+        
+        questionDetailsContainer.getChildren().clear();
+        
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            String userAnswer = userAnswers[i];
+            String correctAnswer = question.getCorrectAnswer();
+            boolean isCorrect = (userAnswer != null && userAnswer.equals(correctAnswer));
+            boolean isUnanswered = (userAnswer == null);
+            
+            VBox questionDetail = new VBox(5);
+            questionDetail.getStyleClass().add("question-detail-item");
+            
+            Label questionText = new Label("Q" + (i + 1) + ": " + question.getText());
+            questionText.getStyleClass().add("question-detail-text");
+            questionText.setWrapText(true);
+            
+            Label userAnswerLabel = new Label("Your answer: " + (userAnswer != null ? userAnswer : "Unanswered"));
+            userAnswerLabel.getStyleClass().add("user-answer");
+            
+            Label correctAnswerLabel = new Label("Correct answer: " + correctAnswer);
+            correctAnswerLabel.getStyleClass().add("correct-answer");
+
+            Label statusLabel = new Label();
+            if (isUnanswered) {
+                statusLabel.setText("Status: Not answered");
+                statusLabel.getStyleClass().add("answer-status-unanswered");
+            } else if (isCorrect) {
+                statusLabel.setText("Status: Correct");
+                statusLabel.getStyleClass().add("answer-status-correct");
+            } else {
+                statusLabel.setText("Status: Incorrect");
+                statusLabel.getStyleClass().add("answer-status-incorrect");
+            }
+            
+            questionDetail.getChildren().addAll(questionText, userAnswerLabel, correctAnswerLabel, statusLabel);
+            
+            questionDetailsContainer.getChildren().add(questionDetail);
+        }
     }
     
     @FXML

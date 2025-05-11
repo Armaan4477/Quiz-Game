@@ -101,6 +101,13 @@
                 <Label fx:id="playerResultLabel" text="Player: " styleClass="player-result"/>
                 <Label fx:id="finalScoreLabel" text="Your score: 0/0" styleClass="final-score"/>
                 <Label fx:id="timeSpentLabel" text="Time spent: 0:00" />
+                
+                <ScrollPane fx:id="questionDetailsScrollPane" fitToWidth="true" maxHeight="250" minHeight="150" styleClass="question-details-scroll">
+                    <VBox fx:id="questionDetailsContainer" spacing="10" styleClass="question-details-container">
+                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    </VBox>
+                </ScrollPane>
+                
                 <Button fx:id="newQuizButton" text="Start New Quiz" onAction="#handleNewQuiz" styleClass="new-quiz-button"/>
             </VBox>
             
