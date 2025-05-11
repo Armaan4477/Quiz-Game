@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 public class Controller {
     @FXML private TextField playerNameField;
     @FXML private ComboBox<String> categoryComboBox;
+    @FXML private ComboBox<Integer> questionCountComboBox;
     @FXML private Button startButton;
     @FXML private Button submitButton;
     @FXML private Button newQuizButton;
@@ -60,11 +61,13 @@ public class Controller {
     @FXML private ScrollPane questionDetailsScrollPane;
 
     private List<Question> questions;
+    private List<Question> allAvailableQuestions;
     private int currentQuestionIndex = 0;
     private int score = 0;
     private int secondsElapsed = 0;
     private Timeline timer; 
     private ObservableList<String> categories = FXCollections.observableArrayList();
+    private ObservableList<Integer> questionCounts = FXCollections.observableArrayList(5, 10, 15, 20);
     private List<RadioButton> optionButtons;
     private String playerName;
     
@@ -102,6 +105,11 @@ public class Controller {
             } catch (IOException e) {
                 showAlert("Error", "Failed to load categories: " + e.getMessage());
             }
+        }
+        
+        if (questionCountComboBox != null) {
+            questionCountComboBox.setItems(questionCounts);
+            questionCountComboBox.getSelectionModel().select(1); // Default to 10 questions
         }
         
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -197,10 +205,10 @@ public class Controller {
             return;
         }
         
-        List<Question> allQuestions = Firebase.getAllQuestions();
+        allAvailableQuestions = Firebase.getAllQuestions();
         Set<String> uniqueCategories = new HashSet<>();
         
-        for (Question q : allQuestions) {
+        for (Question q : allAvailableQuestions) {
             uniqueCategories.add(q.getCategory());
         }
         
@@ -231,19 +239,34 @@ public class Controller {
         String selectedCategory = categoryComboBox.getValue();
         
         try {
+            List<Question> categoryQuestions;
             if (selectedCategory != null && !selectedCategory.isEmpty()) {
-                questions = Firebase.getQuestionsByCategory(selectedCategory);
+                categoryQuestions = Firebase.getQuestionsByCategory(selectedCategory);
             } else {
-                questions = Firebase.getAllQuestions();
+                categoryQuestions = allAvailableQuestions;
             }
             
-            if (questions.isEmpty()) {
+            if (categoryQuestions.isEmpty()) {
                 showAlert("No Questions", "No questions available for this category.");
                 return;
             }
-
-            Collections.shuffle(questions);
             
+            Integer requestedQuestionCount = questionCountComboBox.getValue();
+            if (requestedQuestionCount == null) {
+                requestedQuestionCount = 10;
+            }
+            
+            int availableQuestions = categoryQuestions.size();
+            int finalQuestionCount = Math.min(requestedQuestionCount, availableQuestions);
+            
+            if (finalQuestionCount < requestedQuestionCount) {
+                showAlert("Limited Questions", 
+                    "Only " + finalQuestionCount + " questions are available in this category.");
+            }
+            
+            Collections.shuffle(categoryQuestions);
+            questions = categoryQuestions.subList(0, finalQuestionCount);
+
             currentQuestionIndex = 0;
             score = 0;
             secondsElapsed = 0;
@@ -586,6 +609,10 @@ public class Controller {
             } catch (IOException e) {
                 showAlert("Error", "Failed to reload categories: " + e.getMessage());
             }
+        }
+        
+        if (questionCountComboBox != null) {
+            questionCountComboBox.getSelectionModel().select(1);
         }
     }
     
