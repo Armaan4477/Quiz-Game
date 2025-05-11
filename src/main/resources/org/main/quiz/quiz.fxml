@@ -54,6 +54,7 @@
                         <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
                         <Button fx:id="instructionsButton" text="Instructions" onAction="#handleShowInstructions" styleClass="instructions-button" />
                         <Button fx:id="leaderboardButton" text="Leaderboard" onAction="#handleShowLeaderboard" styleClass="leaderboard-button" />
+                        <Button fx:id="adminButton" text="Admin" onAction="#handleAdminLogin" styleClass="admin-button" />
                     </HBox>
                 </VBox>
             </VBox>

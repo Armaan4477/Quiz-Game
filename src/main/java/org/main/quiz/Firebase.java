@@ -15,6 +15,7 @@ public class Firebase {
     private static String AUTH_PARAM;
     private static final String QUESTIONS_NODE = "questions";
     private static final String LEADERBOARD_NODE = "leaderboard";
+    private static final String ADMIN_NODE = "admin";
     
     static {
         try (InputStream input = Firebase.class.getClassLoader().getResourceAsStream("config.properties")) {
@@ -293,5 +294,107 @@ public class Firebase {
         });
 
         return leaderboardEntries;
+    }
+
+    public static boolean authenticateAdmin(String username, String password) throws IOException {
+        String urlString = DATABASE_URL + ADMIN_NODE + ".json" + AUTH_PARAM;
+        URL url = URI.create(urlString).toURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            throw new IOException("Failed to authenticate. Response code: " + responseCode);
+        }
+
+        StringBuilder response = new StringBuilder();
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+            }
+        }
+
+        JSONObject adminData = new JSONObject(response.toString());
+        
+        // Check if the provided credentials match
+        if (adminData.has(username)) {
+            JSONObject userData = adminData.getJSONObject(username);
+            if (userData.has("password") && userData.getString("password").equals(password)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    public static void updateQuestion(Question question) throws IOException {
+        if (question.getId() == null || question.getId().isEmpty()) {
+            throw new IOException("Question ID cannot be empty for update operation");
+        }
+        
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("text", question.getText());
+        
+        JSONArray optionsArray = new JSONArray();
+        for (String option : question.getOptions()) {
+            optionsArray.put(option);
+        }
+        
+        jsonObject.put("options", optionsArray);
+        jsonObject.put("correctOptionIndex", question.getCorrectOptionIndex());
+        jsonObject.put("category", question.getCategory());
+        jsonObject.put("difficultyLevel", question.getDifficultyLevel());
+        
+        String jsonPayload = jsonObject.toString();
+
+        String urlString = DATABASE_URL + QUESTIONS_NODE + "/" + question.getId() + ".json" + AUTH_PARAM;
+        URL url = URI.create(urlString).toURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        
+        connection.setRequestMethod("PUT");
+        connection.setRequestProperty("Content-Type", "application/json; utf-8");
+        connection.setDoOutput(true);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            InputStream errorStream = connection.getErrorStream();
+            StringBuilder errorResponse = new StringBuilder();
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(errorStream, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    errorResponse.append(line.trim());
+                }
+            }
+            throw new IOException("Firebase request failed with response code: " + responseCode + 
+                               "\nResponse: " + errorResponse);
+        }
+    }
+
+    public static void deleteQuestion(String questionId) throws IOException {
+        String urlString = DATABASE_URL + QUESTIONS_NODE + "/" + questionId + ".json" + AUTH_PARAM;
+        URL url = URI.create(urlString).toURL();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        
+        connection.setRequestMethod("DELETE");
+        
+        int responseCode = connection.getResponseCode();
+        if (responseCode != HttpURLConnection.HTTP_OK) {
+            InputStream errorStream = connection.getErrorStream();
+            StringBuilder errorResponse = new StringBuilder();
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(errorStream, StandardCharsets.UTF_8))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    errorResponse.append(line.trim());
+                }
+            }
+            throw new IOException("Firebase delete request failed with response code: " + responseCode + 
+                               "\nResponse: " + errorResponse);
+        }
     }
 }

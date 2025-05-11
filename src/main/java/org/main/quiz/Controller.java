@@ -28,6 +28,7 @@ public class Controller {
     @FXML private Button instructionsButton;
     @FXML private Button closeInstructionsButton;
     @FXML private Button leaderboardButton;
+    @FXML private Button adminButton;
     
     @FXML private Button fiftyFiftyButton;
     @FXML private Button askComputerButton;
@@ -933,6 +934,27 @@ public class Controller {
     private void handleShowLeaderboard() {
         Stage stage = (Stage) leaderboardButton.getScene().getWindow();
         LeaderboardDialog.show(stage);
+    }
+
+    @FXML
+    private void handleAdminLogin() {
+        Stage stage = (Stage) adminButton.getScene().getWindow();
+        AdminLoginDialog.show(stage, new AdminLoginDialog.AuthenticationCallback() {
+            @Override
+            public void onSuccess() {
+                Platform.runLater(() -> {
+                    AdminPanel adminPanel = new AdminPanel();
+                    adminPanel.show(stage);
+                });
+            }
+            
+            @Override
+            public void onFailure(String message) {
+                Platform.runLater(() -> {
+                    showAlert("Authentication Failed", message);
+                });
+            }
+        });
     }
 
     private void setupKeyBindings() {
