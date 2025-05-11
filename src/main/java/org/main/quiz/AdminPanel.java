@@ -21,7 +21,6 @@ public class AdminPanel {
     private TableView<Question> questionTable;
     private ObservableList<Question> questions = FXCollections.observableArrayList();
 
-    // Form fields
     private TextField idField;
     private TextField textField;
     private TextField categoryField;
@@ -42,15 +41,12 @@ public class AdminPanel {
         mainLayout.getStyleClass().add("admin-panel");
         mainLayout.setPadding(new Insets(15));
 
-        // Header
         Label titleLabel = new Label("Quiz Master Admin Panel");
         titleLabel.getStyleClass().add("admin-panel-title");
         mainLayout.setTop(titleLabel);
 
-        // Create the main content sections
         VBox contentBox = new VBox(15);
         
-        // Questions table
         setupQuestionsTable();
         VBox tableContainer = new VBox(5);
         Label questionsTitle = new Label("Questions");
@@ -58,14 +54,11 @@ public class AdminPanel {
         tableContainer.getChildren().addAll(questionsTitle, questionTable);
         VBox.setVgrow(questionTable, Priority.ALWAYS);
         
-        // Form for adding/editing questions
         VBox formContainer = createQuestionForm();
         
-        // Add everything to content
         contentBox.getChildren().addAll(tableContainer, formContainer);
         mainLayout.setCenter(contentBox);
         
-        // Load questions
         loadQuestions();
         
         Scene scene = new Scene(mainLayout);
@@ -107,7 +100,6 @@ public class AdminPanel {
         questionTable.getColumns().addAll(idCol, textCol, categoryCol, difficultyCol, correctAnswerCol);
         questionTable.setItems(questions);
         
-        // Handle selection for editing
         questionTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 populateForm(newSelection);
@@ -124,12 +116,10 @@ public class AdminPanel {
         Label formTitle = new Label("Add/Edit Question");
         formTitle.getStyleClass().add("admin-section-title");
         
-        // Question ID (hidden in normal use)
         idField = new TextField();
         idField.setVisible(false);
         idField.setManaged(false);
         
-        // Question Text
         VBox textContainer = new VBox(5);
         textContainer.getStyleClass().add("form-field");
         Label textLabel = new Label("Question Text:");
@@ -138,7 +128,6 @@ public class AdminPanel {
         textField.setPromptText("Enter the question text");
         textContainer.getChildren().addAll(textLabel, textField);
         
-        // Category
         VBox categoryContainer = new VBox(5);
         categoryContainer.getStyleClass().add("form-field");
         Label categoryLabel = new Label("Category:");
@@ -147,7 +136,6 @@ public class AdminPanel {
         categoryField.setPromptText("Enter category");
         categoryContainer.getChildren().addAll(categoryLabel, categoryField);
         
-        // Difficulty
         VBox difficultyContainer = new VBox(5);
         difficultyContainer.getStyleClass().add("form-field");
         Label difficultyLabel = new Label("Difficulty Level:");
@@ -156,7 +144,6 @@ public class AdminPanel {
         difficultyField.setValue(1);
         difficultyContainer.getChildren().addAll(difficultyLabel, difficultyField);
         
-        // Options
         VBox optionsContainer = new VBox(10);
         optionsContainer.getStyleClass().add("options-container");
         Label optionsLabel = new Label("Options (select the correct one):");
@@ -189,7 +176,6 @@ public class AdminPanel {
         
         optionsContainer.getChildren().addAll(optionsLabel, optionEntriesContainer);
         
-        // Buttons
         HBox buttonContainer = new HBox(10);
         buttonContainer.getStyleClass().add("admin-button-container");
         buttonContainer.setAlignment(Pos.CENTER);
@@ -244,7 +230,6 @@ public class AdminPanel {
                 optionFields.get(i).setText("");
             }
             
-            // Set the correct option radio button
             if (i == correctIndex) {
                 correctOptionButtons.get(i).setSelected(true);
             }
@@ -265,7 +250,6 @@ public class AdminPanel {
             correctOptionGroup.getSelectedToggle().setSelected(false);
         }
         
-        // Clear table selection
         questionTable.getSelectionModel().clearSelection();
     }
 
@@ -276,14 +260,50 @@ public class AdminPanel {
         }
         
         try {
+            List<Question> latestQuestions = Firebase.getAllQuestions();
             Question newQuestion = createQuestionFromForm();
+            String generatedId = generateSequentialQuestionId(latestQuestions);
+            newQuestion.setId(generatedId);
             String response = Firebase.pushQuestion(newQuestion);
             showAlert("Success", "Question added successfully!", Alert.AlertType.INFORMATION);
             clearForm();
-            loadQuestions(); // Refresh the table
+            loadQuestions();
         } catch (IOException e) {
             showAlert("Error", "Failed to add question: " + e.getMessage(), Alert.AlertType.ERROR);
         }
+    }
+
+    /**
+     * Generates a sequential question ID in the format "question{number}"
+     * @param questionList The list of questions to check for the highest number
+     * @return The next available sequential question ID
+     */
+    private String generateSequentialQuestionId(List<Question> questionList) {
+        int maxQuestionNumber = getHighestQuestionNumber(questionList);
+        return String.format("question%d", maxQuestionNumber + 1);
+    }
+
+    /**
+     * Finds the highest question number from existing question IDs
+     * @param questionList The list of questions to check
+     * @return The highest question number found, or 0 if none found
+     */
+    private int getHighestQuestionNumber(List<Question> questionList) {
+        int maxNumber = 0;
+        for (Question question : questionList) {
+            String id = question.getId();
+            if (id != null && id.startsWith("question")) {
+                try {
+                    String numberPart = id.substring("question".length());
+                    int questionNumber = Integer.parseInt(numberPart);
+                    if (questionNumber > maxNumber) {
+                        maxNumber = questionNumber;
+                    }
+                } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                }
+            }
+        }
+        return maxNumber;
     }
 
     private void handleUpdateQuestion() {
@@ -302,7 +322,7 @@ public class AdminPanel {
             Firebase.updateQuestion(updatedQuestion);
             showAlert("Success", "Question updated successfully!", Alert.AlertType.INFORMATION);
             clearForm();
-            loadQuestions(); // Refresh the table
+            loadQuestions();
         } catch (IOException e) {
             showAlert("Error", "Failed to update question: " + e.getMessage(), Alert.AlertType.ERROR);
         }
@@ -325,7 +345,7 @@ public class AdminPanel {
                 Firebase.deleteQuestion(idField.getText());
                 showAlert("Success", "Question deleted successfully!", Alert.AlertType.INFORMATION);
                 clearForm();
-                loadQuestions(); // Refresh the table
+                loadQuestions();
             } catch (IOException e) {
                 showAlert("Error", "Failed to delete question: " + e.getMessage(), Alert.AlertType.ERROR);
             }
@@ -333,19 +353,16 @@ public class AdminPanel {
     }
 
     private boolean validateForm() {
-        // Check if required fields are filled
         if (textField.getText().trim().isEmpty() || 
             categoryField.getText().trim().isEmpty() || 
             difficultyField.getValue() == null) {
             return false;
         }
         
-        // Check if all options have text and one is selected as correct
         if (correctOptionGroup.getSelectedToggle() == null) {
             return false;
         }
         
-        // Make sure all option fields have text
         for (TextField field : optionFields) {
             if (field.getText().trim().isEmpty()) {
                 return false;
@@ -356,7 +373,7 @@ public class AdminPanel {
     }
 
     private Question createQuestionFromForm() {
-        String id = idField.getText().trim(); // May be empty for new questions
+        String id = idField.getText().trim();
         String text = textField.getText().trim();
         String category = categoryField.getText().trim();
         int difficulty = difficultyField.getValue();

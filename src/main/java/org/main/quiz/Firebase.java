@@ -48,11 +48,11 @@ public class Firebase {
         
         String jsonPayload = jsonObject.toString();
 
-        String urlString = DATABASE_URL + QUESTIONS_NODE + ".json" + AUTH_PARAM;
+        String urlString = DATABASE_URL + QUESTIONS_NODE + "/" + question.getId() + ".json" + AUTH_PARAM;
         URL url = URI.create(urlString).toURL();
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", "application/json; utf-8");
         connection.setDoOutput(true);
 
