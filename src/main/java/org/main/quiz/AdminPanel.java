@@ -253,6 +253,7 @@ public class AdminPanel {
         questionTable.getSelectionModel().clearSelection();
     }
 
+    @SuppressWarnings("unused")
     private void handleAddQuestion() {
         if (!validateForm()) {
             showAlert("Validation Error", "Please fill all fields and select a correct answer.", Alert.AlertType.WARNING);
@@ -273,21 +274,11 @@ public class AdminPanel {
         }
     }
 
-    /**
-     * Generates a sequential question ID in the format "question{number}"
-     * @param questionList The list of questions to check for the highest number
-     * @return The next available sequential question ID
-     */
     private String generateSequentialQuestionId(List<Question> questionList) {
         int maxQuestionNumber = getHighestQuestionNumber(questionList);
         return String.format("question%d", maxQuestionNumber + 1);
     }
 
-    /**
-     * Finds the highest question number from existing question IDs
-     * @param questionList The list of questions to check
-     * @return The highest question number found, or 0 if none found
-     */
     private int getHighestQuestionNumber(List<Question> questionList) {
         int maxNumber = 0;
         for (Question question : questionList) {
