@@ -1,1 +1,4 @@
 .DS_Store
+/target
+src/main/resources/config.properties
+QuizGameGUI.java

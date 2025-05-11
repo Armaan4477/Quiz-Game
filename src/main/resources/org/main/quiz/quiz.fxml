@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.main.quiz.Controller">
+    <top>
+        <VBox alignment="CENTER" spacing="10" styleClass="header-section">
+            <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+            <HBox alignment="CENTER" spacing="20">
+                <Label text="Quiz Master" styleClass="title-label" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font name="System Bold" size="24"/>
+                    </font>
+                </Label>
+                <Button fx:id="pauseButton" text="|| Pause" styleClass="pause-button" onAction="#handlePauseGame" visible="false" />
+            </HBox>
+        </VBox>
+    </top>
+    
+    <center>
+        <StackPane fx:id="contentPane">
+            <VBox fx:id="startScreen" alignment="CENTER" spacing="20">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Welcome to Quiz Master!" styleClass="welcome-label">
+                    <font>
+                        <Font size="22"/>
+                    </font>
+                </Label>
+                <Text text="Enter your name, select a category and press Start Quiz to begin." wrappingWidth="400"/>
+                <ImageView fx:id="logoImageView" fitWidth="150" fitHeight="150" preserveRatio="true"/>
+                
+                <VBox spacing="15" alignment="CENTER" styleClass="player-info-container">
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Player Name:" />
+                        <TextField fx:id="playerNameField" prefWidth="200" promptText="Enter your name"/>
+                    </HBox>
+                    
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Select Category:" />
+                        <ComboBox fx:id="categoryComboBox" prefWidth="200" />
+                    </HBox>
+                    
+                    <HBox spacing="10" alignment="CENTER">
+                        <Label text="Number of Questions:" />
+                        <ComboBox fx:id="questionCountComboBox" prefWidth="200" />
+                    </HBox>
+                    
+                    <HBox spacing="15" alignment="CENTER">
+                        <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
+                        <Button fx:id="instructionsButton" text="Instructions" onAction="#handleShowInstructions" styleClass="instructions-button" />
+                        <Button fx:id="leaderboardButton" text="Leaderboard" onAction="#handleShowLeaderboard" styleClass="leaderboard-button" />
+                        <Button fx:id="adminButton" text="Admin" onAction="#handleAdminLogin" styleClass="admin-button" />
+                    </HBox>
+                </VBox>
+            </VBox>
+            
+            <VBox fx:id="questionScreen" alignment="CENTER" spacing="20" visible="false">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                
+                <HBox spacing="20" alignment="CENTER">
+                    <Label fx:id="playerDisplayLabel" text="Player: " styleClass="player-display"/>
+                    <Label fx:id="scoreLabel" text="Score: 0/0" />
+                    <Label fx:id="timeLabel" text="Time: 20" styleClass="question-timer"/>
+                </HBox>
+                
+                <Label fx:id="questionNumberLabel" text="Question 1/10" styleClass="question-number"/>
+                
+                <Label fx:id="questionTextLabel" text="Question text goes here" wrapText="true" styleClass="question-text">
+                    <font>
+                        <Font size="18"/>
+                    </font>
+                </Label>
+                
+                <fx:define>
+                    <ToggleGroup fx:id="optionsGroup"/>
+                </fx:define>
+                
+                <VBox fx:id="optionsBox" spacing="10" alignment="CENTER_LEFT">
+                    <RadioButton fx:id="option1" text="Option 1" toggleGroup="$optionsGroup"/>
+                    <RadioButton fx:id="option2" text="Option 2" toggleGroup="$optionsGroup"/>
+                    <RadioButton fx:id="option3" text="Option 3" toggleGroup="$optionsGroup"/>
+                    <RadioButton fx:id="option4" text="Option 4" toggleGroup="$optionsGroup"/>
+                </VBox>
+                
+                <HBox spacing="20" alignment="CENTER">
+                    <Button fx:id="fiftyFiftyButton" text="50-50" onAction="#handleFiftyFifty" styleClass="lifeline-button"/>
+                    <Button fx:id="askComputerButton" text="Ask Computer" onAction="#handleAskComputer" styleClass="lifeline-button"/>
+                </HBox>
+                
+                <HBox spacing="20" alignment="CENTER">
+                    <Button fx:id="previousButton" text="Previous" onAction="#handlePreviousQuestion" styleClass="previous-button"/>
+                    <Button fx:id="nextButton" text="Next" onAction="#handleNextQuestion" styleClass="next-button"/>
+                    <Button fx:id="submitButton" text="Submit Quiz" onAction="#handleSubmitQuiz" styleClass="submit-button"/>
+                </HBox>
+                
+                <Label fx:id="feedbackLabel" text="" styleClass="feedback-label"/>
+            </VBox>
+            
+            <VBox fx:id="resultsScreen" alignment="CENTER" spacing="20" visible="false">
+                <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+                <Label text="Quiz Results" styleClass="results-title">
+                    <font>
+                        <Font size="24"/>
+                    </font>
+                </Label>
+                <Label fx:id="playerResultLabel" text="Player: " styleClass="player-result"/>
+                <Label fx:id="finalScoreLabel" text="Your score: 0/0" styleClass="final-score"/>
+                <Label fx:id="timeSpentLabel" text="Time spent: 0:00" />
+                
+                <ScrollPane fx:id="questionDetailsScrollPane" fitToWidth="true" maxHeight="250" minHeight="150" styleClass="question-details-scroll">
+                    <VBox fx:id="questionDetailsContainer" spacing="10" styleClass="question-details-container">
+                        <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+                    </VBox>
+                </ScrollPane>
+                
+                <Button fx:id="newQuizButton" text="Start New Quiz" onAction="#handleNewQuiz" styleClass="new-quiz-button"/>
+            </VBox>
+            
+            <StackPane fx:id="pauseOverlay" visible="false" styleClass="pause-overlay">
+                <VBox fx:id="pauseMenu" alignment="CENTER" spacing="15" styleClass="pause-menu" maxWidth="400" maxHeight="500">
+                    <Label text="GAME PAUSED" styleClass="pause-menu-title"/>
+                    
+                    <Button fx:id="resumeButton" text="Resume Game" onAction="#handleResumeGame" 
+                            styleClass="pause-menu-button, resume-button"/>
+                    
+                    <Button fx:id="newGameButton" text="New Game" onAction="#handleNewGameFromPause" 
+                            styleClass="pause-menu-button"/>
+                    
+                    <VBox alignment="CENTER" spacing="5" styleClass="credits-section">
+                        <padding><Insets top="20" bottom="20"/></padding>
+                        <Label text="Credits" styleClass="credits-title"/>
+                        <Text text="Quiz Master Game" fill="white" styleClass="credits-text"/>
+                        <Text text="Developed by: Armaan N" fill="white" styleClass="credits-text"/>
+                        <Text text="Version: 2.0" fill="white" styleClass="credits-text"/>
+                        <Text text="© 2023 Quiz Master" fill="white" styleClass="credits-text"/>
+                    </VBox>
+                    
+                    <Button fx:id="exitButton" text="Exit Game" onAction="#handleExitGame" 
+                            styleClass="pause-menu-button, exit-button"/>
+                </VBox>
+            </StackPane>
+            
+            <StackPane fx:id="instructionsOverlay" visible="false" styleClass="modal-overlay">
+                <VBox fx:id="instructionsModal" alignment="CENTER" spacing="15" styleClass="instructions-modal" maxWidth="600" maxHeight="500">
+                    <Label text="How to Play" styleClass="modal-title"/>
+                    
+                    <ScrollPane fitToWidth="true" styleClass="instructions-scroll">
+                        <VBox spacing="15" styleClass="instructions-content">
+                            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+                            
+                            <Label text="Quiz Rules" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                1. Answer multiple-choice questions within the time limit.
+                                2. Each question has a 20-second timer.
+                                3. Once the timer runs out, you can't change your answer.
+                                4. Navigate between questions using Previous and Next buttons.
+                                5. Submit your quiz when you're ready to see your results.
+                            </Text>
+                            
+                            <Label text="Lifelines" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                • 50-50: Removes two incorrect options.
+                                • Ask Computer: The computer will select an option (80% chance of being correct).
+                                • Each lifeline can only be used once per quiz.
+                            </Text>
+                            
+                            <Label text="Scoring" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                • Each correct answer earns 1 point.
+                                • There is no penalty for wrong answers.
+                                • Your final score will be displayed at the end of the quiz.
+                            </Text>
+                            
+                            <Label text="Keyboard Shortcuts" styleClass="instructions-section-title"/>
+                            <GridPane styleClass="shortcuts-grid" hgap="15" vgap="5">
+                                <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+                                
+                                <columnConstraints>
+                                    <ColumnConstraints minWidth="80" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+                                
+                                <Label text="Start Screen:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+                                <Label text="S" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label text="Start Quiz" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <Label text="I" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label text="Show Instructions" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                
+                                <Label text="Quiz Screen:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+                                <Label text="1-4" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <Label text="Select answer options" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                <Label text="Enter" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <Label text="Next question" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                <Label text="Backspace" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                <Label text="Previous question" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                <Label text="F" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                <Label text="50-50 Lifeline" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                <Label text="A" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                <Label text="Ask Computer Lifeline" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                <Label text="P" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                <Label text="Pause Game" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                <Label text="S" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                <Label text="Submit Quiz" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                
+                                <Label text="Global:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="11" GridPane.columnSpan="2" />
+                                <Label text="Esc" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                                <Label text="Close dialog / Pause / Resume" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                <Label text="Ctrl+E" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                                <Label text="Exit game" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                <Label text="H" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                                <Label text="Show keyboard shortcuts help" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                            </GridPane>
+                            
+                            <Label text="Tips" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                • Read each question carefully before answering.
+                                • Use lifelines strategically when you're unsure.
+                                • You can pause the game at any time using the Pause button or P key.
+                                • Have fun and test your knowledge!
+                            </Text>
+                        </VBox>
+                    </ScrollPane>
+                    
+                    <Button fx:id="closeInstructionsButton" text="Got it!" onAction="#handleCloseInstructions" 
+                            styleClass="close-modal-button"/>
+                </VBox>
+            </StackPane>
+        </StackPane>
+    </center>
+    
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" styleClass="footer">
+            <padding><Insets top="10" right="10" bottom="10" left="10"/></padding>
+            <Label text="© 2023 Quiz Master" />
+        </HBox>
+    </bottom>
+</BorderPane>
