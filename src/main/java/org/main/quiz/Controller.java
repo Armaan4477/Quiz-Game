@@ -400,6 +400,20 @@ public class Controller {
             }
         }
         
+        // Restore 50-50 state if it was used on this question
+        if (fiftyFiftyRemovedOptions != null && 
+            currentQuestionIndex < fiftyFiftyRemovedOptions.length && 
+            fiftyFiftyRemovedOptions[currentQuestionIndex] != null) {
+            
+            List<Integer> removedIndices = fiftyFiftyRemovedOptions[currentQuestionIndex];
+            // Apply the removed options
+            for (Integer index : removedIndices) {
+                if (index >= 0 && index < optionButtons.size()) {
+                    optionButtons.get(index).setVisible(false);
+                }
+            }
+        }
+        
         // Start the question timer only if time remains and question isn't locked
         if (currentQuestionTimeRemaining > 0 && !isLocked) {
             questionTimer.playFromStart();
@@ -564,7 +578,6 @@ public class Controller {
         int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
         
         // Count to track how many incorrect options we've disabled
-        int disabledCount = 0;
         List<Integer> incorrectIndices = new ArrayList<>();
         
         // Find all incorrect options
@@ -577,33 +590,16 @@ public class Controller {
         // Shuffle the incorrect options to randomize which ones are disabled
         Collections.shuffle(incorrectIndices);
         
-        // Only hide incorrect options but don't disable them permanently
-        List<RadioButton> hiddenButtons = new ArrayList<>();
+        // Remove 2 incorrect options
         List<Integer> removedIndices = new ArrayList<>();
         for (int i = 0; i < Math.min(2, incorrectIndices.size()); i++) {
             int indexToHide = incorrectIndices.get(i);
             optionButtons.get(indexToHide).setVisible(false);
-            hiddenButtons.add(optionButtons.get(indexToHide));
             removedIndices.add(indexToHide);
         }
 
-        // Save removed indices for this question
+        // Save removed indices for this question - they will remain hidden
         fiftyFiftyRemovedOptions[currentQuestionIndex] = removedIndices;
-
-        // After 5 seconds, make them visible again (but keep track of removal for navigation)
-        Timer delayTimer = new Timer();
-        delayTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    for (RadioButton button : hiddenButtons) {
-                        button.setVisible(true);
-                    }
-                    // Optionally, clear the removed options after timeout
-                    // fiftyFiftyRemovedOptions[currentQuestionIndex] = null;
-                });
-            }
-        }, 5000); // 5 seconds
         
         // Mark the lifeline as used and disable the button
         fiftyFiftyUsed = true;
