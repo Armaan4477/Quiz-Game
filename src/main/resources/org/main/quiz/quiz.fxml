@@ -11,11 +11,14 @@
     <top>
         <VBox alignment="CENTER" spacing="10" styleClass="header-section">
             <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
-            <Label text="Quiz Master" styleClass="title-label">
-                <font>
-                    <Font name="System Bold" size="24"/>
-                </font>
-            </Label>
+            <HBox alignment="CENTER" spacing="20">
+                <Label text="Quiz Master" styleClass="title-label" HBox.hgrow="ALWAYS">
+                    <font>
+                        <Font name="System Bold" size="24"/>
+                    </font>
+                </Label>
+                <Button fx:id="pauseButton" text="|| Pause" styleClass="pause-button" onAction="#handlePauseGame" visible="false" />
+            </HBox>
         </VBox>
     </top>
     
@@ -100,6 +103,31 @@
                 <Label fx:id="timeSpentLabel" text="Time spent: 0:00" />
                 <Button fx:id="newQuizButton" text="Start New Quiz" onAction="#handleNewQuiz" styleClass="new-quiz-button"/>
             </VBox>
+            
+            <!-- Pause Menu Screen -->
+            <StackPane fx:id="pauseOverlay" visible="false" styleClass="pause-overlay">
+                <VBox fx:id="pauseMenu" alignment="CENTER" spacing="15" styleClass="pause-menu" maxWidth="400" maxHeight="500">
+                    <Label text="GAME PAUSED" styleClass="pause-menu-title"/>
+                    
+                    <Button fx:id="resumeButton" text="Resume Game" onAction="#handleResumeGame" 
+                            styleClass="pause-menu-button, resume-button"/>
+                    
+                    <Button fx:id="newGameButton" text="New Game" onAction="#handleNewGameFromPause" 
+                            styleClass="pause-menu-button"/>
+                    
+                    <VBox alignment="CENTER" spacing="5" styleClass="credits-section">
+                        <padding><Insets top="20" bottom="20"/></padding>
+                        <Label text="Credits" styleClass="credits-title"/>
+                        <Text text="Quiz Master Game" fill="white" styleClass="credits-text"/>
+                        <Text text="Developed by: Armaan N" fill="white" styleClass="credits-text"/>
+                        <Text text="Version: 2.0" fill="white" styleClass="credits-text"/>
+                        <Text text="© 2023 Quiz Master" fill="white" styleClass="credits-text"/>
+                    </VBox>
+                    
+                    <Button fx:id="exitButton" text="Exit Game" onAction="#handleExitGame" 
+                            styleClass="pause-menu-button, exit-button"/>
+                </VBox>
+            </StackPane>
         </StackPane>
     </center>
     

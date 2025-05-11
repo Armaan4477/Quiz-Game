@@ -12,6 +12,7 @@ import javafx.animation.Timeline;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import javafx.application.Platform;
+import javafx.stage.Stage;
 
 public class Controller {
     @FXML private TextField playerNameField;
@@ -24,6 +25,14 @@ public class Controller {
     @FXML private Button fiftyFiftyButton;
     @FXML private Button askComputerButton;
     @FXML private Button previousButton;
+    
+    // Pause menu elements
+    @FXML private Button pauseButton;
+    @FXML private Button resumeButton;
+    @FXML private Button newGameButton;
+    @FXML private Button exitButton;
+    @FXML private StackPane pauseOverlay;
+    @FXML private VBox pauseMenu;
     
     @FXML private Label playerDisplayLabel;
     @FXML private Label playerResultLabel;
@@ -114,6 +123,7 @@ public class Controller {
         if (startScreen != null) startScreen.setVisible(true);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
+        if (pauseOverlay != null) pauseOverlay.setVisible(false);
 
         if (contentPane != null && startScreen != null) {
             if (!contentPane.getChildren().contains(startScreen)) {
@@ -125,6 +135,10 @@ public class Controller {
         
         if (previousButton != null) {
             previousButton.setDisable(true);
+        }
+        
+        if (pauseButton != null) {
+            pauseButton.setVisible(false);
         }
     }
 
@@ -270,6 +284,10 @@ public class Controller {
             if (startScreen != null) startScreen.setVisible(false);
             if (questionScreen != null) questionScreen.setVisible(true);
             if (resultsScreen != null) resultsScreen.setVisible(false);
+            
+            if (pauseButton != null) {
+                pauseButton.setVisible(true);
+            }
             
         } catch (Exception e) {
             e.printStackTrace();
@@ -457,6 +475,10 @@ public class Controller {
         timer.stop();
         questionTimer.stop();
         
+        if (pauseButton != null) {
+            pauseButton.setVisible(false);
+        }
+        
         if (playerResultLabel != null) {
             playerResultLabel.setText("Player: " + playerName);
         }
@@ -493,6 +515,10 @@ public class Controller {
             }
             startScreen.toFront();
             startScreen.setVisible(true);
+        }
+        
+        if (pauseButton != null) {
+            pauseButton.setVisible(false);
         }
     }
     
@@ -589,6 +615,145 @@ public class Controller {
         
         askComputerUsed = true;
         askComputerButton.setDisable(true);
+    }
+    
+    @FXML
+    private void handlePauseGame() {
+        // Pause all timers
+        if (timer != null) {
+            timer.pause();
+        }
+        if (questionTimer != null) {
+            questionTimer.pause();
+        }
+        
+        // Hide the question content
+        if (optionsBox != null) {
+            optionsBox.setVisible(false);
+        }
+        if (questionTextLabel != null) {
+            questionTextLabel.setVisible(false);
+        }
+        if (questionNumberLabel != null) {
+            questionNumberLabel.setVisible(false);
+        }
+        if (timeLabel != null) {
+            timeLabel.setVisible(false);
+        }
+        if (feedbackLabel != null) {
+            feedbackLabel.setVisible(false);
+        }
+        
+        // Hide navigation buttons during pause
+        if (previousButton != null) previousButton.setVisible(false);
+        if (nextButton != null) nextButton.setVisible(false);
+        if (submitButton != null) submitButton.setVisible(false);
+        if (fiftyFiftyButton != null) fiftyFiftyButton.setVisible(false);
+        if (askComputerButton != null) askComputerButton.setVisible(false);
+        
+        // Show the pause overlay
+        if (pauseOverlay != null) {
+            pauseOverlay.setVisible(true);
+            pauseOverlay.toFront();
+        }
+    }
+    
+    @FXML
+    private void handleResumeGame() {
+        // Hide the pause overlay
+        if (pauseOverlay != null) {
+            pauseOverlay.setVisible(false);
+        }
+        
+        // Restore the question content
+        if (optionsBox != null) {
+            optionsBox.setVisible(true);
+        }
+        if (questionTextLabel != null) {
+            questionTextLabel.setVisible(true);
+        }
+        if (questionNumberLabel != null) {
+            questionNumberLabel.setVisible(true);
+        }
+        if (timeLabel != null) {
+            timeLabel.setVisible(true);
+        }
+        if (feedbackLabel != null) {
+            feedbackLabel.setVisible(true);
+        }
+        
+        // Restore navigation buttons
+        if (previousButton != null) {
+            previousButton.setVisible(true);
+            previousButton.setDisable(currentQuestionIndex == 0);
+        }
+        if (nextButton != null) {
+            nextButton.setVisible(true);
+            nextButton.setDisable(currentQuestionIndex == questions.size() - 1);
+        }
+        if (submitButton != null) submitButton.setVisible(true);
+        
+        // Restore lifeline buttons if they haven't been used
+        if (fiftyFiftyButton != null) {
+            fiftyFiftyButton.setVisible(true);
+            fiftyFiftyButton.setDisable(fiftyFiftyUsed || 
+                questionLocked[currentQuestionIndex] || 
+                currentQuestionTimeRemaining == 0);
+        }
+        if (askComputerButton != null) {
+            askComputerButton.setVisible(true);
+            askComputerButton.setDisable(askComputerUsed || 
+                questionLocked[currentQuestionIndex] || 
+                currentQuestionTimeRemaining == 0);
+        }
+        
+        // Resume timers if they are not at the end
+        if (timer != null) {
+            timer.play();
+        }
+        if (questionTimer != null && currentQuestionTimeRemaining > 0 && 
+            !questionLocked[currentQuestionIndex]) {
+            questionTimer.play();
+        }
+    }
+    
+    @FXML
+    private void handleNewGameFromPause() {
+        // Stop all timers
+        if (timer != null) {
+            timer.stop();
+        }
+        if (questionTimer != null) {
+            questionTimer.stop();
+        }
+        
+        // Hide pause overlay
+        if (pauseOverlay != null) {
+            pauseOverlay.setVisible(false);
+        }
+        
+        // Hide pause button
+        if (pauseButton != null) {
+            pauseButton.setVisible(false);
+        }
+        
+        // Call the existing new quiz handler
+        handleNewQuiz();
+    }
+    
+    @FXML
+    private void handleExitGame() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Exit Game");
+        alert.setHeaderText("Are you sure you want to exit?");
+        alert.setContentText("Any unsaved progress will be lost.");
+        
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Get the current window and close it
+            Stage stage = (Stage) exitButton.getScene().getWindow();
+            stage.close();
+        }
     }
     
     private String formatTime(int seconds) {
