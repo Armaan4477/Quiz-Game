@@ -240,7 +240,6 @@
     -fx-background-color: white;
 }
 
-/* Pause Button Styling */
 .pause-button {
     -fx-background-color: #E91E63;
     -fx-text-fill: white;
@@ -254,7 +253,6 @@
     -fx-cursor: hand;
 }
 
-/* Pause Menu Styling */
 .pause-menu {
     -fx-background-color: rgba(0, 0, 0, 0.85);
     -fx-padding: 30px;

@@ -104,7 +104,6 @@
                 <Button fx:id="newQuizButton" text="Start New Quiz" onAction="#handleNewQuiz" styleClass="new-quiz-button"/>
             </VBox>
             
-            <!-- Pause Menu Screen -->
             <StackPane fx:id="pauseOverlay" visible="false" styleClass="pause-overlay">
                 <VBox fx:id="pauseMenu" alignment="CENTER" spacing="15" styleClass="pause-menu" maxWidth="400" maxHeight="500">
                     <Label text="GAME PAUSED" styleClass="pause-menu-title"/>

@@ -26,7 +26,6 @@ public class Controller {
     @FXML private Button askComputerButton;
     @FXML private Button previousButton;
     
-    // Pause menu elements
     @FXML private Button pauseButton;
     @FXML private Button resumeButton;
     @FXML private Button newGameButton;
@@ -78,6 +77,7 @@ public class Controller {
 
     private int[] questionTimeRemaining;
     private List<Integer>[] fiftyFiftyRemovedOptions;
+    private int[] randomizedCorrectIndices;
 
     @FXML
     public void initialize() {
@@ -238,6 +238,8 @@ public class Controller {
                 showAlert("No Questions", "No questions available for this category.");
                 return;
             }
+
+            Collections.shuffle(questions);
             
             currentQuestionIndex = 0;
             score = 0;
@@ -245,6 +247,7 @@ public class Controller {
             
             userAnswers = new String[questions.size()];
             questionLocked = new boolean[questions.size()];
+            randomizedCorrectIndices = new int[questions.size()];
 
             questionTimeRemaining = new int[questions.size()];
             @SuppressWarnings("unchecked")
@@ -255,6 +258,7 @@ public class Controller {
                 questionTimeRemaining[i] = QUESTION_TIME_LIMIT;
                 fiftyFiftyRemovedOptions[i] = null;
                 questionLocked[i] = false;
+                randomizedCorrectIndices[i] = questions.get(i).getCorrectOptionIndex();
             }
             
             fiftyFiftyUsed = false;
@@ -343,11 +347,20 @@ public class Controller {
         }
         updateQuestionTimerDisplay();
         
-        List<String> options = question.getOptions();
+        List<String> displayOptions;
+        
+        if (isLocked || userAnswers[currentQuestionIndex] != null) {
+            displayOptions = question.getOptions();
+        } else {
+            Question.OptionRandomizationResult randomizationResult = question.getRandomizedOptions();
+            displayOptions = randomizationResult.getRandomizedOptions();
+            randomizedCorrectIndices[currentQuestionIndex] = randomizationResult.getNewCorrectIndex();
+        }
+        
         for (int i = 0; i < optionButtons.size(); i++) {
             RadioButton button = optionButtons.get(i);
-            if (i < options.size()) {
-                button.setText(options.get(i));
+            if (i < displayOptions.size()) {
+                button.setText(displayOptions.get(i));
                 button.setVisible(true);
                 button.setUserData(Integer.valueOf(i));
                 button.setSelected(false);
@@ -359,8 +372,8 @@ public class Controller {
         }
         
         if (userAnswers[currentQuestionIndex] != null) {
-            for (int i = 0; i < options.size(); i++) {
-                if (options.get(i).equals(userAnswers[currentQuestionIndex])) {
+            for (int i = 0; i < displayOptions.size(); i++) {
+                if (displayOptions.get(i).equals(userAnswers[currentQuestionIndex])) {
                     optionsGroup.selectToggle(optionButtons.get(i));
                     break;
                 }
@@ -424,7 +437,7 @@ public class Controller {
             String userAnswer = userAnswers[i];
             
             if (userAnswer != null && 
-                userAnswer.equals(question.getOptions().get(question.getCorrectOptionIndex()))) {
+                userAnswer.equals(question.getCorrectAnswer())) {
                 score++;
             }
         }
@@ -520,6 +533,14 @@ public class Controller {
         if (pauseButton != null) {
             pauseButton.setVisible(false);
         }
+        
+        if (categoryComboBox != null) {
+            try {
+                loadCategories();
+            } catch (IOException e) {
+                showAlert("Error", "Failed to reload categories: " + e.getMessage());
+            }
+        }
     }
     
     @FXML
@@ -536,8 +557,8 @@ public class Controller {
             return;
         }
         
-        Question currentQuestion = questions.get(currentQuestionIndex);
-        int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
+        // Use the randomized correct index for the current question
+        int correctOptionIndex = randomizedCorrectIndices[currentQuestionIndex];
 
         List<Integer> incorrectIndices = new ArrayList<>();
 
@@ -576,8 +597,8 @@ public class Controller {
             return;
         }
         
-        Question currentQuestion = questions.get(currentQuestionIndex);
-        int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
+        // Use the randomized correct index for the current question
+        int correctOptionIndex = randomizedCorrectIndices[currentQuestionIndex];
         
         List<Integer> visibleOptionIndices = new ArrayList<>();
         for (int i = 0; i < optionButtons.size(); i++) {
@@ -619,7 +640,6 @@ public class Controller {
     
     @FXML
     private void handlePauseGame() {
-        // Pause all timers
         if (timer != null) {
             timer.pause();
         }
@@ -627,7 +647,6 @@ public class Controller {
             questionTimer.pause();
         }
         
-        // Hide the question content
         if (optionsBox != null) {
             optionsBox.setVisible(false);
         }
@@ -644,14 +663,12 @@ public class Controller {
             feedbackLabel.setVisible(false);
         }
         
-        // Hide navigation buttons during pause
         if (previousButton != null) previousButton.setVisible(false);
         if (nextButton != null) nextButton.setVisible(false);
         if (submitButton != null) submitButton.setVisible(false);
         if (fiftyFiftyButton != null) fiftyFiftyButton.setVisible(false);
         if (askComputerButton != null) askComputerButton.setVisible(false);
-        
-        // Show the pause overlay
+
         if (pauseOverlay != null) {
             pauseOverlay.setVisible(true);
             pauseOverlay.toFront();
@@ -660,12 +677,10 @@ public class Controller {
     
     @FXML
     private void handleResumeGame() {
-        // Hide the pause overlay
         if (pauseOverlay != null) {
             pauseOverlay.setVisible(false);
         }
-        
-        // Restore the question content
+
         if (optionsBox != null) {
             optionsBox.setVisible(true);
         }
@@ -682,7 +697,6 @@ public class Controller {
             feedbackLabel.setVisible(true);
         }
         
-        // Restore navigation buttons
         if (previousButton != null) {
             previousButton.setVisible(true);
             previousButton.setDisable(currentQuestionIndex == 0);
@@ -693,7 +707,6 @@ public class Controller {
         }
         if (submitButton != null) submitButton.setVisible(true);
         
-        // Restore lifeline buttons if they haven't been used
         if (fiftyFiftyButton != null) {
             fiftyFiftyButton.setVisible(true);
             fiftyFiftyButton.setDisable(fiftyFiftyUsed || 
@@ -707,7 +720,6 @@ public class Controller {
                 currentQuestionTimeRemaining == 0);
         }
         
-        // Resume timers if they are not at the end
         if (timer != null) {
             timer.play();
         }
@@ -719,7 +731,6 @@ public class Controller {
     
     @FXML
     private void handleNewGameFromPause() {
-        // Stop all timers
         if (timer != null) {
             timer.stop();
         }
@@ -727,18 +738,47 @@ public class Controller {
             questionTimer.stop();
         }
         
-        // Hide pause overlay
         if (pauseOverlay != null) {
             pauseOverlay.setVisible(false);
         }
         
-        // Hide pause button
         if (pauseButton != null) {
             pauseButton.setVisible(false);
         }
         
-        // Call the existing new quiz handler
+        if (optionsBox != null) {
+            optionsBox.setVisible(true);
+        }
+        if (questionTextLabel != null) {
+            questionTextLabel.setVisible(true);
+        }
+        if (questionNumberLabel != null) {
+            questionNumberLabel.setVisible(true);
+        }
+        if (timeLabel != null) {
+            timeLabel.setVisible(true);
+        }
+        if (feedbackLabel != null) {
+            feedbackLabel.setVisible(true);
+        }
+        
+        if (previousButton != null) previousButton.setVisible(true);
+        if (nextButton != null) nextButton.setVisible(true);
+        if (submitButton != null) submitButton.setVisible(true);
+        if (fiftyFiftyButton != null) fiftyFiftyButton.setVisible(true);
+        if (askComputerButton != null) askComputerButton.setVisible(true);
+        
         handleNewQuiz();
+        
+        Platform.runLater(() -> {
+            if (contentPane != null && startScreen != null) {
+                if (!contentPane.getChildren().contains(startScreen)) {
+                    contentPane.getChildren().add(startScreen);
+                }
+                startScreen.toFront();
+                startScreen.setVisible(true);
+            }
+        });
     }
     
     @FXML
@@ -750,7 +790,6 @@ public class Controller {
         
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            // Get the current window and close it
             Stage stage = (Stage) exitButton.getScene().getWindow();
             stage.close();
         }

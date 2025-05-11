@@ -1,6 +1,8 @@
 package org.main.quiz;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Question {
     private String id;
@@ -46,5 +48,38 @@ public class Question {
     
     public boolean isCorrectAnswer(int selectedIndex) {
         return selectedIndex == correctOptionIndex;
+    }
+    
+    /**
+     * Returns a randomized copy of the options list, and updates the correctOptionIndex accordingly.
+     * @return A Pair containing the randomized options list and the new correct option index
+     */
+    public OptionRandomizationResult getRandomizedOptions() {
+        List<String> randomizedOptions = new ArrayList<>(options);
+        String correctAnswer = options.get(correctOptionIndex);
+        
+        Collections.shuffle(randomizedOptions);
+        
+        int newCorrectIndex = randomizedOptions.indexOf(correctAnswer);
+        
+        return new OptionRandomizationResult(randomizedOptions, newCorrectIndex);
+    }
+
+    public static class OptionRandomizationResult {
+        private final List<String> randomizedOptions;
+        private final int newCorrectIndex;
+        
+        public OptionRandomizationResult(List<String> randomizedOptions, int newCorrectIndex) {
+            this.randomizedOptions = randomizedOptions;
+            this.newCorrectIndex = newCorrectIndex;
+        }
+        
+        public List<String> getRandomizedOptions() {
+            return randomizedOptions;
+        }
+        
+        public int getNewCorrectIndex() {
+            return newCorrectIndex;
+        }
     }
 }
