@@ -1,0 +1,12 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "questions": {
+      ".indexOn": ["category"]
+    },
+    "leaderboard": {
+      ".indexOn": ["timestamp"]
+    }
+  }
+}
