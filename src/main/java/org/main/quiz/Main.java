@@ -30,16 +30,13 @@ public class Main extends Application {
             } else {
                 System.err.println("Warning: CSS stylesheet not found");
             }
-            
-            // Configure the primary stage
+
             primaryStage.setTitle("Quiz Master");
             primaryStage.setScene(scene);
             
-            // Force the stage to be in front on macOS
             primaryStage.setAlwaysOnTop(true);
             primaryStage.show();
             
-            // Then set it back to normal behavior after it's shown
             Platform.runLater(() -> {
                 primaryStage.setAlwaysOnTop(false);
             });

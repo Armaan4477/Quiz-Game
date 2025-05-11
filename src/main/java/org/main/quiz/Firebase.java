@@ -30,9 +30,6 @@ public class Firebase {
         }
     }
 
-    /**
-     * Pushes a new question to the Firebase Realtime Database.
-     */
     public static String pushQuestion(Question question) throws IOException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("text", question.getText());
@@ -113,7 +110,6 @@ public class Firebase {
             for (String key : jsonResponse.keySet()) {
                 JSONObject questionJson = jsonResponse.getJSONObject(key);
                 
-                // Parse options array
                 List<String> options = new ArrayList<>();
                 JSONArray optionsArray = questionJson.getJSONArray("options");
                 for (int i = 0; i < optionsArray.length(); i++) {
@@ -136,11 +132,10 @@ public class Firebase {
     }
     
     public static List<Question> getQuestionsByCategory(String category) throws IOException {
-        // Properly encode the query parameters
+
         String encodedCategory = URLEncoder.encode("\"" + category + "\"", StandardCharsets.UTF_8);
         String encodedOrderBy = URLEncoder.encode("\"category\"", StandardCharsets.UTF_8);
         
-        // Build the URL with encoded parameters
         String urlString = DATABASE_URL + QUESTIONS_NODE + ".json" + AUTH_PARAM + 
                            "&orderBy=" + encodedOrderBy + "&equalTo=" + encodedCategory;
                            
@@ -148,7 +143,6 @@ public class Firebase {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 
-        // Rest of the method similar to getAllQuestions
         int responseCode = connection.getResponseCode();
         InputStream is = (responseCode >= 200 && responseCode < 300) 
                           ? connection.getInputStream() 
@@ -170,7 +164,6 @@ public class Firebase {
         JSONObject jsonResponse = new JSONObject(response.toString());
         
         if (!jsonResponse.isEmpty()) {
-            // Process as in getAllQuestions
             for (String key : jsonResponse.keySet()) {
                 JSONObject questionJson = jsonResponse.getJSONObject(key);
                 

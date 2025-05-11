@@ -21,7 +21,6 @@
     
     <center>
         <StackPane fx:id="contentPane">
-            <!-- Start Screen -->
             <VBox fx:id="startScreen" alignment="CENTER" spacing="20">
                 <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
                 <Label text="Welcome to Quiz Master!" styleClass="welcome-label">
@@ -47,7 +46,6 @@
                 </VBox>
             </VBox>
             
-            <!-- Question Screen -->
             <VBox fx:id="questionScreen" alignment="CENTER" spacing="20" visible="false">
                 <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
                 
@@ -76,7 +74,6 @@
                     <RadioButton fx:id="option4" text="Option 4" toggleGroup="$optionsGroup"/>
                 </VBox>
                 
-                <!-- Add lifeline buttons -->
                 <HBox spacing="20" alignment="CENTER">
                     <Button fx:id="fiftyFiftyButton" text="50-50" onAction="#handleFiftyFifty" styleClass="lifeline-button"/>
                     <Button fx:id="askComputerButton" text="Ask Computer" onAction="#handleAskComputer" styleClass="lifeline-button"/>
@@ -91,7 +88,6 @@
                 <Label fx:id="feedbackLabel" text="" styleClass="feedback-label"/>
             </VBox>
             
-            <!-- Results Screen -->
             <VBox fx:id="resultsScreen" alignment="CENTER" spacing="20" visible="false">
                 <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
                 <Label text="Quiz Results" styleClass="results-title">

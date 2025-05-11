@@ -42,7 +42,6 @@
     -fx-cursor: hand;
 }
 
-/* Add previous button styling */
 .previous-button {
     -fx-background-color: #607D8B;
     -fx-text-fill: white;
@@ -57,7 +56,6 @@
     -fx-cursor: hand;
 }
 
-/* Add next button styling */
 .next-button {
     -fx-background-color: #009688;
     -fx-text-fill: white;
@@ -102,7 +100,6 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
 }
 
-/* New style for question timer */
 .question-timer {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
@@ -179,7 +176,6 @@
     -fx-text-fill: blue;
 }
 
-/* New styles for lifeline buttons */
 .lifeline-button {
     -fx-background-color: #FF9800;
     -fx-text-fill: white;
@@ -200,7 +196,6 @@
     -fx-opacity: 0.7;
 }
 
-/* Styles for player information */
 .player-info-container {
     -fx-background-color: #ffffff;
     -fx-padding: 15px;
@@ -222,7 +217,6 @@
     -fx-padding: 0 0 10px 0;
 }
 
-/* Time display styles */
 .time-spent {
     -fx-font-size: 16px;
     -fx-text-fill: #3a6073;
@@ -233,7 +227,6 @@
     -fx-border-radius: 4px;
 }
 
-/* Styles for text fields */
 .text-field {
     -fx-background-color: #f8f8f8;
     -fx-border-color: #ddd;
