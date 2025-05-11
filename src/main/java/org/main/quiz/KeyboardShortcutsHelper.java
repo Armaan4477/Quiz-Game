@@ -12,10 +12,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 public class KeyboardShortcutsHelper {
 
     public static void showKeyboardShortcutsDialog(Stage parentStage) {
+        showKeyboardShortcutsDialog(parentStage, null);
+    }
+
+    public static void showKeyboardShortcutsDialog(Stage parentStage, Runnable onCloseCallback) {
         Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(parentStage);
@@ -65,12 +71,35 @@ public class KeyboardShortcutsHelper {
         scrollPane.setPrefHeight(300);
         
         Button closeButton = new Button("Close");
-        closeButton.setOnAction(e -> dialog.close());
+        closeButton.setOnAction(e -> {
+            dialog.close();
+            if (onCloseCallback != null) {
+                onCloseCallback.run();
+            }
+        });
         closeButton.setPrefWidth(100);
         
         mainContainer.getChildren().addAll(titleLabel, scrollPane, closeButton);
         
         Scene scene = new Scene(mainContainer);
+        
+        // Add event handler for Escape key to close the dialog
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                dialog.close();
+                if (onCloseCallback != null) {
+                    onCloseCallback.run();
+                }
+                event.consume();
+            }
+        });
+        
+        dialog.setOnCloseRequest(event -> {
+            if (onCloseCallback != null) {
+                onCloseCallback.run();
+            }
+        });
+        
         dialog.setScene(scene);
         dialog.show();
     }

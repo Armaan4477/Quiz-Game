@@ -1023,7 +1023,19 @@ public class Controller {
         } else if (code == KeyCode.H) {
             event.consume();
             Stage stage = (Stage) contentPane.getScene().getWindow();
-            KeyboardShortcutsHelper.showKeyboardShortcutsDialog(stage);
+            
+            // Pause the game if we're in the question screen
+            boolean wasInQuestionScreen = questionScreen != null && questionScreen.isVisible();
+            if (wasInQuestionScreen) {
+                handlePauseGame();
+            }
+            
+            // Show the shortcuts dialog and resume the game when it's closed
+            KeyboardShortcutsHelper.showKeyboardShortcutsDialog(stage, () -> {
+                if (wasInQuestionScreen) {
+                    handleResumeGame();
+                }
+            });
         }
     }
     
