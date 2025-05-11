@@ -175,11 +175,54 @@
                                 • Your final score will be displayed at the end of the quiz.
                             </Text>
                             
+                            <Label text="Keyboard Shortcuts" styleClass="instructions-section-title"/>
+                            <GridPane styleClass="shortcuts-grid" hgap="15" vgap="5">
+                                <padding><Insets top="5" right="5" bottom="5" left="5"/></padding>
+                                
+                                <columnConstraints>
+                                    <ColumnConstraints minWidth="80" />
+                                    <ColumnConstraints hgrow="ALWAYS" />
+                                </columnConstraints>
+                                
+                                <!-- Start Screen Shortcuts -->
+                                <Label text="Start Screen:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
+                                <Label text="S" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <Label text="Start Quiz" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                <Label text="I" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                <Label text="Show Instructions" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                
+                                <!-- Quiz Screen Shortcuts -->
+                                <Label text="Quiz Screen:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
+                                <Label text="1-4" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                <Label text="Select answer options" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                <Label text="Enter" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                <Label text="Next question" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                <Label text="Backspace" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                <Label text="Previous question" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                <Label text="F" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+                                <Label text="50-50 Lifeline" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                <Label text="A" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                <Label text="Ask Computer Lifeline" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                <Label text="P" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                <Label text="Pause Game" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                <Label text="S" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                <Label text="Submit Quiz" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                
+                                <!-- Global Shortcuts -->
+                                <Label text="Global:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="11" GridPane.columnSpan="2" />
+                                <Label text="Esc" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="12" />
+                                <Label text="Close dialog / Pause / Resume" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                <Label text="Ctrl+E" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="13" />
+                                <Label text="Exit game" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                <Label text="H" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="14" />
+                                <Label text="Show keyboard shortcuts help" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                            </GridPane>
+                            
                             <Label text="Tips" styleClass="instructions-section-title"/>
                             <Text styleClass="instructions-text" wrappingWidth="540">
                                 • Read each question carefully before answering.
                                 • Use lifelines strategically when you're unsure.
-                                • You can pause the game at any time using the Pause button.
+                                • You can pause the game at any time using the Pause button or P key.
                                 • Have fun and test your knowledge!
                             </Text>
                         </VBox>

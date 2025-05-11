@@ -39,6 +39,8 @@ public class Main extends Application {
             
             Platform.runLater(() -> {
                 primaryStage.setAlwaysOnTop(false);
+                // Request focus to ensure key events work properly
+                root.requestFocus();
             });
             
             System.out.println("Application window should now be visible");

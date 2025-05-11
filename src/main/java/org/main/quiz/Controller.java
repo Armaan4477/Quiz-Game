@@ -13,6 +13,9 @@ import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.event.EventHandler;
 
 public class Controller {
     @FXML private TextField playerNameField;
@@ -156,6 +159,8 @@ public class Controller {
         if (pauseButton != null) {
             pauseButton.setVisible(false);
         }
+
+        setupKeyBindings();
     }
 
     private void updateQuestionTimerDisplay() {
@@ -898,6 +903,142 @@ public class Controller {
     private void handleCloseInstructions() {
         if (instructionsOverlay != null) {
             instructionsOverlay.setVisible(false);
+        }
+    }
+
+    private void setupKeyBindings() {
+        Platform.runLater(() -> {
+            if (contentPane != null && contentPane.getScene() != null) {
+                contentPane.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+                    @Override
+                    public void handle(KeyEvent event) {
+                        if (event.isConsumed()) {
+                            return;
+                        }
+
+                        if (startScreen != null && startScreen.isVisible()) {
+                            handleStartScreenKeyBindings(event);
+                        } else if (questionScreen != null && questionScreen.isVisible()) {
+                            handleQuestionScreenKeyBindings(event);
+                        } else if (resultsScreen != null && resultsScreen.isVisible()) {
+                            handleResultsScreenKeyBindings(event);
+                        }
+
+                        handleGlobalKeyBindings(event);
+                    }
+                });
+            }
+        });
+    }
+
+    private void handleStartScreenKeyBindings(KeyEvent event) {
+        KeyCode code = event.getCode();
+        
+        if (code == KeyCode.S && startButton != null && !startButton.isDisabled()) {
+            event.consume();
+            handleStartQuiz();
+        } else if (code == KeyCode.I && instructionsButton != null) {
+            event.consume();
+            handleShowInstructions();
+        } else if (code == KeyCode.TAB && playerNameField != null) {
+            if (event.isShiftDown()) {
+            } else {
+            }
+        }
+    }
+
+    private void handleQuestionScreenKeyBindings(KeyEvent event) {
+        KeyCode code = event.getCode();
+        
+        if (code == KeyCode.P && pauseButton != null && pauseButton.isVisible()) {
+            event.consume();
+            handlePauseGame();
+        } else if (code == KeyCode.DIGIT1 || code == KeyCode.NUMPAD1) {
+            event.consume();
+            selectOptionByIndex(0);
+        } else if (code == KeyCode.DIGIT2 || code == KeyCode.NUMPAD2) {
+            event.consume();
+            selectOptionByIndex(1);
+        } else if (code == KeyCode.DIGIT3 || code == KeyCode.NUMPAD3) {
+            event.consume();
+            selectOptionByIndex(2);
+        } else if (code == KeyCode.DIGIT4 || code == KeyCode.NUMPAD4) {
+            event.consume();
+            selectOptionByIndex(3);
+        } else if ((code == KeyCode.ENTER || code == KeyCode.RIGHT) && nextButton != null && !nextButton.isDisabled()) {
+            event.consume();
+            handleNextQuestion();
+        } else if ((code == KeyCode.BACK_SPACE || code == KeyCode.LEFT) && previousButton != null && !previousButton.isDisabled()) {
+            event.consume();
+            handlePreviousQuestion();
+        } else if (code == KeyCode.F && fiftyFiftyButton != null && !fiftyFiftyButton.isDisabled()) {
+            event.consume();
+            handleFiftyFifty();
+        } else if (code == KeyCode.A && askComputerButton != null && !askComputerButton.isDisabled()) {
+            event.consume();
+            handleAskComputer();
+        } else if (code == KeyCode.S && submitButton != null) {
+            event.consume();
+            handleSubmitQuiz();
+        }
+    }
+
+    private void handleResultsScreenKeyBindings(KeyEvent event) {
+        KeyCode code = event.getCode();
+        
+        if (code == KeyCode.N && newQuizButton != null) {
+            event.consume();
+            handleNewQuiz();
+        }
+    }
+
+    private void handleGlobalKeyBindings(KeyEvent event) {
+        KeyCode code = event.getCode();
+        
+        if (code == KeyCode.E && event.isControlDown()) {
+            event.consume();
+            if (pauseOverlay != null && pauseOverlay.isVisible()) {
+                handleExitGame();
+            } else {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Exit Game");
+                alert.setHeaderText("Are you sure you want to exit?");
+                alert.setContentText("Any unsaved progress will be lost.");
+                
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    Stage stage = (Stage) contentPane.getScene().getWindow();
+                    stage.close();
+                }
+            }
+        } else if (code == KeyCode.ESCAPE) {
+            event.consume();
+            if (instructionsOverlay != null && instructionsOverlay.isVisible()) {
+                handleCloseInstructions();
+            } else if (pauseOverlay != null && pauseOverlay.isVisible()) {
+                handleResumeGame();
+            } else if (questionScreen != null && questionScreen.isVisible()) {
+                handlePauseGame();
+            }
+        } else if (code == KeyCode.H) {
+            event.consume();
+            Stage stage = (Stage) contentPane.getScene().getWindow();
+            KeyboardShortcutsHelper.showKeyboardShortcutsDialog(stage);
+        }
+    }
+    
+    private void selectOptionByIndex(int index) {
+        if (questionScreen != null && questionScreen.isVisible() && 
+            optionButtons != null && index < optionButtons.size() &&
+            questionLocked != null && currentQuestionIndex < questionLocked.length && 
+            !questionLocked[currentQuestionIndex] && 
+            currentQuestionTimeRemaining > 0) {
+            
+            RadioButton option = optionButtons.get(index);
+            if (option.isVisible() && !option.isDisabled()) {
+                optionsGroup.selectToggle(option);
+                saveCurrentSelection();
+            }
         }
     }
 }
