@@ -54,7 +54,7 @@
                 <HBox spacing="20" alignment="CENTER">
                     <Label fx:id="playerDisplayLabel" text="Player: " styleClass="player-display"/>
                     <Label fx:id="scoreLabel" text="Score: 0/0" />
-                    <Label fx:id="timeLabel" text="Time: 0:00" />
+                    <Label fx:id="timeLabel" text="Time: 20" styleClass="question-timer"/>
                 </HBox>
                 
                 <Label fx:id="questionNumberLabel" text="Question 1/10" styleClass="question-number"/>
@@ -76,7 +76,17 @@
                     <RadioButton fx:id="option4" text="Option 4" toggleGroup="$optionsGroup"/>
                 </VBox>
                 
-                <Button fx:id="submitButton" text="Submit Answer" onAction="#handleSubmitAnswer" styleClass="submit-button"/>
+                <!-- Add lifeline buttons -->
+                <HBox spacing="20" alignment="CENTER">
+                    <Button fx:id="fiftyFiftyButton" text="50-50" onAction="#handleFiftyFifty" styleClass="lifeline-button"/>
+                    <Button fx:id="askComputerButton" text="Ask Computer" onAction="#handleAskComputer" styleClass="lifeline-button"/>
+                </HBox>
+                
+                <HBox spacing="20" alignment="CENTER">
+                    <Button fx:id="previousButton" text="Previous" onAction="#handlePreviousQuestion" styleClass="previous-button"/>
+                    <Button fx:id="nextButton" text="Next" onAction="#handleNextQuestion" styleClass="next-button"/>
+                    <Button fx:id="submitButton" text="Submit Quiz" onAction="#handleSubmitQuiz" styleClass="submit-button"/>
+                </HBox>
                 
                 <Label fx:id="feedbackLabel" text="" styleClass="feedback-label"/>
             </VBox>

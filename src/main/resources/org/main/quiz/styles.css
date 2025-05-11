@@ -42,6 +42,36 @@
     -fx-cursor: hand;
 }
 
+/* Add previous button styling */
+.previous-button {
+    -fx-background-color: #607D8B;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-min-width: 150px;
+    -fx-background-radius: 4px;
+}
+
+.previous-button:hover {
+    -fx-background-color: #455A64;
+    -fx-cursor: hand;
+}
+
+/* Add next button styling */
+.next-button {
+    -fx-background-color: #009688;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-min-width: 150px;
+    -fx-background-radius: 4px;
+}
+
+.next-button:hover {
+    -fx-background-color: #00796B;
+    -fx-cursor: hand;
+}
+
 .new-quiz-button {
     -fx-background-color: #673AB7;
     -fx-text-fill: white;
@@ -70,6 +100,23 @@
     -fx-background-color: #fff;
     -fx-background-radius: 5px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+}
+
+/* New style for question timer */
+.question-timer {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+    -fx-background-color: #f8f8f8;
+    -fx-background-radius: 4px;
+    -fx-padding: 5px 10px;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 4px;
+}
+
+.question-timer.warning {
+    -fx-text-fill: #F44336;
+    -fx-border-color: #F44336;
 }
 
 .welcome-label {
@@ -128,7 +175,28 @@
     -fx-text-fill: blue;
 }
 
-/* New styles for player information */
+/* New styles for lifeline buttons */
+.lifeline-button {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-min-width: 120px;
+    -fx-background-radius: 4px;
+}
+
+.lifeline-button:hover {
+    -fx-background-color: #F57C00;
+    -fx-cursor: hand;
+}
+
+.lifeline-button:disabled {
+    -fx-background-color: #BDBDBD;
+    -fx-text-fill: #757575;
+    -fx-opacity: 0.7;
+}
+
+/* Styles for player information */
 .player-info-container {
     -fx-background-color: #ffffff;
     -fx-padding: 15px;

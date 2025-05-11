@@ -12,6 +12,7 @@ import javafx.animation.Timeline;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
 import javafx.application.Platform;
+import javafx.scene.paint.Color;
 
 public class Controller {
     @FXML private TextField playerNameField;
@@ -19,6 +20,12 @@ public class Controller {
     @FXML private Button startButton;
     @FXML private Button submitButton;
     @FXML private Button newQuizButton;
+    @FXML private Button nextButton;  // Add reference to the next button
+    
+    // Add lifeline buttons and previous button
+    @FXML private Button fiftyFiftyButton;
+    @FXML private Button askComputerButton;
+    @FXML private Button previousButton; // Add reference to the previous button
     
     @FXML private Label playerDisplayLabel;
     @FXML private Label playerResultLabel;
@@ -46,11 +53,24 @@ public class Controller {
     private List<Question> questions;
     private int currentQuestionIndex = 0;
     private int score = 0;
-    private int secondsElapsed = 0;
-    private Timeline timer;
+    private int secondsElapsed = 0;  // Keep this for total quiz time tracking
+    private Timeline timer;  // Overall timer
     private ObservableList<String> categories = FXCollections.observableArrayList();
     private List<RadioButton> optionButtons;
     private String playerName;
+    
+    // Simplified timer fields
+    private static final int QUESTION_TIME_LIMIT = 20; // 20 seconds per question
+    private Timeline questionTimer; // Timer for the current question
+    private int currentQuestionTimeRemaining; // Time remaining for current question
+    
+    // New fields for lifelines
+    private boolean fiftyFiftyUsed = false;
+    private boolean askComputerUsed = false;
+    
+    // New field to track user answers
+    private String[] userAnswers;    // Array to store user answers for each question
+    private boolean[] questionAnswered;  // Track which questions have been answered
 
     @FXML
     public void initialize() {
@@ -78,17 +98,65 @@ public class Controller {
             }
         }
         
-        // Setup timer
+        // Setup silent timer for tracking total quiz time
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             secondsElapsed++;
-            updateTimeLabel();
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
+        
+        // Setup per-question timer
+        questionTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            currentQuestionTimeRemaining--;
+            updateQuestionTimerDisplay();
+            
+            // Check for time running out
+            if (currentQuestionTimeRemaining <= 0) {
+                handleQuestionTimeout();
+            }
+        }));
+        questionTimer.setCycleCount(Timeline.INDEFINITE);
         
         // Initially show start screen
         if (startScreen != null) startScreen.setVisible(true);
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
+        
+        // Initially disable previous button since we start at first question
+        if (previousButton != null) {
+            previousButton.setDisable(true);
+        }
+    }
+
+    // Update the question timer display with visual feedback
+    private void updateQuestionTimerDisplay() {
+        if (timeLabel == null) return;
+        
+        // Update the time label with the remaining time
+        timeLabel.setText("Time: " + currentQuestionTimeRemaining);
+        
+        // Visual feedback when time is running low
+        if (currentQuestionTimeRemaining <= 5) {
+            timeLabel.getStyleClass().add("warning");
+        } else {
+            timeLabel.getStyleClass().removeAll("warning");
+        }
+    }
+
+    // Handle question timeout
+    private void handleQuestionTimeout() {
+        // Stop the timer
+        questionTimer.stop();
+        
+        // Show timeout alert
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Time's Up");
+        alert.setHeaderText(null);
+        alert.setContentText("Time's up for this question! You can still answer it, but try to move faster on the next one.");
+        alert.showAndWait();
+        
+        // Reset timer when alert is closed
+        currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+        updateQuestionTimerDisplay();
     }
 
     private void loadCategories() throws IOException {
@@ -150,6 +218,26 @@ public class Controller {
             score = 0;
             secondsElapsed = 0;
             
+            // Initialize arrays to track user answers and question completion
+            userAnswers = new String[questions.size()];
+            questionAnswered = new boolean[questions.size()];
+            
+            // Reset lifeline states
+            fiftyFiftyUsed = false;
+            askComputerUsed = false;
+            
+            // Disable previous button at the start of quiz
+            if (previousButton != null) {
+                previousButton.setDisable(true);
+            }
+            
+            // Re-enable lifeline buttons
+            if (fiftyFiftyButton != null) fiftyFiftyButton.setDisable(false);
+            if (askComputerButton != null) askComputerButton.setDisable(false);
+            
+            // Reset current question timer
+            currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+            
             // Update UI
             if (scoreLabel != null) {
                 scoreLabel.setText("Score: 0/" + questions.size());
@@ -160,9 +248,7 @@ public class Controller {
                 playerDisplayLabel.setText("Player: " + playerName);
             }
             
-            updateTimeLabel();
-            
-            // Start timer
+            // Start overall timer
             timer.playFromStart();
             
             // Show first question
@@ -188,6 +274,14 @@ public class Controller {
             return;
         }
         
+        // Enable/disable navigation buttons based on current question index
+        if (previousButton != null) {
+            previousButton.setDisable(currentQuestionIndex == 0);
+        }
+        if (nextButton != null) {
+            nextButton.setDisable(currentQuestionIndex == questions.size() - 1);
+        }
+        
         // Reset UI state - clear selection without triggering events
         if (optionsGroup != null) {
             optionsGroup.selectToggle(null);
@@ -205,6 +299,10 @@ public class Controller {
         questionNumberLabel.setText("Question " + (currentQuestionIndex + 1) + "/" + questions.size());
         questionTextLabel.setText(question.getText());
         
+        // Reset per-question timer
+        currentQuestionTimeRemaining = QUESTION_TIME_LIMIT;
+        updateQuestionTimerDisplay();
+        
         // Set options
         List<String> options = question.getOptions();
         for (int i = 0; i < optionButtons.size(); i++) {
@@ -214,85 +312,112 @@ public class Controller {
                 button.setVisible(true);
                 button.setUserData(Integer.valueOf(i)); // Store option index as userData
                 button.setSelected(false); // Ensure it's not selected by default
+                button.setDisable(false); // Enable all buttons for the new question
             } else {
                 button.setVisible(false);
             }
         }
+        
+        // If this question was previously answered, restore the user's answer
+        if (userAnswers[currentQuestionIndex] != null) {
+            for (int i = 0; i < options.size(); i++) {
+                if (options.get(i).equals(userAnswers[currentQuestionIndex])) {
+                    optionsGroup.selectToggle(optionButtons.get(i));
+                    break;
+                }
+            }
+        }
+        
+        // Stop any running timer first
+        questionTimer.stop();
+        // Start fresh timer for this question
+        questionTimer.playFromStart();
     }
     
+    // Replace handleSubmitAnswer with handleNextQuestion
     @FXML
-    private void handleSubmitAnswer() {
-        if (optionsGroup == null || feedbackLabel == null) {
-            showAlert("Error", "Option group not initialized properly");
-            return;
+    private void handleNextQuestion() {
+        // Save the current selection
+        saveCurrentSelection();
+        
+        if (currentQuestionIndex < questions.size() - 1) {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+    }
+    
+    // Add new method for submitting the entire quiz
+    @FXML
+    private void handleSubmitQuiz() {
+        // Save the current selection before submitting
+        saveCurrentSelection();
+        
+        // Prompt for confirmation
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Submit Quiz");
+        alert.setHeaderText("Are you sure you want to submit your quiz?");
+        alert.setContentText("You won't be able to change your answers after submission.");
+        
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Grade the quiz
+            gradeQuiz();
+            
+            // End the quiz
+            endQuiz();
+        }
+    }
+    
+    // New method to grade the quiz and calculate final score
+    private void gradeQuiz() {
+        score = 0;
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            String userAnswer = userAnswers[i];
+            
+            if (userAnswer != null && 
+                userAnswer.equals(question.getOptions().get(question.getCorrectOptionIndex()))) {
+                score++;
+            }
         }
         
-        Toggle selectedToggle = optionsGroup.getSelectedToggle();
-        
-        if (selectedToggle == null) {
-            showAlert("No Selection", "Please select an answer before submitting.");
-            return;
-        }
-        
-        // Get the selected option index from the userData
-        Object userData = selectedToggle.getUserData();
-        if (userData == null) {
-            showAlert("Error", "Selected option data not found");
-            return;
-        }
-        
-        int selectedIndex = (int) userData;
-        Question currentQuestion = questions.get(currentQuestionIndex);
-        boolean isCorrect = currentQuestion.isCorrectAnswer(selectedIndex);
-        
-        // Update feedback and score
-        if (isCorrect) {
-            score++;
-            feedbackLabel.setText("Correct!");
-            feedbackLabel.getStyleClass().removeAll("incorrect");
-            feedbackLabel.getStyleClass().add("correct");
-        } else {
-            feedbackLabel.setText("Incorrect! The correct answer is: " + 
-                                currentQuestion.getCorrectAnswer());
-            feedbackLabel.getStyleClass().removeAll("correct");
-            feedbackLabel.getStyleClass().add("incorrect");
-        }
-        
-        // Update score
+        // Update score label
         if (scoreLabel != null) {
             scoreLabel.setText("Score: " + score + "/" + questions.size());
         }
-        
-        // Disable option selection after answering
-        for (RadioButton button : optionButtons) {
-            button.setDisable(true);
+    }
+    
+    // Update navigation to previous question
+    @FXML
+    private void handlePreviousQuestion() {
+        if (currentQuestionIndex > 0) {
+            // Save current selection before navigating
+            saveCurrentSelection();
+            
+            // Go to previous question
+            currentQuestionIndex--;
+            showCurrentQuestion();
         }
-        
-        // Enable options again and move to next question after a delay
-        Timer delayTimer = new Timer();
-        delayTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Platform.runLater(() -> {
-                    // Re-enable options for the next question
-                    for (RadioButton button : optionButtons) {
-                        button.setDisable(false);
-                    }
-                    
-                    currentQuestionIndex++;
-                    if (currentQuestionIndex < questions.size()) {
-                        showCurrentQuestion();
-                    } else {
-                        endQuiz();
-                    }
-                });
+    }
+    
+    // Enhanced helper method to save current selection
+    private void saveCurrentSelection() {
+        if (optionsGroup != null) {
+            Toggle selectedToggle = optionsGroup.getSelectedToggle();
+            if (selectedToggle != null) {
+                Object userData = selectedToggle.getUserData();
+                if (userData != null) {
+                    int selectedIndex = (int) userData;
+                    userAnswers[currentQuestionIndex] = questions.get(currentQuestionIndex).getOptions().get(selectedIndex);
+                }
             }
-        }, 2000); // 2 second delay
+        }
     }
     
     private void endQuiz() {
-        // Stop timer
+        // Stop all timers
         timer.stop();
+        questionTimer.stop();
         
         // Update results screen with player name
         if (playerResultLabel != null) {
@@ -321,18 +446,107 @@ public class Controller {
             playerNameField.clear();
         }
         
+        // Reset lifeline states
+        fiftyFiftyUsed = false;
+        askComputerUsed = false;
+        
         // Reset and go back to start screen
         if (startScreen != null) startScreen.setVisible(true);
-        if (questionScreen != null) questionScreen.setVisible(false);
+        if (questionScreen != null) startScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
     }
     
-    private void updateTimeLabel() {
-        if (timeLabel != null) {
-            timeLabel.setText("Time: " + formatTime(secondsElapsed));
+    // Add 50-50 lifeline handler
+    @FXML
+    private void handleFiftyFifty() {
+        if (fiftyFiftyUsed || currentQuestionIndex >= questions.size()) {
+            return;
         }
+        
+        // Get current question and correct answer
+        Question currentQuestion = questions.get(currentQuestionIndex);
+        int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
+        
+        // Count to track how many incorrect options we've disabled
+        int disabledCount = 0;
+        List<Integer> incorrectIndices = new ArrayList<>();
+        
+        // Find all incorrect options
+        for (int i = 0; i < optionButtons.size(); i++) {
+            if (i != correctOptionIndex) {
+                incorrectIndices.add(i);
+            }
+        }
+        
+        // Shuffle the incorrect options to randomize which ones are disabled
+        Collections.shuffle(incorrectIndices);
+        
+        // Only hide incorrect options but don't disable them permanently
+        List<RadioButton> hiddenButtons = new ArrayList<>();
+        for (int i = 0; i < Math.min(2, incorrectIndices.size()); i++) {
+            int indexToHide = incorrectIndices.get(i);
+            optionButtons.get(indexToHide).setVisible(false);
+            hiddenButtons.add(optionButtons.get(indexToHide));
+        }
+        
+        // After 5 seconds, make them visible again
+        Timer delayTimer = new Timer();
+        delayTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    for (RadioButton button : hiddenButtons) {
+                        button.setVisible(true);
+                    }
+                });
+            }
+        }, 5000); // 5 seconds
+        
+        // Mark the lifeline as used and disable the button
+        fiftyFiftyUsed = true;
+        fiftyFiftyButton.setDisable(true);
     }
     
+    // Add Ask Computer lifeline handler
+    @FXML
+    private void handleAskComputer() {
+        if (askComputerUsed || currentQuestionIndex >= questions.size()) {
+            return;
+        }
+        
+        // Get current question
+        Question currentQuestion = questions.get(currentQuestionIndex);
+        int correctOptionIndex = currentQuestion.getCorrectOptionIndex();
+        
+        // Generate random number to simulate computer's accuracy (80% chance to be correct)
+        Random random = new Random();
+        int responsePercentage = random.nextInt(100);
+        
+        if (responsePercentage < 80) {
+            // Computer gives the correct answer
+            optionsGroup.selectToggle(optionButtons.get(correctOptionIndex));
+        } else {
+            // Computer gives a random wrong answer
+            List<Integer> incorrectIndices = new ArrayList<>();
+            for (int i = 0; i < optionButtons.size(); i++) {
+                if (i != correctOptionIndex) {
+                    incorrectIndices.add(i);
+                }
+            }
+            
+            if (!incorrectIndices.isEmpty()) {
+                int randomIncorrectIndex = incorrectIndices.get(random.nextInt(incorrectIndices.size()));
+                optionsGroup.selectToggle(optionButtons.get(randomIncorrectIndex));
+            }
+        }
+        
+        // Mark the lifeline as used and disable the button
+        askComputerUsed = true;
+        askComputerButton.setDisable(true);
+    }
+    
+    // We no longer need updateTimeLabel() as we only show the countdown timer
+    // Keeping formatTime for the results screen
     private String formatTime(int seconds) {
         int minutes = seconds / 60;
         int secs = seconds % 60;
