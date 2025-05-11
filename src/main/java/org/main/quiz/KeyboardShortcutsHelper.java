@@ -41,12 +41,10 @@ public class KeyboardShortcutsHelper {
         shortcutsGrid.setVgap(8);
         shortcutsGrid.setPadding(new Insets(10));
         
-        // Start Screen shortcuts
         addCategoryHeader(shortcutsGrid, "Start Screen", 0);
         addShortcut(shortcutsGrid, "S", "Start Quiz", 1);
         addShortcut(shortcutsGrid, "I", "Show Instructions", 2);
         
-        // Quiz Screen shortcuts
         addCategoryHeader(shortcutsGrid, "Quiz Screen", 3);
         addShortcut(shortcutsGrid, "1-4", "Select answer option", 4);
         addShortcut(shortcutsGrid, "Enter / Right Arrow", "Next question", 5);
@@ -56,11 +54,9 @@ public class KeyboardShortcutsHelper {
         addShortcut(shortcutsGrid, "S", "Submit Quiz", 9);
         addShortcut(shortcutsGrid, "P", "Pause game", 10);
         
-        // Results Screen shortcuts
         addCategoryHeader(shortcutsGrid, "Results Screen", 11);
         addShortcut(shortcutsGrid, "N", "New Quiz", 12);
         
-        // Global shortcuts
         addCategoryHeader(shortcutsGrid, "Global Shortcuts", 13);
         addShortcut(shortcutsGrid, "Esc", "Close dialog / Pause / Resume", 14);
         addShortcut(shortcutsGrid, "Ctrl+E", "Exit game", 15);
@@ -83,7 +79,6 @@ public class KeyboardShortcutsHelper {
         
         Scene scene = new Scene(mainContainer);
         
-        // Add event handler for Escape key to close the dialog
         scene.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 dialog.close();

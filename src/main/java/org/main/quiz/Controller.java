@@ -27,6 +27,7 @@ public class Controller {
     @FXML private Button nextButton;
     @FXML private Button instructionsButton;
     @FXML private Button closeInstructionsButton;
+    @FXML private Button leaderboardButton;
     
     @FXML private Button fiftyFiftyButton;
     @FXML private Button askComputerButton;
@@ -116,7 +117,7 @@ public class Controller {
         
         if (questionCountComboBox != null) {
             questionCountComboBox.setItems(questionCounts);
-            questionCountComboBox.getSelectionModel().select(1); // Default to 10 questions
+            questionCountComboBox.getSelectionModel().select(1);
         }
         
         timer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
@@ -534,7 +535,30 @@ public class Controller {
             timeSpentLabel.setText("Time spent: " + formatTime(secondsElapsed));
         }
         
-        // Populate question details
+        try {
+            String selectedCategory = categoryComboBox.getValue();
+            LeaderboardEntry entry = new LeaderboardEntry(
+                playerName, 
+                score, 
+                questions.size(), 
+                secondsElapsed,
+                selectedCategory != null ? selectedCategory : "General"
+            );
+            Firebase.addLeaderboardEntry(entry);
+        } catch (IOException e) {
+            System.err.println("Failed to save to leaderboard: " + e.getMessage());
+            e.printStackTrace();
+            
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Leaderboard Error");
+                alert.setHeaderText("Could not save your score to the leaderboard");
+                alert.setContentText("Your score was not saved due to a connection error. " + 
+                                    "You can try again later by restarting the application.");
+                alert.showAndWait();
+            });
+        }
+        
         populateQuestionDetails();
         
         if (startScreen != null) startScreen.setVisible(false);
@@ -640,7 +664,6 @@ public class Controller {
             return;
         }
         
-        // Use the randomized correct index for the current question
         int correctOptionIndex = randomizedCorrectIndices[currentQuestionIndex];
 
         List<Integer> incorrectIndices = new ArrayList<>();
@@ -906,6 +929,12 @@ public class Controller {
         }
     }
 
+    @FXML
+    private void handleShowLeaderboard() {
+        Stage stage = (Stage) leaderboardButton.getScene().getWindow();
+        LeaderboardDialog.show(stage);
+    }
+
     private void setupKeyBindings() {
         Platform.runLater(() -> {
             if (contentPane != null && contentPane.getScene() != null) {
@@ -940,6 +969,9 @@ public class Controller {
         } else if (code == KeyCode.I && instructionsButton != null) {
             event.consume();
             handleShowInstructions();
+        } else if (code == KeyCode.L && leaderboardButton != null) {
+            event.consume();
+            handleShowLeaderboard();
         } else if (code == KeyCode.TAB && playerNameField != null) {
             if (event.isShiftDown()) {
             } else {
@@ -989,6 +1021,9 @@ public class Controller {
         if (code == KeyCode.N && newQuizButton != null) {
             event.consume();
             handleNewQuiz();
+        } else if (code == KeyCode.L) {
+            event.consume();
+            handleShowLeaderboard();
         }
     }
 
@@ -1024,13 +1059,11 @@ public class Controller {
             event.consume();
             Stage stage = (Stage) contentPane.getScene().getWindow();
             
-            // Pause the game if we're in the question screen
             boolean wasInQuestionScreen = questionScreen != null && questionScreen.isVisible();
             if (wasInQuestionScreen) {
                 handlePauseGame();
             }
             
-            // Show the shortcuts dialog and resume the game when it's closed
             KeyboardShortcutsHelper.showKeyboardShortcutsDialog(stage, () -> {
                 if (wasInQuestionScreen) {
                     handleResumeGame();

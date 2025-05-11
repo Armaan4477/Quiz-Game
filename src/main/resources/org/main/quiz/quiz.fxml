@@ -53,6 +53,7 @@
                     <HBox spacing="15" alignment="CENTER">
                         <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
                         <Button fx:id="instructionsButton" text="Instructions" onAction="#handleShowInstructions" styleClass="instructions-button" />
+                        <Button fx:id="leaderboardButton" text="Leaderboard" onAction="#handleShowLeaderboard" styleClass="leaderboard-button" />
                     </HBox>
                 </VBox>
             </VBox>
@@ -143,7 +144,6 @@
                 </VBox>
             </StackPane>
             
-            <!-- Instructions Modal -->
             <StackPane fx:id="instructionsOverlay" visible="false" styleClass="modal-overlay">
                 <VBox fx:id="instructionsModal" alignment="CENTER" spacing="15" styleClass="instructions-modal" maxWidth="600" maxHeight="500">
                     <Label text="How to Play" styleClass="modal-title"/>
@@ -184,14 +184,12 @@
                                     <ColumnConstraints hgrow="ALWAYS" />
                                 </columnConstraints>
                                 
-                                <!-- Start Screen Shortcuts -->
                                 <Label text="Start Screen:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" />
                                 <Label text="S" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <Label text="Start Quiz" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                 <Label text="I" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="2" />
                                 <Label text="Show Instructions" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                 
-                                <!-- Quiz Screen Shortcuts -->
                                 <Label text="Quiz Screen:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" />
                                 <Label text="1-4" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="4" />
                                 <Label text="Select answer options" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -208,7 +206,6 @@
                                 <Label text="S" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="10" />
                                 <Label text="Submit Quiz" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                                 
-                                <!-- Global Shortcuts -->
                                 <Label text="Global:" styleClass="shortcut-category" GridPane.columnIndex="0" GridPane.rowIndex="11" GridPane.columnSpan="2" />
                                 <Label text="Esc" styleClass="keyboard-key" GridPane.columnIndex="0" GridPane.rowIndex="12" />
                                 <Label text="Close dialog / Pause / Resume" GridPane.columnIndex="1" GridPane.rowIndex="12" />

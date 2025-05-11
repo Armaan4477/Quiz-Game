@@ -448,7 +448,6 @@
     -fx-cursor: hand;
 }
 
-/* Keyboard shortcut indicator style */
 .shortcut-indicator {
     -fx-text-fill: #888;
     -fx-font-size: 12px;
@@ -462,7 +461,6 @@
     -fx-border-radius: 4px;
 }
 
-/* Help overlay for keyboard shortcuts */
 .keyboard-help-overlay {
     -fx-background-color: rgba(0, 0, 0, 0.85);
     -fx-padding: 20px;
@@ -503,4 +501,115 @@
     -fx-font-weight: bold;
     -fx-text-fill: #3a6073;
     -fx-padding: 5px 0 0 0;
+}
+
+.leaderboard-button {
+    -fx-background-color: #FF5722;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+}
+
+.leaderboard-button:hover {
+    -fx-background-color: #E64A19;
+    -fx-cursor: hand;
+}
+
+.leaderboard-dialog {
+    -fx-background-color: white;
+}
+
+.leaderboard-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3a7bd5;
+    -fx-padding: 0 0 10px 0;
+}
+
+.leaderboard-table {
+    -fx-border-color: #ddd;
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;
+}
+
+.leaderboard-table .column-header {
+    -fx-background-color: #f5f5f5;
+    -fx-font-weight: bold;
+    -fx-padding: 8px;
+}
+
+.leaderboard-table .table-row-cell {
+    -fx-background-color: white;
+    -fx-padding: 5px;
+}
+
+.leaderboard-table .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.leaderboard-table .table-row-cell:selected {
+    -fx-background-color: #e3f2fd;
+}
+
+.close-leaderboard-button {
+    -fx-background-color: #F44336;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+}
+
+.close-leaderboard-button:hover {
+    -fx-background-color: #D32F2F;
+    -fx-cursor: hand;
+}
+
+.refresh-leaderboard-button {
+    -fx-background-color: #2196F3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+}
+
+.refresh-leaderboard-button:hover {
+    -fx-background-color: #1976D2;
+    -fx-cursor: hand;
+}
+
+.loading-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #666;
+}
+
+.error-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #F44336;
+    -fx-font-weight: bold;
+}
+
+.retry-button {
+    -fx-background-color: #FF9800;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+}
+
+.retry-button:hover {
+    -fx-background-color: #F57C00;
+    -fx-cursor: hand;
+}
+
+.leaderboard-table .table-row-cell:nth-child(1) {
+    -fx-background-color: #FFF9C4;
+}
+
+.leaderboard-table .table-row-cell:nth-child(2) {
+    -fx-background-color: #F5F5F5; 
+}
+
+.leaderboard-table .table-row-cell:nth-child(3) {
+    -fx-background-color: #FFECB3;
 }

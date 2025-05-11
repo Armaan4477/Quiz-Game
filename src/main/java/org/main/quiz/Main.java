@@ -39,7 +39,6 @@ public class Main extends Application {
             
             Platform.runLater(() -> {
                 primaryStage.setAlwaysOnTop(false);
-                // Request focus to ensure key events work properly
                 root.requestFocus();
             });
             
