@@ -372,3 +372,78 @@
     -fx-text-fill: #FF9800;
     -fx-font-weight: bold;
 }
+
+.instructions-button {
+    -fx-background-color: #3F51B5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 16px;
+    -fx-background-radius: 4px;
+}
+
+.instructions-button:hover {
+    -fx-background-color: #303F9F;
+    -fx-cursor: hand;
+}
+
+.modal-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+}
+
+.instructions-modal {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+    -fx-spacing: 15px;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+    -fx-background-radius: 8px;
+}
+
+.modal-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3a7bd5;
+    -fx-padding: 0 0 10px 0;
+}
+
+.instructions-scroll {
+    -fx-background-color: white;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-max-height: 350px;
+}
+
+.instructions-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.instructions-content {
+    -fx-background-color: transparent;
+}
+
+.instructions-section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3a6073;
+    -fx-padding: 5px 0 0 0;
+}
+
+.instructions-text {
+    -fx-font-size: 14px;
+    -fx-fill: #333;
+}
+
+.close-modal-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-min-width: 150px;
+    -fx-background-radius: 4px;
+    -fx-font-size: 14px;
+}
+
+.close-modal-button:hover {
+    -fx-background-color: #3d8b40;
+    -fx-cursor: hand;
+}

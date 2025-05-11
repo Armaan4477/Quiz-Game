@@ -22,6 +22,8 @@ public class Controller {
     @FXML private Button submitButton;
     @FXML private Button newQuizButton;
     @FXML private Button nextButton;
+    @FXML private Button instructionsButton;
+    @FXML private Button closeInstructionsButton;
     
     @FXML private Button fiftyFiftyButton;
     @FXML private Button askComputerButton;
@@ -33,6 +35,8 @@ public class Controller {
     @FXML private Button exitButton;
     @FXML private StackPane pauseOverlay;
     @FXML private VBox pauseMenu;
+    @FXML private StackPane instructionsOverlay;
+    @FXML private VBox instructionsModal;
     
     @FXML private Label playerDisplayLabel;
     @FXML private Label playerResultLabel;
@@ -135,6 +139,7 @@ public class Controller {
         if (questionScreen != null) questionScreen.setVisible(false);
         if (resultsScreen != null) resultsScreen.setVisible(false);
         if (pauseOverlay != null) pauseOverlay.setVisible(false);
+        if (instructionsOverlay != null) instructionsOverlay.setVisible(false);
 
         if (contentPane != null && startScreen != null) {
             if (!contentPane.getChildren().contains(startScreen)) {
@@ -879,5 +884,20 @@ public class Controller {
         alert.setTitle(title);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+    
+    @FXML
+    private void handleShowInstructions() {
+        if (instructionsOverlay != null) {
+            instructionsOverlay.setVisible(true);
+            instructionsOverlay.toFront();
+        }
+    }
+    
+    @FXML
+    private void handleCloseInstructions() {
+        if (instructionsOverlay != null) {
+            instructionsOverlay.setVisible(false);
+        }
     }
 }

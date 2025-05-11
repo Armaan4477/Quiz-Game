@@ -50,7 +50,10 @@
                         <ComboBox fx:id="questionCountComboBox" prefWidth="200" />
                     </HBox>
                     
-                    <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
+                    <HBox spacing="15" alignment="CENTER">
+                        <Button fx:id="startButton" text="Start Quiz" onAction="#handleStartQuiz" styleClass="start-button" />
+                        <Button fx:id="instructionsButton" text="Instructions" onAction="#handleShowInstructions" styleClass="instructions-button" />
+                    </HBox>
                 </VBox>
             </VBox>
             
@@ -137,6 +140,53 @@
                     
                     <Button fx:id="exitButton" text="Exit Game" onAction="#handleExitGame" 
                             styleClass="pause-menu-button, exit-button"/>
+                </VBox>
+            </StackPane>
+            
+            <!-- Instructions Modal -->
+            <StackPane fx:id="instructionsOverlay" visible="false" styleClass="modal-overlay">
+                <VBox fx:id="instructionsModal" alignment="CENTER" spacing="15" styleClass="instructions-modal" maxWidth="600" maxHeight="500">
+                    <Label text="How to Play" styleClass="modal-title"/>
+                    
+                    <ScrollPane fitToWidth="true" styleClass="instructions-scroll">
+                        <VBox spacing="15" styleClass="instructions-content">
+                            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+                            
+                            <Label text="Quiz Rules" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                1. Answer multiple-choice questions within the time limit.
+                                2. Each question has a 20-second timer.
+                                3. Once the timer runs out, you can't change your answer.
+                                4. Navigate between questions using Previous and Next buttons.
+                                5. Submit your quiz when you're ready to see your results.
+                            </Text>
+                            
+                            <Label text="Lifelines" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                • 50-50: Removes two incorrect options.
+                                • Ask Computer: The computer will select an option (80% chance of being correct).
+                                • Each lifeline can only be used once per quiz.
+                            </Text>
+                            
+                            <Label text="Scoring" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                • Each correct answer earns 1 point.
+                                • There is no penalty for wrong answers.
+                                • Your final score will be displayed at the end of the quiz.
+                            </Text>
+                            
+                            <Label text="Tips" styleClass="instructions-section-title"/>
+                            <Text styleClass="instructions-text" wrappingWidth="540">
+                                • Read each question carefully before answering.
+                                • Use lifelines strategically when you're unsure.
+                                • You can pause the game at any time using the Pause button.
+                                • Have fun and test your knowledge!
+                            </Text>
+                        </VBox>
+                    </ScrollPane>
+                    
+                    <Button fx:id="closeInstructionsButton" text="Got it!" onAction="#handleCloseInstructions" 
+                            styleClass="close-modal-button"/>
                 </VBox>
             </StackPane>
         </StackPane>
