@@ -2,3 +2,5 @@
 /target
 src/main/resources/config.properties
 QuizGameGUI.java
+launch4j.log
+/dist

@@ -18,7 +18,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>${javafx.maven.plugin.version}</version>
         <configuration>
-          <mainClass>org.main.quiz/org.main.quiz.Main</mainClass>
+          <mainClass>org.main.quiz/org.main.quiz.Launcher</mainClass>
         </configuration>
       </plugin>
       <plugin>
@@ -33,7 +33,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>org.main.quiz.Main</mainClass>
+                  <mainClass>org.main.quiz.Launcher</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -43,9 +43,9 @@
     </plugins>
   </build>
   <properties>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
+    <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <javafx.version>21</javafx.version>
-    <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
   </properties>
 </project>
